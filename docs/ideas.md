@@ -4,7 +4,7 @@
 
 2. Application name: AptLife 
 
-Team Overview
+## Team Overview
 
 - Leon Djusberg: @LeonDJ7
 - Hannah Noordeen: @hannahnoordeen
