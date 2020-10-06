@@ -1,4 +1,4 @@
-# Gamma
+# Milstone 0: Ideas
 
 1. Team name: Gamma
 
