@@ -2,7 +2,7 @@
 
 1. Team name: Gamma
 
-2. Application name: AptLife 
+2. Application name: ExpenseMate
 
 ## Team Overview
 
