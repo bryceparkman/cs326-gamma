@@ -3,16 +3,16 @@
     background-color: sandybrown;
     margin-bottom: 5vh;
     text-align: center;
-    padding-top: 5vh;
+    padding-top: 3vh;
 }
 
 #money {
-    margin-top: 2vh;
+    margin-top: -4vh;
     font-size: 20px;
 }
 
 #bigMoney {
-    font-size: 50px;
+    font-size: 10vh;
 }
 
 #payments {
@@ -35,7 +35,7 @@
 }
 
 #groceryInput {
-    margin-top: 5vh;
+    margin-top: 3vh;
 }
 
 .percentContributedBryce {
@@ -55,4 +55,12 @@
 
 .fontTwelve {
     font-size: 12px;
+}
+
+.groceriesTitle {
+    font-size: 3vh;
+}
+
+.groceriesSubtitle {
+    font-size: 4vh;
 }
