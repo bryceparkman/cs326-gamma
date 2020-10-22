@@ -1,17 +1,23 @@
 #costsHeader {
-    height: 20vh;
+    height: 40vh;
     background-color: sandybrown;
     margin-bottom: 5vh;
+    text-align: center;
+    padding-top: 5vh;
+}
+
+#dateSelect {
+    
 }
 
 #payments {
-    max-height: 70vh;
+    max-height: 55vh;
 }
 
 #personalPayments {
-    max-height: 70vh;
+    height: 55vh;
+    padding-top: 15vh;
     text-align: center;
-    padding-top: 25vh;
 }
 
 #rentButton {
@@ -20,5 +26,20 @@
 }
 
 #input {
-    margin-top: 5vh;
+    margin-top: 10vh;
+}
+
+.percentContributedBryce {
+    font-size: 11px;
+    color: darkviolet;
+}
+
+.percentContributedLeon {
+    font-size: 11px;
+    color: lightseagreen;
+}
+
+.percentContributedHannah {
+    font-size: 11px;
+    color: goldenrod;
 }
