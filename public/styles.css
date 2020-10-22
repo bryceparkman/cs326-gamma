@@ -1,0 +1,15 @@
+#costsHeader {
+    height: 20vh;
+    background-color: sandybrown;
+    margin-bottom: 5vh;
+}
+
+#payments {
+    max-height: 70vh;
+}
+
+#personalPayments {
+    max-height: 70vh;
+    text-align: center;
+    padding-top: 30vh;
+}
