@@ -10,4 +10,4 @@ Same as from the ideas.md markdown.
 
 [Groceries page wireframe](https://whimsical.com/9hKTvUntwrP3hJwFBvWYDD)
 
-## Part 2
+## Part 2 
