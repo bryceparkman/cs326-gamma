@@ -26,26 +26,111 @@
 
     <!-- Costs header -->
     <div id='costsHeader'>
-
+        <input type='month'></input>
+        <p id='money'><span id='bigMoney'>$330</span>/ $660</p>
+        <div class='progress w-25 mx-auto' style='height: 5vh'>
+            <div class="progress-bar" role="progressbar" style="width: 8.33%; background-color: darkviolet;" aria-valuenow="55" aria-valuemin="0" aria-valuemax="660"></div>
+            <div class="progress-bar" role="progressbar" style="width: 8.33%; background-color: lightseagreen;" aria-valuenow="55" aria-valuemin="0" aria-valuemax="660"></div>
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33.33%; background-color: gold;" aria-valuenow="220" aria-valuemin="0" aria-valuemax="660"></div>
+        </div>
     </div>
 
     <!-- Costs container -->
     <div class='container'>
         <div class='row'>
-            <div class='col'>
+            <div class='col-lg-6'>
                 <div id='payments' class='pre-scrollable'>
-                    <!-- Insert payments -->
+                    <div class='card mb-3 border-0'>
+                        <div class="row no-gutters">
+                            <div class="col-auto">
+                                <img src="https://via.placeholder.com/100/9400D3/FFFFFF" class="img-fluid rounded-circle" alt="">
+                            </div>
+                            <div class="col">
+                                <div class="card-block px-4 my-4">
+                                    <p class="card-text mb-0">Bryce paid $22.50</p>
+                                    <p class="card-text percentContributedBryce">Contributing 4.16%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='card mb-3 border-0'>
+                        <div class="row no-gutters">
+                            <div class="col-auto">
+                                <img src="https://via.placeholder.com/100/9400D3/FFFFFF" class="img-fluid rounded-circle" alt="">
+                            </div>
+                            <div class="col">
+                                <div class="card-block px-4 my-4">
+                                    <p class="card-text mb-0">Bryce paid $22.50</p>
+                                    <p class="card-text percentContributedBryce">Contributing 4.16%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='card mb-3 border-0'>
+                        <div class="row no-gutters">
+                            <div class="col-auto">
+                                <img src="https://via.placeholder.com/100/20b2aa/FFFFFF" class="img-fluid rounded-circle" alt="">
+                            </div>
+                            <div class="col">
+                                <div class="card-block px-4 my-4">
+                                    <p class="card-text mb-0">Leon paid $22.50</p>
+                                    <p class="card-text percentContributedLeon">Contributing 4.16%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='card mb-3 border-0'>
+                        <div class="row no-gutters">
+                            <div class="col-auto">
+                                <img src="https://via.placeholder.com/100/20b2aa/FFFFFF" class="img-fluid rounded-circle" alt="">
+                            </div>
+                            <div class="col">
+                                <div class="card-block px-4 my-4">
+                                    <p class="card-text mb-0">Leon paid $22.50</p>
+                                    <p class="card-text percentContributedLeon">Contributing 4.16%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='card mb-3 border-0'>
+                        <div class="row no-gutters">
+                            <div class="col-auto">
+                                <img src="https://via.placeholder.com/100/daa520/FFFFFF" class="img-fluid rounded-circle" alt="">
+                            </div>
+                            <div class="col">
+                                <div class="card-block px-4 my-4">
+                                    <p class="card-text mb-0">Hannah paid $110.00</p>
+                                    <p class="card-text percentContributedHannah">Contributing 16.66%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='card mb-3 border-0'>
+                        <div class="row no-gutters">
+                            <div class="col-auto">
+                                <img src="https://via.placeholder.com/100/daa520/FFFFFF" class="img-fluid rounded-circle" alt="">
+                            </div>
+                            <div class="col">
+                                <div class="card-block px-4 my-4">
+                                    <p class="card-text mb-0">Hannah paid $110.00</p>
+                                    <p class="card-text percentContributedHannah">Contributing 16.66%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class='col' id='personalPayments'>
+            <div class='col-lg-6' id='personalPayments'>
                 <h2>You still owe $165.00</h2>
                 <h5>out of your 33.33% share</h5>
-                <!-- Progress bar -->
-                <div id='input' class='input-group mx-auto'>
+                <div class='progress'>
+                    <div class="progress-bar w-25" role="progressbar" style="background-color: darkviolet;" aria-valuenow="55" aria-valuemin="0" aria-valuemax="220"></div>
+                </div>
+                <div id='input'>
                     <input type="number" placeholder='Enter amount' step='0.01'/>
-                    <div class='input-group-append'>
+                    <span>
                         <button type="button" class='btn' id='rentButton'>Contribute Rent</button>
-                    </div>
+                    </span>
                 </div>      
             </div>
         </div>
