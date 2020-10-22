@@ -1,0 +1,55 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Font Awesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <title>ExpenseMate</title>
+    <meta name="description" content="ExpenseMate">
+    <meta name="author" content="CS326 Gamma">
+
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+    <!-- Navbar -->
+
+    <!-- Costs header -->
+    <div id='costsHeader'>
+
+    </div>
+
+    <!-- Costs container -->
+    <div class='container'>
+        <div class='row'>
+            <div class='col'>
+                <div id='payments' class='pre-scrollable'>
+                    <!-- Insert payments -->
+                </div>
+            </div>
+            <div class='col' id='personalPayments'>
+                <h2>You still owe $165.00</h2>
+                <h5>out of your 33.33% share</h5>
+                <!-- Progress bar -->
+                <div id='input' class='input-group mx-auto'>
+                    <input type="number" placeholder='Enter amount' step='0.01'/>
+                    <div class='input-group-append'>
+                        <button type="button" class='btn' id='rentButton'>Contribute Rent</button>
+                    </div>
+                </div>      
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
