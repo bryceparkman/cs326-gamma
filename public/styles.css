@@ -1,17 +1,28 @@
 #costsHeader {
-    height: 20vh;
+    height: 40vh;
     background-color: sandybrown;
     margin-bottom: 5vh;
+    text-align: center;
+    padding-top: 3vh;
+}
+
+#money {
+    margin-top: -4vh;
+    font-size: 20px;
+}
+
+#bigMoney {
+    font-size: 10vh;
 }
 
 #payments {
-    max-height: 70vh;
+    max-height: 50vh;
 }
 
 #personalPayments {
-    max-height: 70vh;
+    height: 55vh;
+    padding-top: 15vh;
     text-align: center;
-    padding-top: 25vh;
 }
 
 #rentButton {
@@ -20,5 +31,36 @@
 }
 
 #input {
-    margin-top: 5vh;
+    margin-top: 10vh;
+}
+
+#groceryInput {
+    margin-top: 3vh;
+}
+
+.percentContributedBryce {
+    font-size: 11px;
+    color: darkviolet;
+}
+
+.percentContributedLeon {
+    font-size: 11px;
+    color: lightseagreen;
+}
+
+.percentContributedHannah {
+    font-size: 11px;
+    color: goldenrod;
+}
+
+.fontTwelve {
+    font-size: 12px;
+}
+
+.groceriesTitle {
+    font-size: 3vh;
+}
+
+.groceriesSubtitle {
+    font-size: 4vh;
 }
