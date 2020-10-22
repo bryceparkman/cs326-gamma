@@ -34,6 +34,10 @@
     margin-top: 10vh;
 }
 
+#groceryInput {
+    margin-top: 5vh;
+}
+
 .percentContributedBryce {
     font-size: 11px;
     color: darkviolet;
@@ -47,4 +51,8 @@
 .percentContributedHannah {
     font-size: 11px;
     color: goldenrod;
+}
+
+.fontTwelve {
+    font-size: 12px;
 }
