@@ -11,5 +11,14 @@
 #personalPayments {
     max-height: 70vh;
     text-align: center;
-    padding-top: 30vh;
+    padding-top: 25vh;
+}
+
+#rentButton {
+    background-color: darkorange;
+    color: white;
+}
+
+#input {
+    margin-top: 5vh;
 }
