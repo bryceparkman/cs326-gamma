@@ -6,12 +6,17 @@
     padding-top: 5vh;
 }
 
-#dateSelect {
-    
+#money {
+    margin-top: 2vh;
+    font-size: 20px;
+}
+
+#bigMoney {
+    font-size: 50px;
 }
 
 #payments {
-    max-height: 55vh;
+    max-height: 50vh;
 }
 
 #personalPayments {
