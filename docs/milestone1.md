@@ -2,7 +2,7 @@
 
 ## Part 0
 
-Same as from the ideas.md markdown. 
+Same as from the [ideas.md markdown](ideas.md). 
 
 ## Part 1
 
