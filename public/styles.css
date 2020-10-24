@@ -64,3 +64,123 @@
 .groceriesSubtitle {
     font-size: 4vh;
 }
+
+/*Signup page css*/
+
+.signup-container{
+    background-color:#f5c8af;
+}
+
+.navbar{
+    border: 2px solid;
+    border-color: #8f8e8e;
+}
+
+.navbar-brand{
+    color: black;
+}
+
+
+.signup_forms{
+    background-color: rgb(238, 238, 238);
+    border: 2px solid rgb(160, 160, 160);
+    padding:40px;
+    width:530px;
+    margin-left:30px;
+}
+
+.signup_forms .submit-btn-holder {
+    justify-content: flex-end;
+    display: flex;
+}
+
+.icon-buttons{
+    display: flex;
+    justify-content: center;
+}
+
+#sign-up{
+    background-color: #df8a3b;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    font-size: 16px;
+    margin-left:10px;
+}
+
+#sign-in{
+    color: #df8a3b;
+    background-color: white;
+    border-color: #df8a3b;
+    padding: 8px 20px;
+    font-size: 16px;
+    margin-left:10px;
+}
+
+#sign-up:hover, #submit:hover{
+    background-color: white;
+    color: #df8a3b;
+    border: 1px solid;
+    border-color: #df8a3b;
+}
+
+#sign-in:hover{
+    background-color: #df8a3b;
+    color: white;
+    border: 1px solid white;
+}
+
+#submit{
+    background-color: #df8a3b;
+    color: white;
+    border: 1px solid;
+    border-color: #df8a3b;
+    font-size: 20px;
+}
+
+#grayusericon{
+    color: gray;
+    padding:5%;
+    font-size: 120px;
+    display: flex;
+    justify-content: center;
+}
+
+#blackusericon:hover{
+    color: black;
+    display: inline-block;
+}
+
+#blackusericon{
+    color: black;
+}
+
+#purpleusericon{
+    color: rgb(81, 0, 128);
+}
+#greenusericon{
+    color: green;
+}
+#yellowusericon{
+    color: yellow;
+}
+#redusericon{
+    color: red;
+}
+
+#create-user-header{
+    padding:15px 15px;
+    margin-left:20px;
+}
+
+#select-icon-header{
+    text-align: center;
+}
+
+a {
+    margin-right: 20px;
+}
+
+
+
+
