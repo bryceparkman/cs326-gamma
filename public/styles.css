@@ -65,8 +65,7 @@
     font-size: 4vh;
 }
 
-<<<<<<< HEAD
-/*Signup page css*/
+/*Signup Page*/
 
 .signup-container{
     background-color:#f5c8af;
@@ -109,7 +108,7 @@
     margin-left:10px;
 }
 
-#sign-in{
+#sign-in, #login{
     color: #df8a3b;
     background-color: white;
     border-color: #df8a3b;
@@ -125,7 +124,7 @@
     border-color: #df8a3b;
 }
 
-#sign-in:hover{
+#sign-in:hover, #login:hover{
     background-color: #df8a3b;
     color: white;
     border: 1px solid white;
@@ -169,7 +168,7 @@
     color: red;
 }
 
-#create-user-header{
+#create-user-header, #login-header{
     padding:15px 15px;
     margin-left:20px;
 }
@@ -182,8 +181,28 @@ a {
     margin-right: 20px;
 }
 
+/*Log In Page*/
+
+.login_forms{
+    background-color: rgb(238, 238, 238);
+    border: 2px solid rgb(160, 160, 160);
+    padding:40px;
+    width:930px;
+    height: 400px;
+    margin-left:30px;
+}
 
 
+.login_forms .login-btn-holder {
+    justify-content: flex-end;
+    display: flex;
+}
+
+#forgotpass{
+    color: rgb(173, 173, 173);
+}
+
+/*Apartment Creation Page*/
 
 
 #aptCreationHeader {
