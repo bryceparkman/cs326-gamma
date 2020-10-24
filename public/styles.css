@@ -64,3 +64,157 @@
 .groceriesSubtitle {
     font-size: 4vh;
 }
+
+#aptCreationHeader {
+    height: 12vh;
+    background-color: rgb(230, 255, 223);
+    margin-bottom: 5vh;
+    text-align: center;
+    padding-top: 3vh;
+}
+
+#aptCreationBox {
+    width:40vh;
+    height:40vh;
+    border-style:dashed; 
+    border-width:2px; 
+    border-color: dimgray;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -4vh;
+    padding-top: 1vh;
+    overflow: scroll;
+}
+
+#aptCreationBoxItem {
+    height: 5vh;
+    background-color: rgb(175, 240, 202);
+    padding-left: 2vh;
+    padding-right: 2vh;
+    margin-left: 2vh;
+    margin-top: 1vh;
+    margin-right: 2vh;
+}
+
+.rentInput {
+    width: 50vh; 
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+.addUtilitiesTitle {
+    font-size: 3vh;
+    font-weight: bold;
+}
+
+.createAptBtn {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#leftSideLbl {
+    float: left;
+    margin-left: 0;
+    font-size: 2vh;
+    padding-top: 1vh;
+    font-weight: bold;
+}
+
+#rightSideLbl {
+    float: right;
+    margin-right: 0;
+    font-size: 1.5vh;
+    padding-top: 1.5vh;
+}
+
+#aptCreationAddUtilityBtn {
+    color: rgb(214, 143, 143);
+}
+
+#aptOverviewParent {
+    display: flex;
+}
+
+#aptOverviewLeft {
+    margin-top: 10vh;
+    flex: 1;
+    float: right;
+}
+
+#apartmentMatesLbl {
+    font-size: 3vh;
+    font-weight: bold;
+}
+
+#aptMatesBox {
+    width:40vh;
+    height:61.5vh;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3vh;
+    padding-top: 2vh;
+    padding-left: 3vh;
+    padding-right: 4vh;
+    padding-bottom: 4vh;
+    overflow: scroll;
+}
+
+#aptMatesBoxItemLbl {
+    font-size: 2.5vh;
+    margin-left: 1vh;
+
+}
+
+.editAptMatesBtn {
+    margin-left: -1.5vh;
+}
+
+.aptUtilityBox {
+    height: 70vh;
+    width: 100vh;
+    margin-right: 15vh;
+    margin-top: 10vh;
+    overflow: scroll;
+}
+
+#utilityLbl {
+    font-size: 3vh;
+    margin-top: -1vh;
+}
+
+#priceLbl {
+    float: right;
+}
+
+#userLbl {
+    font-size: 2vh;
+}
+
+#utilityContributors {
+    float: left;
+    width: auto;
+    overflow: scroll;
+    text-align: left;
+}
+
+.contributionPercentageBar {
+    width: calc(100% - 13vh);
+    height: 5vh;
+    margin-top: 1vh;
+    float: right;
+}
+
+.utilityCard {
+    background-color: rgb(164, 171, 179);
+}
+
+.utilityCardHeader {
+    text-align: center;
+}
+
+#aptOverviewAddUtilityBtn {
+    color: rgb(214, 143, 143);
+    float: right;
+    margin-right: 20vh;
+    margin-top: -5vh;
+}

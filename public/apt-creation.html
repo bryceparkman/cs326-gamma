@@ -1,0 +1,70 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Font Awesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <title>ExpenseMate</title>
+    <meta name="description" content="ExpenseMate">
+    <meta name="author" content="CS326 Gamma">
+
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <!-- Header -->
+    <div id='aptCreationHeader'></div>
+
+    <!-- Rent input -->
+    <div class="input-group flex-nowrap rentInput">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="addon-wrapping">$</span>
+        </div>
+        <input type="rent" class="form-control" placeholder="rent per month" aria-label="rent per month" aria-describedby="addon-wrapping">
+    </div>
+
+    <br>
+
+    <!-- add utilities/other label and button -->
+    <p class='mb-5 text-center addUtilitiesTitle'>utilities/other
+        <span id='aptCreationAddUtilityBtn'>
+            <i class='fa fa-plus-circle'></i>
+        </span>
+    </p>
+
+    <!-- added utilities/other box -->
+    <div id='aptCreationBox'>
+        <div id='aptCreationBoxItem'>
+            <label id=leftSideLbl>Internet</label>
+            <label id=rightSideLbl>$49.44</label>
+        </div>
+        <div id='aptCreationBoxItem'>
+            <label id=leftSideLbl>Gas</label>
+            <label id=rightSideLbl>month to month</label>
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class='text-center'>
+        <button type='button' class='btn btn-secondary'>create apartment</button>
+    </div>
+
+
+</body>
+
+</html>
