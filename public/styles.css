@@ -65,6 +65,66 @@
     font-size: 4vh;
 }
 
+/*Home Page*/
+
+#homepage_signup_btn{
+    background-color: #df8a3b;
+    color: white;
+    border: 1px solid;
+    font-size: 20px;
+    width:200px;
+    margin-left:170px;
+}
+
+#homepage_signup_btn:hover{
+    background-color: white;
+    color: #df8a3b;
+    border: 1px solid;
+    border-color: #df8a3b;
+}
+
+#homepage_login_btn{
+    color: #df8a3b;
+    background-color: white;
+    border-color: #df8a3b;
+    font-size: 20px;
+    width:200px;
+    margin-left:110px;
+}
+
+#homepage_login_btn:hover{
+    background-color: #df8a3b;
+    color: white;
+    border: 1px solid;
+}
+
+.homepage_info{
+    background-color: rgba(99, 135, 253, 0.452);
+    border: 2px solid rgba(106, 73, 255);
+    width:1450px;
+}
+
+.homepage_info_points{
+    background-color: rgba(255, 255, 255, 0.452);
+    border: 2px solid rgb(116, 116, 116);
+    height:50px;
+}
+
+#homepage_info_text{
+    margin-left:40px;
+    margin-top:auto;
+    text-align: left;
+    font-size: 20px;
+    color:gray;
+}
+
+#dollarsign{
+    color: #df8a3b;
+    margin-left:auto;
+    font-size: 26px;
+    font-weight: bold;
+}
+
 /*Signup Page*/
 
 .signup-container{
@@ -85,7 +145,7 @@
     background-color: rgb(238, 238, 238);
     border: 2px solid rgb(160, 160, 160);
     padding:40px;
-    width:530px;
+    width:550px;
     margin-left:30px;
 }
 
