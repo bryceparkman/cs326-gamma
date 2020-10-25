@@ -67,6 +67,10 @@
 
 /*Home Page*/
 
+.homepage-container{
+    background-color:#eed2c5c9;
+}
+
 #homepage_signup_btn{
     background-color: #df8a3b;
     color: white;
@@ -98,37 +102,37 @@
     border: 1px solid;
 }
 
-.homepage_info{
-    background-color: rgba(99, 135, 253, 0.452);
-    border: 2px solid rgba(106, 73, 255);
-    width:1450px;
-}
 
 .homepage_info_points{
-    background-color: rgba(255, 255, 255, 0.452);
-    border: 2px solid rgb(116, 116, 116);
-    height:50px;
+    background-color: rgba(255, 255, 255, 0.473);
+    border: 8px solid rgba(54, 46, 163, 0.356);
+    height:230px;
+    width:100%;
+    padding:20px;
 }
+
 
 #homepage_info_text{
-    margin-left:40px;
+    margin-left:20px;
     margin-top:auto;
-    text-align: left;
-    font-size: 20px;
+    text-align: center;
+    font-size: 22px;
     color:gray;
+    width:auto;
 }
 
-#dollarsign{
-    color: #df8a3b;
-    margin-left:auto;
-    font-size: 26px;
-    font-weight: bold;
+
+#historyicon{
+    color:#df8a3b;
+    display: flex;
+    justify-content: center;
+    padding:10px;
 }
 
 /*Signup Page*/
 
 .signup-container{
-    background-color:#f5c8af;
+    background-color:#eed2c5c9;
 }
 
 .navbar{
