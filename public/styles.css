@@ -147,7 +147,7 @@
 }
 
 
-#homepage_info_text{
+#homepage_info_text1, #homepage_info_text2, #homepage_info_text3{
     margin-left:20px;
     margin-top:auto;
     text-align: center;
@@ -157,7 +157,7 @@
 }
 
 
-#historyicon{
+#historyicon, #manageicon, #remindicon{
     color:#df8a3b;
     display: flex;
     justify-content: center;
@@ -300,6 +300,7 @@ a {
 #forgotpass{
     color: rgb(173, 173, 173);
 }
+
 
 /*Apartment Creation Page*/
 
