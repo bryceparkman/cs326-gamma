@@ -19,3 +19,28 @@ Same as from the [ideas.md markdown](ideas.md).
 [Apartment overview wireframe](https://whimsical.com/2TTvmsLrTYygTqupfowRFv)
 
 ## Part 2 
+Homepage
+
+Login
+
+Signup
+
+Costs page
+
+![Costs](images/costs.png)
+
+Groceries page
+
+![Groceries](images/groceries.png)
+
+Apartment creation page
+
+Apartment overview page
+
+## Division of Labor
+
+Bryce worked on creating the initial files for the repository and creating the wireframes and the HTML/CSS for the Costs page and the groceries page.
+
+Leon worked on
+
+Hannah worked on
