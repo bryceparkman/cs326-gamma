@@ -11,13 +11,35 @@
     font-size: 20px;
 }
 
+.darkorange {
+    color: darkorange;
+}
+
 #bigMoney {
     font-size: 10vh;
 }
 
-#payments {
+.payments {
     max-height: 50vh;
 }
+
+.progressCosts {
+    height: 5vh; 
+    width: 50vh
+}
+
+.progressBryce {
+    width: 8.33%; 
+}
+
+.progressLeon {
+    width: 8.33%; 
+}
+
+.progressHannah {
+    width: 33.33%; 
+}
+
 
 #personalPayments {
     height: 55vh;
@@ -38,19 +60,32 @@
     margin-top: 3vh;
 }
 
-.percentContributedBryce {
+.percentContributed {
     font-size: 11px;
+}
+
+.bryceColor {
     color: darkviolet;
 }
 
-.percentContributedLeon {
-    font-size: 11px;
+.leonColor {
     color: lightseagreen;
 }
 
-.percentContributedHannah {
-    font-size: 11px;
+.hannahColor {
     color: goldenrod;
+}
+
+.bryceBgColor {
+    background-color: darkviolet;
+}
+
+.leonBgColor {
+    background-color: lightseagreen;
+}
+
+.hannahBgColor {
+    background-color: gold;
 }
 
 .fontTwelve {
@@ -64,6 +99,210 @@
 .groceriesSubtitle {
     font-size: 4vh;
 }
+
+/*Home Page*/
+
+.homepage-container{
+    background-color:#eed2c5c9;
+}
+
+#homepage_signup_btn{
+    background-color: #df8a3b;
+    color: white;
+    border: 1px solid;
+    font-size: 20px;
+    width:200px;
+    margin-left:170px;
+}
+
+#homepage_signup_btn:hover{
+    background-color: white;
+    color: #df8a3b;
+    border: 1px solid;
+    border-color: #df8a3b;
+}
+
+#homepage_login_btn{
+    color: #df8a3b;
+    background-color: white;
+    border-color: #df8a3b;
+    font-size: 20px;
+    width:200px;
+    margin-left:110px;
+}
+
+#homepage_login_btn:hover{
+    background-color: #df8a3b;
+    color: white;
+    border: 1px solid;
+}
+
+
+.homepage_info_points{
+    background-color: rgba(255, 255, 255, 0.473);
+    border: 8px solid rgba(54, 46, 163, 0.356);
+    height:230px;
+    width:100%;
+    padding:20px;
+}
+
+
+#homepage_info_text{
+    margin-left:20px;
+    margin-top:auto;
+    text-align: center;
+    font-size: 22px;
+    color:gray;
+    width:auto;
+}
+
+
+#historyicon{
+    color:#df8a3b;
+    display: flex;
+    justify-content: center;
+    padding:10px;
+}
+
+/*Signup Page*/
+
+.signup-container{
+    background-color:#eed2c5c9;
+}
+
+.navbar{
+    border: 2px solid;
+    border-color: #8f8e8e;
+}
+
+.navbar-brand{
+    color: black;
+}
+
+
+.signup_forms{
+    background-color: rgb(238, 238, 238);
+    border: 2px solid rgb(160, 160, 160);
+    padding:40px;
+    width:550px;
+    margin-left:30px;
+}
+
+.signup_forms .submit-btn-holder {
+    justify-content: flex-end;
+    display: flex;
+}
+
+.icon-buttons{
+    display: flex;
+    justify-content: center;
+}
+
+#sign-up{
+    background-color: #df8a3b;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    font-size: 16px;
+    margin-left:10px;
+}
+
+#sign-in, #login{
+    color: #df8a3b;
+    background-color: white;
+    border-color: #df8a3b;
+    padding: 8px 20px;
+    font-size: 16px;
+    margin-left:10px;
+}
+
+#sign-up:hover, #submit:hover{
+    background-color: white;
+    color: #df8a3b;
+    border: 1px solid;
+    border-color: #df8a3b;
+}
+
+#sign-in:hover, #login:hover{
+    background-color: #df8a3b;
+    color: white;
+    border: 1px solid white;
+}
+
+#submit{
+    background-color: #df8a3b;
+    color: white;
+    border: 1px solid;
+    border-color: #df8a3b;
+    font-size: 20px;
+}
+
+#grayusericon{
+    color: gray;
+    padding:5%;
+    font-size: 120px;
+    display: flex;
+    justify-content: center;
+}
+
+#blackusericon:hover{
+    color: black;
+    display: inline-block;
+}
+
+#blackusericon{
+    color: black;
+}
+
+#purpleusericon{
+    color: rgb(81, 0, 128);
+}
+#greenusericon{
+    color: green;
+}
+#yellowusericon{
+    color: yellow;
+}
+#redusericon{
+    color: red;
+}
+
+#create-user-header, #login-header{
+    padding:15px 15px;
+    margin-left:20px;
+}
+
+#select-icon-header{
+    text-align: center;
+}
+
+a {
+    margin-right: 20px;
+}
+
+/*Log In Page*/
+
+.login_forms{
+    background-color: rgb(238, 238, 238);
+    border: 2px solid rgb(160, 160, 160);
+    padding:40px;
+    width:930px;
+    height: 400px;
+    margin-left:30px;
+}
+
+
+.login_forms .login-btn-holder {
+    justify-content: flex-end;
+    display: flex;
+}
+
+#forgotpass{
+    color: rgb(173, 173, 173);
+}
+
+/*Apartment Creation Page*/
+
 
 #aptCreationHeader {
     height: 12vh;
