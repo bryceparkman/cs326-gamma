@@ -21,9 +21,15 @@ Same as from the [ideas.md markdown](ideas.md).
 ## Part 2 
 Homepage
 
-Login
+![Homepage](images/homepage.png)
+
+Login page
+
+![Login](images/login.png)
 
 Signup
+
+![Signup](images/signup.png)
 
 Costs page
 
@@ -43,4 +49,4 @@ Bryce worked on creating the initial files for the repository and creating the w
 
 Leon worked on
 
-Hannah worked on
+Hannah worked on creating the wireframes and HTML/CSS files for the home page, sign up page, and log in page. 
