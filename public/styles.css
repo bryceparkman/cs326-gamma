@@ -86,7 +86,7 @@
     overflow: scroll;
 }
 
-#aptCreationBoxItem {
+.aptCreationBoxItem {
     height: 5vh;
     background-color: rgb(175, 240, 202);
     padding-left: 2vh;
@@ -112,7 +112,7 @@
     margin-right: auto;
 }
 
-#leftSideLbl {
+.aptCreationUtilityTypeLbl {
     float: left;
     margin-left: 0;
     font-size: 2vh;
@@ -120,7 +120,7 @@
     font-weight: bold;
 }
 
-#rightSideLbl {
+.aptCreationUtilityCostLbl {
     float: right;
     margin-right: 0;
     font-size: 1.5vh;
@@ -159,10 +159,9 @@
     overflow: scroll;
 }
 
-#aptMatesBoxItemLbl {
-    font-size: 2.5vh;
+.aptMatesBoxItemLbl {
+    font-size: 2vh;
     margin-left: 1vh;
-
 }
 
 .editAptMatesBtn {
@@ -177,20 +176,20 @@
     overflow: scroll;
 }
 
-#utilityLbl {
+.utilityLbl {
     font-size: 3vh;
     margin-top: -1vh;
 }
 
-#priceLbl {
+.priceLbl {
     float: right;
 }
 
-#userLbl {
+.userLbl {
     font-size: 2vh;
 }
 
-#utilityContributors {
+.utilityContributors {
     float: left;
     width: auto;
     overflow: scroll;
