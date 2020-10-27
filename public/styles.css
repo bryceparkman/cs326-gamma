@@ -459,5 +459,6 @@ a {
 #aptOverviewAddUtilityBtn {
     color: rgb(214, 143, 143);
     float: right;
-    margin-top: -5vh;
+    margin-right: 20vh;
+    margin-top: -7vh;
 }
