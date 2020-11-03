@@ -2,19 +2,49 @@
 
 ## Part 0
 
+###API Endpoints
+
+GET Requests: 
+
+/rentProgress This request gets the amount of rent a user has paid from the costs payed (progress) to be shown on the costs page. Output data: Dollar amount a user has paid 
+
+/billProgress This request gets the amount any user has paid on a bill shown on the apartment overview page. Input data: name of bill, name of user. Output data: Dollar amount user has paid
+
+/groceryItem This request goes from the grocery page to the grocery table. Output is all the data from the grocery table
+
+/inventoryItem This request goes from the grocery page to the inventory table. Output is all the data from the inventory table
+
+
+POST Requests:
+
+/userProfile This request goes from the create user profile page to the user profile table. Input data: user name, email, and apartment code. Outputs a message saying successfully created user.
+
+/apartmentProfile This request goes from the apartment creation page to the apartment table. Input data: apartment code, total rent, number of members. Outputs a message saying successfully created apt.
+
+/newBill This request goes from the apartment creation page to the bills table. Input Data: Bill name, cost, and how many people are paying the bill. The output is the bill added to the apartment overview page.
+
+/payment This request comes from the costs page to the costs table whenever a user makes a payment. Input data: payment amount, and output is the progress bar of the bill being updated. 
+
+
+/newGroceryItem This request goes from the grocery page to the grocery table. Input data: name, and quantity. Output is the item added to the apartment's grocery list. 
+
+/newInventoryItem This request goes from the grocery page to the inventory table. Input data: name, quantity, and cost. Output is the item added to the apartment's inventory list. 
+
+###Data Model
+
 Our web page has six major components: User Profiles, Apartment, Bills, Costs, Groceries, and Inventory. 
 
-User profiles contain each user's personal information including the initial setup data as well as the progress on their payments. Each User has fields containing data for their: First name, last name, email, password, phone number, reminder emails, reminder texts, user icon, apartment code and outstanding payments. The primary key for this table would be a user's email as it must be non-null and unique. This table has foreign keys: apartment code referencing the apartment table and outstanding payments referencing the bill table.
+User profiles contain each user's personal information including the initial setup data as well as the progress on their payments. Fields: First name, last name, email, password, phone number, reminder emails, reminder texts, user icon, apartment code and outstanding payments. 
 
-Apartments contains all the information about a group's apartment as defined in the apartment creation page. Each apartment has fields containing the apartment code, total rent per month, number of members in each apartment, and if rent is evenly split. The primary key of this table is the apartment code (serves as an ID). 
+Apartments contains all the information about a group's apartment as defined in the apartment creation page. Fields: apartment code, total rent per month, number of members in each apartment, and if rent is evenly split. 
 
-Bills is a table where each entry is a defined bill shared by the apartment (electric, wifi, etc). Each entry has the fields: Bill name,total bill cost per month, number of apartment members who contribute to the bill (default is all), and progress on the bill. The primary key is the bill name. There are foreign keys connecting how much each member pays to the user profile table and the Costs table.
+Bills is a table where each entry is a defined bill shared by the apartment (electric, wifi, etc). Fields: Bill name,total bill cost per month, number of apartment members who contribute to the bill (default is all), and progress on the bill. 
 
-Costs is a table showing how much of each bill each user pays. The fields are apartment code, user's name, total bill cost, what % of bill they pay and how much they've paid. The primary key is the apartment code and there's foreign keys to the user profile table, apartment table, and bill table.
+Costs is a table showing how much of each bill each user pays. Fields: apartment code, user's name, total bill cost, what % of bill they pay and how much they've paid. 
 
-Groceries contains the list of groceries bought/needed for an apartment. Each entry in the table contains the food name, quantity, and which user requested it. The primary key is the food name.
+Groceries contains the list of groceries bought/needed for an apartment. Fields: food name, quantity, and which user requested it. 
 
-Inventory is a table the contains all the grocieries/goods that are in the apartment (have been bought). Inventory has fields: food name which is the name of the food or item, quantity of item, which user it was bought by and how much they spent on it. The primary key here is the name. There's a foreign key from the food name referencing the food name on the grocery list (to track when requested items are bought).
+Inventory is a table the contains all the grocieries/goods that are in the apartment (have been bought). Fields: food name which is the name of the food or item, quantity of item, which user it was bought by and how much they spent on it. 
 
 ![Data Model](images/data_model.png)
 
