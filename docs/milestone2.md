@@ -2,7 +2,7 @@
 
 ## Part 0
 
-###API Endpoints
+**API Endpoints**
 
 GET Requests: 
 
@@ -30,7 +30,7 @@ POST Requests:
 
 /newInventoryItem This request goes from the grocery page to the inventory table. Input data: name, quantity, and cost. Output is the item added to the apartment's inventory list. 
 
-###Data Model
+**Data Model**
 
 Our web page has six major components: User Profiles, Apartment, Bills, Costs, Groceries, and Inventory. 
 
