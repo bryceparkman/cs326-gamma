@@ -34,23 +34,18 @@ POST Requests:
 
 Our web page has six major components: User Profiles, Apartment, Bills, Costs, Groceries, and Inventory. 
 
-User profiles contain each user's personal information including the initial setup data as well as the progress on their payments. Fields: First name, last name, email, password, phone number, reminder emails, reminder texts, user icon, apartment code and outstanding payments. 
-
-Apartments contains all the information about a group's apartment as defined in the apartment creation page. Fields: apartment code, total rent per month, number of members in each apartment, and if rent is evenly split. 
-
-Bills is a table where each entry is a defined bill shared by the apartment (electric, wifi, etc). Fields: Bill name,total bill cost per month, number of apartment members who contribute to the bill (default is all), and progress on the bill. 
-
-Costs is a table showing how much of each bill each user pays. Fields: apartment code, user's name, total bill cost, what % of bill they pay and how much they've paid. 
-
-Groceries contains the list of groceries bought/needed for an apartment. Fields: food name, quantity, and which user requested it. 
-
-Inventory is a table the contains all the grocieries/goods that are in the apartment (have been bought). Fields: food name which is the name of the food or item, quantity of item, which user it was bought by and how much they spent on it. 
+⋅⋅*User profiles contain each user's personal information including the  initial setup data as well as the progress on their payments. 
+⋅⋅*Apartments contains all the information about a group's apartment as defined in the apartment creation page. 
+⋅⋅*Bills is a table where each entry is a defined bill shared by the apartment (electric, wifi, etc). 
+⋅⋅*Costs is a table showing how much of each bill each user pays. 
+⋅⋅*Groceries contains the list of groceries bought/needed for an apartment. 
+⋅⋅*Inventory is a table the contains all the grocieries/goods that are in the apartment (have been bought). 
 
 ![Data Model](images/data_model.png)
 
 ## Part 2
 
-TODO: CRUD operations descriptions and screenshots of client interface
+Screenshots of client interface
 
 ## Part 3
 
