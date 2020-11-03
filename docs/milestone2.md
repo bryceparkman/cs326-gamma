@@ -34,12 +34,12 @@ POST Requests:
 
 Our web page has six major components: User Profiles, Apartment, Bills, Costs, Groceries, and Inventory. 
 
-⋅⋅*User profiles contain each user's personal information including the  initial setup data as well as the progress on their payments. 
-⋅⋅*Apartments contains all the information about a group's apartment as defined in the apartment creation page. 
-⋅⋅*Bills is a table where each entry is a defined bill shared by the apartment (electric, wifi, etc). 
-⋅⋅*Costs is a table showing how much of each bill each user pays. 
-⋅⋅*Groceries contains the list of groceries bought/needed for an apartment. 
-⋅⋅*Inventory is a table the contains all the grocieries/goods that are in the apartment (have been bought). 
+*  User profiles contain each user's personal information including the  initial setup data as well as the progress on their payments. 
+*  Apartments contains all the information about a group's apartment as defined in the apartment creation page. 
+*  Bills is a table where each entry is a defined bill shared by the apartment (electric, wifi, etc). 
+*  Costs is a table showing how much of each bill each user pays. 
+*  Groceries contains the list of groceries bought/needed for an apartment. 
+*  Inventory is a table the contains all the grocieries/goods that are in the apartment (have been bought). 
 
 ![Data Model](images/data_model.png)
 
