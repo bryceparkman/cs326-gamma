@@ -1,6 +1,6 @@
 #costsHeader {
     height: 40vh;
-    background-color: #eed2c5c9;
+    background-color: sandybrown;
     margin-bottom: 5vh;
     text-align: center;
     padding-top: 3vh;
@@ -12,7 +12,7 @@
 }
 
 .darkorange {
-    color: #df8a3b;
+    color: darkorange;
 }
 
 #bigMoney {
@@ -48,14 +48,8 @@
 }
 
 #rentButton {
-    background-color: #df8a3b;
+    background-color: darkorange;
     color: white;
-    border: 1px solid #df8a3b;
-}
-
-#rentButton:hover{
-    color: #df8a3b;
-    background-color: white;
 }
 
 #input {
@@ -83,7 +77,7 @@
 }
 
 .bryceBgColor {
-    background-color: rgba(54, 46, 163, 0.356);
+    background-color: darkviolet;
 }
 
 .leonBgColor {
@@ -153,7 +147,7 @@
 }
 
 
-#homepage_info_text{
+#homepage_info_text1, #homepage_info_text2, #homepage_info_text3{
     margin-left:20px;
     margin-top:auto;
     text-align: center;
@@ -163,7 +157,7 @@
 }
 
 
-#historyicon{
+#historyicon, #manageicon, #remindicon{
     color:#df8a3b;
     display: flex;
     justify-content: center;
@@ -307,6 +301,7 @@ a {
     color: rgb(173, 173, 173);
 }
 
+
 /*Apartment Creation Page*/
 
 
@@ -449,7 +444,7 @@ a {
 }
 
 .utilityCard {
-    background-color: rgb(164, 171, 179);
+    background-color: #eed2c5c9;
 }
 
 .utilityCardHeader {
@@ -459,6 +454,6 @@ a {
 #aptOverviewAddUtilityBtn {
     color: rgb(214, 143, 143);
     float: right;
-    margin-right: 20vh;
-    margin-top: -7vh;
+    margin-top: -5vh;
 }
+
