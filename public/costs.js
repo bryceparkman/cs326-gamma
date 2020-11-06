@@ -1,7 +1,20 @@
 const totalRent = 660;
 let currentUser = 'Bryce';
-const users = ['Bryce','Hannah','Leon'];
 const data = {
+    users: [
+        {
+            name: 'Bryce',
+            color: '9400D3'
+        },
+        {
+            name: 'Hannah',
+            color: 'daa520'
+        },
+        {
+            name: 'Leon',
+            color: '20b2aa'
+        }
+    ],
     shares: {
         'Bryce': 33.3333,
         'Hannah': 33.3333,
@@ -69,7 +82,7 @@ function contributeRent(){
     if(rentValue > 0){
         const payments = document.getElementById('payments');
 
-        const htmlString = '<div class="card mb-3 border-0"><div class="row no-gutters"><div class="col-auto"><img src="https://via.placeholder.com/100/9400D3/FFFFFF" class="img-fluid rounded-circle" alt=""> </div><div class="col"><div class="card-block px-4 my-4"> <p class="card-text mb-0">Bryce paid $' + rentValue.toFixed(2) + '</p><p class="card-text percentContributed bryceColor">Contributing ' + ((rentValue / totalRent) * 100).toFixed(2) + '%</p></div></div></div></div>'
+        const htmlString = '<div class="card mb-3 border-0"><div class="row no-gutters"><div class="col-auto"><img src="https://via.placeholder.com/100/' + data.users.find(user => user.name === currentUser).color + '/FFFFFF" class="img-fluid rounded-circle" alt=""> </div><div class="col"><div class="card-block px-4 my-4"> <p class="card-text mb-0">' + currentUser + ' paid $' + rentValue.toFixed(2) + '</p><p class="card-text percentContributed ' + currentUser.toLowerCase() + 'Color">Contributing ' + ((rentValue / totalRent) * 100).toFixed(2) + '%</p></div></div></div></div>'
     
         const node = htmlToNode(htmlString);
         payments.appendChild(node)
@@ -88,15 +101,16 @@ function calculatePage(){
     share.innerHTML = "out of your " + data.shares[currentUser].toFixed(2) + "% share";
 
     const personalProgress = document.getElementById('personalProgress');
+    personalProgress.classList.add(currentUser.toLowerCase() + 'BgColor');
     personalProgress.style.width = calculatePersonalPercent() * 100 + '%';
     if(personalProgress.style.width === '100%'){      
         personalProgress.classList.add('progress-bar-striped');
     }
 
-    for(const user of users){
-        const overallProgress = document.getElementsByClassName('progress' + user)[0];
-        overallProgress.style.width = (calculateOverallPercent(user) * 100).toFixed(2) + '%';
-        if(overallProgress.style.width === data.shares[user].toFixed(2) + '%'){      
+    for(const user of data.users){
+        const overallProgress = document.getElementsByClassName('progress' + user.name)[0];
+        overallProgress.style.width = (calculateOverallPercent(user.name) * 100).toFixed(2) + '%';
+        if(overallProgress.style.width === data.shares[user.name].toFixed(2) + '%'){      
             overallProgress.classList.add('progress-bar-striped');
         }
     }
@@ -105,6 +119,6 @@ function calculatePage(){
 window.addEventListener('load', () => {
     const contributeButton = document.getElementById('rentButton');
     contributeButton.addEventListener('click', () => contributeRent());
-
+    console.log(data.payments)
     calculatePage();
 })
