@@ -147,7 +147,7 @@
 }
 
 
-#homepage_info_text{
+#homepage_info_text1, #homepage_info_text2, #homepage_info_text3{
     margin-left:20px;
     margin-top:auto;
     text-align: center;
@@ -157,7 +157,7 @@
 }
 
 
-#historyicon{
+#historyicon, #manageicon, #remindicon{
     color:#df8a3b;
     display: flex;
     justify-content: center;
@@ -308,6 +308,7 @@ a {
     color: rgb(173, 173, 173);
 }
 
+
 /*Apartment Creation Page*/
 
 
@@ -332,7 +333,7 @@ a {
     overflow: scroll;
 }
 
-#aptCreationBoxItem {
+.aptCreationBoxItem {
     height: 5vh;
     background-color: rgb(175, 240, 202);
     padding-left: 2vh;
@@ -358,7 +359,7 @@ a {
     margin-right: auto;
 }
 
-#leftSideLbl {
+.aptCreationUtilityTypeLbl {
     float: left;
     margin-left: 0;
     font-size: 2vh;
@@ -366,7 +367,7 @@ a {
     font-weight: bold;
 }
 
-#rightSideLbl {
+.aptCreationUtilityCostLbl {
     float: right;
     margin-right: 0;
     font-size: 1.5vh;
@@ -405,10 +406,9 @@ a {
     overflow: scroll;
 }
 
-#aptMatesBoxItemLbl {
-    font-size: 2.5vh;
+.aptMatesBoxItemLbl {
+    font-size: 2vh;
     margin-left: 1vh;
-
 }
 
 .editAptMatesBtn {
@@ -423,20 +423,20 @@ a {
     overflow: scroll;
 }
 
-#utilityLbl {
+.utilityLbl {
     font-size: 3vh;
     margin-top: -1vh;
 }
 
-#priceLbl {
+.priceLbl {
     float: right;
 }
 
-#userLbl {
+.userLbl {
     font-size: 2vh;
 }
 
-#utilityContributors {
+.utilityContributors {
     float: left;
     width: auto;
     overflow: scroll;
@@ -451,7 +451,7 @@ a {
 }
 
 .utilityCard {
-    background-color: rgb(164, 171, 179);
+    background-color: #eed2c5c9;
 }
 
 .utilityCardHeader {
@@ -461,6 +461,6 @@ a {
 #aptOverviewAddUtilityBtn {
     color: rgb(214, 143, 143);
     float: right;
-    margin-right: 20vh;
     margin-top: -5vh;
 }
+

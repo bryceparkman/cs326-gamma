@@ -21,9 +21,15 @@ Same as from the [ideas.md markdown](ideas.md).
 ## Part 2 
 Homepage
 
-Login
+![Homepage](images/homepage.png)
+
+Login page
+
+![Login](images/login.png)
 
 Signup
+
+![Signup](images/signup.png)
 
 Costs page
 
@@ -34,13 +40,15 @@ Groceries page
 ![Groceries](images/groceries.png)
 
 Apartment creation page
+![Apartment creation](images/apartment-creation.png)
 
 Apartment overview page
+![Apartment overview](images/apartment-overview.png)
 
 ## Division of Labor
 
 Bryce worked on creating the initial files for the repository and creating the wireframes and the HTML/CSS for the Costs page and the groceries page.
 
-Leon worked on
+Leon worked on creating the wireframes and HTML/CSS files for the apartment creation page, and apartment overview page. 
 
-Hannah worked on
+Hannah worked on creating the wireframes and HTML/CSS files for the home page, sign up page, and log in page. 
