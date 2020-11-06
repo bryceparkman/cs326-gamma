@@ -201,7 +201,7 @@
 #sign-up{
     background-color: #df8a3b;
     color: white;
-    border: none;
+    border-color: #df8a3b;
     padding: 8px 20px;
     font-size: 16px;
     margin-left:10px;
@@ -223,6 +223,7 @@
     border-color: #df8a3b;
 }
 
+
 #sign-in:hover, #login:hover{
     background-color: #df8a3b;
     color: white;
@@ -235,6 +236,12 @@
     border: 1px solid;
     border-color: #df8a3b;
     font-size: 20px;
+}
+
+.inheritLink {
+    color: inherit;
+    margin: none;
+    font-style: none;
 }
 
 #grayusericon{

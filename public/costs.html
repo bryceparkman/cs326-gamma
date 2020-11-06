@@ -19,19 +19,21 @@
 
     <link rel="stylesheet" href="styles.css">
 
+    <script src="./costs.js"></script> 
 </head>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-sm bg-light"> 
-        <a class="navbar-brand">ExpenseMate</a>
-        <i id = houseicon class="fa fa-home fa-2x"></i> 
+        <a href='./' class="navbar-brand">ExpenseMate
+            <i id ='houseicon' class="fa fa-home"></i>
+        </a> 
         <ul class="navbar-nav ml-auto"> 
             <li class="nav-item"> 
-                <a class="nav-link font-weight-bold text-dark" href="#">Costs</a>
+                <a class="nav-link font-weight-bold text-dark" href="./costs.html">Costs</a>
             </li> 
             <li class="nav-item"> 
-                <a class="nav-link text-dark" href="#">Groceries</a>
+                <a class="nav-link text-dark" href="./groceries.html">Groceries</a>
             </li> 
             <li class='nav-item'>
                 <i class='fa fa-user-circle fa-3x'></i>
@@ -41,11 +43,11 @@
     <!-- Costs header -->
     <div id='costsHeader'>
         <input type='month' class='mb-3'/>
-        <p id='money'><span id='bigMoney'>$330</span>/ $660</p>
+        <p id='money'><span id='bigMoney'>$0</span>/ $0</p>
         <div class='progress mx-auto progressCosts'>
-            <div class="progress-bar progressBryce bryceBgColor" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="660"></div>
-            <div class="progress-bar progressLeon leonBgColor" role="progressbar"aria-valuenow="55" aria-valuemin="0" aria-valuemax="660"></div>
-            <div class="progress-bar progress-bar-striped progress-bar-animated progressHannah hannahBgColor" role="progressbar"aria-valuenow="220" aria-valuemin="0" aria-valuemax="660"></div>
+            <div class="progress-bar progressBryce bryceBgColor progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="660"></div>
+            <div class="progress-bar progressLeon leonBgColor progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="660"></div>
+            <div class="progress-bar progress-bar-striped progress-bar-animated progressHannah hannahBgColor" role="progressbar" aria-valuemin="0" aria-valuemax="660"></div>
         </div>
     </div>
 
@@ -54,7 +56,7 @@
         <div class='row'>
             <div class='col-lg-6'>
                 <div id='payments' class='pre-scrollable'>
-                    <div class='card mb-3 border-0'>
+                    <!-- <div class='card mb-3 border-0'>
                         <div class="row no-gutters">
                             <div class="col-auto">
                                 <img src="https://via.placeholder.com/100/9400D3/FFFFFF" class="img-fluid rounded-circle" alt="">
@@ -131,17 +133,17 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class='col-lg-6' id='personalPayments'>
-                <h2>You still owe $165.00</h2>
-                <h5>out of your 33.33% share</h5>
+                <h2 id='amountToOwe'></h2>
+                <h5 id='amountShared'></h5>
                 <div class='progress'>
-                    <div class="progress-bar w-25 bryceBgColor" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="220"></div>
+                    <div class="progress-bar bryceBgColor progress-bar-animated" id="personalProgress" role="progressbar" aria-valuemin="0" aria-valuemax="220"></div>
                 </div>
                 <div id='input'>
-                    <input type="number" placeholder='Enter amount' step='0.01'/>
+                    <input type="number" placeholder='Enter amount' step='0.01' id='contrinput'/>
                     <span>
                         <button type="button" class='btn' id='rentButton'>Contribute Rent</button>
                     </span>
