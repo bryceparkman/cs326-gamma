@@ -1,0 +1,27 @@
+{
+  "name": "cs326-gamma",
+  "version": "1.0.0",
+  "description": "A web application to help users manage their apartment life",
+  "main": "server.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bryceparkman/cs326-gamma.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bryceparkman/cs326-gamma/issues"
+  },
+  "homepage": "https://github.com/bryceparkman/cs326-gamma#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "faker": "^5.1.0"
+  }
+}
