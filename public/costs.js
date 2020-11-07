@@ -67,6 +67,12 @@ function htmlToNode(html){ //https://stackoverflow.com/a/35385518
 }
 
 function contributeRent(){
+    const paymentsWrapper = document.getElementById('paymentsWrapper');
+    if(paymentsWrapper.children[0].id === 'blankPayments'){
+        const node = htmlToNode("<div id='payments' class='pre-scrollable'></div>")
+        paymentsWrapper.replaceChild(node,paymentsWrapper.children[0])
+    }
+
     const input = document.getElementById('contrinput');
     let rentValue = parseFloat(input.value);
     if(!isNaN(rentValue) && input.value >= 0){
@@ -109,8 +115,8 @@ function calculatePage(){
 
     for(const user of data.users){
         const overallProgress = document.getElementsByClassName('progress' + user.name)[0];
-        overallProgress.style.width = (calculateOverallPercent(user.name) * 100).toFixed(2) + '%';
-        if(overallProgress.style.width === data.shares[user.name].toFixed(2) + '%'){      
+        overallProgress.style.width = (calculateOverallPercent(user.name) * 100) + '%';
+        if(moneySpent(user.name) >= totalRent * data.shares[user.name] / 100){      
             overallProgress.classList.add('progress-bar-striped');
         }
     }
@@ -119,6 +125,6 @@ function calculatePage(){
 window.addEventListener('load', () => {
     const contributeButton = document.getElementById('rentButton');
     contributeButton.addEventListener('click', () => contributeRent());
-    console.log(data.payments)
+
     calculatePage();
 })

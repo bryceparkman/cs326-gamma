@@ -28,7 +28,7 @@
     width: 50vh
 }
 
-#personalPayments {
+#personalPayments, #blankPayments {
     height: 55vh;
     padding-top: 15vh;
     text-align: center;
