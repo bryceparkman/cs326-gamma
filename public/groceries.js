@@ -150,13 +150,41 @@ function getInventory(){
             }
             htmlString += "<div class='row mx-1'>";
         }
-        htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + data.inventory[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (data.groceries[i].amount !== null ? data.groceries[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + data.groceries[i].requestedBy.toLowerCase() + "Color'>Bought by " + data.inventory[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#_' class='card-link' onclick='editInventory(data.inventory[" + i + "])'>Edit</a><a href='#_' class='card-link float-right' onclick='removeInventory(data.inventory[" + i + "])'>Remove</a></div></div></div>";
+        htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + data.inventory[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (data.inventory[i].amount !== null ? data.inventory[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + data.inventory[i].requestedBy.toLowerCase() + "Color'>Bought by " + data.inventory[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#_' class='card-link' onclick='editInventory(data.inventory[" + i + "])'>Edit</a><a href='#_' class='card-link float-right' onclick='removeInventory(data.inventory[" + i + "])'>Remove</a></div></div></div>";
     }
     htmlString += '</div>';
     nodes.push(htmlString);
     for (node of nodes) {
         paymentsWrapper.appendChild(htmlToNode(node));
     }
+}
+
+function openModal(type){
+    const modal = document.getElementById(type + 'Modal');
+    modal.style.display = 'block';
+}
+
+function closeModal(type){
+    const modal = document.getElementById(type + 'Modal');
+    modal.style.display = 'none';
+}
+
+function submitModal(type){
+    const modal = document.getElementById(type + 'Modal');
+    const inputItem = document.getElementById('input' + type + 'Item');
+    const inputAmount = document.getElementById('input' + type + 'Amount');
+    if(inputItem.value.length > 0){
+        console.log(data[type])
+        data[type].push({
+            name: inputItem.value,
+            amount: (inputAmount.value.length > 0 ? inputAmount.value : null),
+            requestedBy: currentUser
+        });
+        modal.style.display = 'none';
+        inputItem.value = ''
+        inputAmount.value = '';
+        getInventory();
+    }    
 }
 
 function calculatePage() {
@@ -178,3 +206,10 @@ window.addEventListener('load', () => {
 
     calculatePage();
 });
+
+window.addEventListener('click', (event) => {
+    const modal = document.getElementById('groceryModal');
+    if(event.target === modal) {
+        modal.style.display = 'none';
+    }
+})

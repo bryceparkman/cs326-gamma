@@ -25,22 +25,22 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-sm bg-light"> 
+    <nav class="navbar navbar-expand-sm bg-light">
         <a href='./' class="navbar-brand">ExpenseMate
-            <i id ='houseicon' class="fa fa-home"></i>
-        </a> 
-        <ul class="navbar-nav ml-auto"> 
-            <li class="nav-item"> 
+            <i id='houseicon' class="fa fa-home"></i>
+        </a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
                 <a class="nav-link text-dark" href="./costs.html">Costs</a>
-            </li> 
-            <li class="nav-item"> 
+            </li>
+            <li class="nav-item">
                 <a class="nav-link font-weight-bold text-dark" href="./groceries.html">Groceries</a>
-            </li> 
+            </li>
             <li class='nav-item'>
                 <i class='fa fa-user-circle fa-3x'></i>
             </li>
         </ul>
-    </nav> 
+    </nav>
     <!-- Costs header -->
     <div id='costsHeader'>
         <p class='groceriesTitle'>Personal Budget</p>
@@ -50,7 +50,7 @@
                 aria-valuemin="0" aria-valuemax="200"></div>
         </div>
         <div id='groceryInput'>
-            <input type="number" placeholder='Enter amount' step='0.01' id='groceryBill'/>
+            <input type="number" placeholder='Enter amount' step='0.01' id='groceryBill' />
             <span>
                 <button type="button" class='btn' id='rentButton'>Add Grocery Bill</button>
             </span>
@@ -62,25 +62,43 @@
         <div class='row'>
             <div class='col-lg-6'>
                 <p class='mb-5 text-center groceriesSubtitle'>Grocery List
-                    <a href='#'>
+                    <a href='#_' onclick="openModal('grocery')">
                         <span class='darkorange'>
                             <i class='fa fa-plus-circle'></i>
                         </span>
                     </a>
                 </p>
+                <div id="groceryModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id='groceryClose' onclick="closeModal('grocery')">&times;</span>
+                        <h2>Add item to grocery list</h2>
+                        <input type='text' placeholder='Grocery item' id='inputgroceryItem' />
+                        <input type='text' placeholder='Grocery amount (optional)' id='inputgroceryAmount' />
+                        <button class='btn darkorangeBG' onclick="submitModal('grocery')">Add</button>
+                    </div>
+                </div>          
 
-                <div class='payments' id='paymentsWrapper' class='pre-scrollable'>
+                <div class='payments pre-scrollable' id='paymentsWrapper'>
                 </div>
             </div>
             <div class='col-lg-6'>
                 <p class='mb-5 text-center groceriesSubtitle'>Inventory
-                    <a href='#'>
+                    <a href='#_' onclick="openModal('inventory')">
                         <span class='darkorange'>
                             <i class='fa fa-plus-circle'></i>
                         </span>
                     </a>
                 </p>
-                <div class='payments' id='inventoryWrapper' class='pre-scrollable'>
+                <div id="inventoryModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id='inventoryClose' onclick="closeModal('inventory')">&times;</span>
+                        <h2>Add item to inventory</h2>
+                        <input type='text' placeholder='Grocery item' id='inputinventoryItem' />
+                        <input type='text' placeholder='Grocery amount (optional)' id='inputinventoryAmount' />
+                        <button class='btn darkorangeBG' onclick="submitModal('inventory')">Add</button>
+                    </div>
+                </div>  
+                <div class='payments pre-scrollable' id='inventoryWrapper'>
                 </div>
             </div>
         </div>
