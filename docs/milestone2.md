@@ -6,6 +6,8 @@
 
 GET Requests: 
 
+/loginProfile This request returns a user password for a username to verify a user on the login page. Input: username or email. Output: User password
+
 /rentProgress This request gets the amount of rent a user has paid from the costs payed (progress) to be shown on the costs page. Output data: Dollar amount a user has paid 
 
 /billProgress This request gets the amount any user has paid on a bill shown on the apartment overview page. Input data: name of bill, name of user. Output data: Dollar amount user has paid
