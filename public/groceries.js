@@ -93,8 +93,29 @@ function addGrocery() {
     calculatePage();
 }
 
+function editGrocery(element){
+    console.log(element)
+}
+
+function removeGrocery(element){
+    const index = data.groceries.indexOf(element);
+    data.groceries.splice(index,1);
+    getGroceries();
+}
+
+function editInventory(element){
+    console.log(element)
+}
+
+function removeInventory(element){
+    const index = data.inventory.indexOf(element);
+    data.inventory.splice(index,1);
+    getInventory();
+}
+
 function getGroceries(){
     const paymentsWrapper = document.getElementById('paymentsWrapper');
+    paymentsWrapper.innerHTML = '';
     let htmlString = '';
     const nodes = []
     for (let i = 0; i < data.groceries.length; i++) {
@@ -106,7 +127,7 @@ function getGroceries(){
             }
             htmlString += "<div class='row mx-1'>";
         }
-        htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + data.groceries[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (data.groceries[i].amount !== null ? data.groceries[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + data.groceries[i].requestedBy.toLowerCase() + "Color'>Requested by " + data.groceries[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#' class='card-link'>Edit</a><a href='#' class='card-link float-right'>Remove</a></div></div></div>";
+        htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + data.groceries[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (data.groceries[i].amount !== null ? data.groceries[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + data.groceries[i].requestedBy.toLowerCase() + "Color'>Requested by " + data.groceries[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#_' class='card-link' onclick='editGrocery(data.groceries[" + i + "])'>Edit</a><a href='#_' class='card-link float-right' onclick='removeGrocery(data.groceries[" + i + "])'>Remove</a></div></div></div>";
     }
     htmlString += '</div>';
     nodes.push(htmlString);
@@ -117,6 +138,7 @@ function getGroceries(){
 
 function getInventory(){
     const paymentsWrapper = document.getElementById('inventoryWrapper');
+    paymentsWrapper.innerHTML = '';
     let htmlString = '';
     const nodes = []
     for (let i = 0; i < data.inventory.length; i++) {
@@ -128,7 +150,7 @@ function getInventory(){
             }
             htmlString += "<div class='row mx-1'>";
         }
-        htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + data.inventory[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (data.groceries[i].amount !== null ? data.groceries[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + data.groceries[i].requestedBy.toLowerCase() + "Color'>Bought by " + data.inventory[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#' class='card-link'>Edit</a><a href='#' class='card-link float-right'>Remove</a></div></div></div>";
+        htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + data.inventory[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (data.groceries[i].amount !== null ? data.groceries[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + data.groceries[i].requestedBy.toLowerCase() + "Color'>Bought by " + data.inventory[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#_' class='card-link' onclick='editInventory(data.inventory[" + i + "])'>Edit</a><a href='#_' class='card-link float-right' onclick='removeInventory(data.inventory[" + i + "])'>Remove</a></div></div></div>";
     }
     htmlString += '</div>';
     nodes.push(htmlString);
