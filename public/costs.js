@@ -75,7 +75,7 @@ function contributeRent(){
 
     const input = document.getElementById('contrinput');
     let rentValue = parseFloat(input.value);
-    if(!isNaN(rentValue) && input.value >= 0){
+    if(!isNaN(rentValue) && rentValue >= 0){
         if(moneySpent(currentUser) + rentValue > (totalRent * data.shares[currentUser] / 100)){
             rentValue = (totalRent * data.shares[currentUser] / 100) - moneySpent(currentUser);
         }
