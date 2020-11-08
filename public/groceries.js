@@ -41,7 +41,26 @@ const data = {
         },
     ],
     inventory: [
-
+        {
+            name: 'Orange bell pepper',
+            amount: '2',
+            requestedBy: 'Bryce'
+        },
+        {
+            name: '2% Milk',
+            amount: 'Half gallon',
+            requestedBy: 'Leon'
+        },
+        {
+            name: 'Ben & Jerry\'s',
+            amount: '1 pint',
+            requestedBy: 'Hannah'
+        },
+        {
+            name: 'Paprika',
+            amount: null,
+            requestedBy: 'Bryce'
+        },
     ]
 }
 
@@ -74,15 +93,7 @@ function addGrocery() {
     calculatePage();
 }
 
-function calculatePage() {
-    const money = document.getElementById('money');
-    money.innerHTML = "<span id='bigMoney'>$" + moneySpent('Bryce').toFixed(2) + "</span>/ $" + budget.toFixed(2);
-
-    const progress = document.getElementById('progressBarMain');
-    progress.classList.add(currentUser.toLowerCase() + 'BgColor');
-    const width = getWidthString();
-    progress.style.width = width;
-
+function getGroceries(){
     const paymentsWrapper = document.getElementById('paymentsWrapper');
     let htmlString = '';
     const nodes = []
@@ -95,13 +106,48 @@ function calculatePage() {
             }
             htmlString += "<div class='row mx-1'>";
         }
-        htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + data.groceries[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + data.groceries[i].amount + "</p><p class='card-subtitle percentContributed " + data.groceries[i].requestedBy.toLowerCase() + "Color'>Requested by " + data.groceries[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#' class='card-link'>Edit</a><a href='#' class='card-link float-right'>Remove</a></div></div></div>";
+        htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + data.groceries[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (data.groceries[i].amount !== null ? data.groceries[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + data.groceries[i].requestedBy.toLowerCase() + "Color'>Requested by " + data.groceries[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#' class='card-link'>Edit</a><a href='#' class='card-link float-right'>Remove</a></div></div></div>";
     }
     htmlString += '</div>';
     nodes.push(htmlString);
     for (node of nodes) {
         paymentsWrapper.appendChild(htmlToNode(node));
     }
+}
+
+function getInventory(){
+    const paymentsWrapper = document.getElementById('inventoryWrapper');
+    let htmlString = '';
+    const nodes = []
+    for (let i = 0; i < data.inventory.length; i++) {
+        if (i % 2 === 0) {
+            if (i > 0) {
+                htmlString += '</div>';
+                nodes.push(htmlString);
+                htmlString = '';
+            }
+            htmlString += "<div class='row mx-1'>";
+        }
+        htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + data.inventory[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (data.groceries[i].amount !== null ? data.groceries[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + data.groceries[i].requestedBy.toLowerCase() + "Color'>Bought by " + data.inventory[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#' class='card-link'>Edit</a><a href='#' class='card-link float-right'>Remove</a></div></div></div>";
+    }
+    htmlString += '</div>';
+    nodes.push(htmlString);
+    for (node of nodes) {
+        paymentsWrapper.appendChild(htmlToNode(node));
+    }
+}
+
+function calculatePage() {
+    const money = document.getElementById('money');
+    money.innerHTML = "<span id='bigMoney'>$" + moneySpent('Bryce').toFixed(2) + "</span>/ $" + budget.toFixed(2);
+
+    const progress = document.getElementById('progressBarMain');
+    progress.classList.add(currentUser.toLowerCase() + 'BgColor');
+    const width = getWidthString();
+    progress.style.width = width;
+
+    getGroceries();
+    getInventory();
 }
 
 window.addEventListener('load', () => {
