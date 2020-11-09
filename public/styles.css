@@ -494,6 +494,6 @@ a {
     cursor: pointer;
 }
 
-#inputgroceryItem, #inputgroceryAmount, #inputinventoryItem, #inputinventoryAmount {
+.inputMb {
     margin-bottom: 20px;
 }
