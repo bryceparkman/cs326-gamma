@@ -371,12 +371,19 @@ a {
 
 #aptOverviewParent {
     display: flex;
+    height: 100%;
+    width: 100%;
 }
 
 #aptOverviewLeft {
-    margin-top: 10vh;
-    flex: 1;
-    float: right;
+    margin-top: 5vh;
+}
+
+#aptOverviewRight {
+    background-color: antiquewhite;
+    width: 100%;
+    height: 100%;
+    display: flex;
 }
 
 #apartmentMatesLbl {
@@ -385,8 +392,8 @@ a {
 }
 
 #aptMatesBox {
-    width:40vh;
-    height:61.5vh;
+    width:35vh;
+    height:40vh;
     margin-left: auto;
     margin-right: auto;
     margin-top: 3vh;
@@ -402,15 +409,12 @@ a {
     margin-left: 1vh;
 }
 
-.editAptMatesBtn {
-    margin-left: -1.5vh;
-}
-
-.aptUtilityBox {
-    height: 70vh;
-    width: 100vh;
-    margin-right: 15vh;
-    margin-top: 10vh;
+#aptUtilitiesBox {
+    height: 82vh;
+    width: 120vh;
+    margin-top: 5vh;
+    margin-left: 5vh;
+    margin-bottom: 5vh;
     overflow: scroll;
 }
 
@@ -451,8 +455,8 @@ a {
 
 #aptOverviewAddUtilityBtn {
     color: rgb(214, 143, 143);
-    float: right;
-    margin-top: -5vh;
+    margin-top: 80vh;
+    margin-right: 6vh;
 }
 
 /* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal */
@@ -468,7 +472,7 @@ a {
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
+}
   
 /* Modal Content */
 .modal-content {
