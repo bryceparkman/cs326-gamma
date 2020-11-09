@@ -1,8 +1,19 @@
 
-function loadUsers() {
+function loadUsers(code) { // load users in aprtment group woth given code
 
     // back end stuff
-    let users = []
+    let users = [];
+
+    /*
+
+    users
+    [
+        { id: 'leon@gmail.com', name: 'leon', color: '' }, 
+        { id: 'hannah@gmail.com', percent: 'hannah', color: '' }, 
+        { id: 'bryce@gmail.com', percent: 'bryce', color: '' }
+    ]
+
+    */
 
     // front end stuff
     for (let i = 0; i < users.length; i++) {
@@ -12,43 +23,51 @@ function loadUsers() {
 
 }
 
-function loadUtilities() {
+function loadUtilities(code) { // load users in apartment group woth given code
 
     // back end stuff
-    let utilities = []
+    let utilities = [];
 
     // front end stuff
     for (let i = 0; i < utilities.length; i++) {
         let utility = utilities[i];
-        addUtility(i, utility.name, utility.cost, utility.contributingUsers);
+        addUtility(i, utility.name, utility.cost, utility.contributions);
     }
+
+    /*
+
+    utility.contributions
+    [
+        { user: { id: 'leon@gmail.com', name: 'leon', color: '' }, percent: 33 }, 
+        { user: { id: 'hannah@gmail.com', percent: 'hannah', color: '' }, percent: 33 }, 
+        { user: { id: 'bryce@gmail.com', percent: 'bryce', color: '' }, percent: 34 }
+    ]
+
+    */
 
 }
 
-function addUser(name) {
+function addUser(user) {
     let container = document.getElementById('aptMatesBox');
     let containerItem = document.createElement('div');
     let icon = document.createElement('i');
     icon.className = 'fa fa-user-circle fa-lg';
+    icon.style.color = user.color;
     let nameLabel = document.createElement('label');
     nameLabel.className = 'aptMatesBoxItemLbl';
-    nameLabel.innerHTML = name;
+    nameLabel.innerHTML = user.name;
+    nameLabel.style.color = user.color;
     containerItem.appendChild(icon);
     containerItem.appendChild(nameLabel);
     container.appendChild(containerItem);
 }
 
-function addUtility(index, name, cost, contributingUsers) {
+function addUtility(index, name, cost, contributions) {
     let container = document.getElementById('aptUtilitiesBox');
     let column = document.createElement('div');
     column.className = 'col px-3 mr-2';
     let card = document.createElement('div');
     card.className = 'card-block px-4 my-4 utilityCardHeader';
-    let utilityContributorsBox = document.createElement('div');
-    utilityContributorsBox.className = 'utilityContributorsBox';
-    for (user in contributingUsers) {
-        // add userLbls
-    }
     let utilityInfoLabelsBox = document.createElement('div');
     let utilityLbl = document.createElement('label');
     utilityLbl.className = 'utilityLbl';
@@ -64,8 +83,12 @@ function addUtility(index, name, cost, contributingUsers) {
     utilityInfoLabelsBox.appendChild(priceLbl);
     let utilityContributionBar = document.createElement('div');
     utilityContributionBar.className = 'progress contributionPercentageBar';
-    for (user in contributingUsers) {
-        // add contributing percentages
+    for (contribution in contributions) {
+        // add contributing percentages for each user
+        let subBar = document.createElement('div');
+        subBar.className = 'progress-bar';
+        subBar.style.width = contribution.percent;
+        subBar.style.color = contribution.user.color;
     }
     card.appendChild(utilityContributorsBox);
     card.appendChild(utilityInfoLabelsBox);

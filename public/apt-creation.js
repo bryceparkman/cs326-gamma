@@ -1,7 +1,7 @@
 
 let utilities = []
 
-function addUtilityToBox(name, cost) { // if cost = 0, then cost varies month to month
+function addUtility(name, cost) { // if cost = 0, then cost varies month to month
     let container = document.getElementById('aptCreationBox');
     let containerItem = document.createElement('div');
     containerItem.className = 'aptCreationBoxItem';

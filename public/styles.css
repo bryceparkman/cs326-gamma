@@ -431,18 +431,13 @@ a {
     font-size: 2vh;
 }
 
-.utilityContributors {
-    float: left;
-    width: auto;
-    overflow: scroll;
-    text-align: left;
-}
-
 .contributionPercentageBar {
-    width: calc(100% - 13vh);
+    width: calc(100% - 6vh);
+    margin-right: 3vh;
+    margin-left: 3vh;
     height: 5vh;
     margin-top: 1vh;
-    float: right;
+    float: left;
 }
 
 .utilityCard {
