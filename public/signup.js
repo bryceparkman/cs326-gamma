@@ -1,12 +1,3 @@
-/*document.getElementById('submit').addEventListener('click', async() => {
-    checkFormRequired();
-    //post user profile data
-});
-
-function checkFormRequired() {
-    //check all required fields
-  }*/
-
 async function postData(){
     
     const response = await fetch('/userProfile', {
@@ -22,7 +13,7 @@ async function postData(){
     });
 
     if (!response.ok) {
-        console.error("Could not save the turn score to the server.");
+        console.error("Could not save the user profile to the server.");
     }
 
 }
