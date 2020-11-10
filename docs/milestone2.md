@@ -44,8 +44,15 @@ Our web page has six major components: User Profiles, Apartment, Bills, Costs, G
 ![Data Model](images/data_model.png)
 
 ## Part 2
+Costs page
 
-Screenshots of client interface
+![Costs](images/costs.png)
+The costs page uses create and read API endpoints. The 'Contribute Rent' button triggers a create endpoint to add the payment to the databases stored payments, and the read endpoints are used to get the total apartment costs and individual user contribution percentage.
+
+Groceries page
+
+![Groceries](images/groceries.png)
+The groceries page implements the full CRUD API. The plus button creates a new item to the database of groceries / inventory respectively. The individual user budgets, groceries, and inventory implement a read api call. The edit function on the cards implements the update API, and the remove implements the delete API.
 
 ## Part 3
 
@@ -53,7 +60,7 @@ TODO: Heroku link
 
 ## Division of Labor
 
-Bryce worked on 
+Bryce worked on groceries.js, costs.js, and routes in server.js for these files.
 
 Leon worked on
 
