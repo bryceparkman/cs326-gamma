@@ -267,9 +267,10 @@ app.post('/userProfile', (req, res) => {
       email:data.email,
       password: data.password,
       phoneNumber: data.phoneNumber,
+      color: data.color,
       aptCode: data.aptCode
     };
-
+    console.log(profile);
     userProfiles.profiles.push(profile);
   });
   res.end();
