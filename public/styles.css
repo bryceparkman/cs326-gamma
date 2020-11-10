@@ -302,10 +302,24 @@ a {
 
 /*Apartment Creation Page*/
 
+.aptPrimaryColor {
+    color: #eed2c5c9;
+}
+
+.aptSecondaryColor {
+    color: antiquewhite;
+}
+
+.aptPrimaryColorBG {
+    background-color: #eed2c5c9;
+}
+
+.aptSecondaryColorBG {
+    background-color: antiquewhite;
+}
 
 #aptCreationHeader {
     height: 12vh;
-    background-color: rgb(230, 255, 223);
     margin-bottom: 5vh;
     text-align: center;
     padding-top: 3vh;
@@ -326,7 +340,6 @@ a {
 
 .aptCreationBoxItem {
     height: 5vh;
-    background-color: rgb(175, 240, 202);
     padding-left: 2vh;
     padding-right: 2vh;
     margin-left: 2vh;
@@ -363,10 +376,6 @@ a {
     margin-right: 0;
     font-size: 1.5vh;
     padding-top: 1.5vh;
-}
-
-#aptCreationAddUtilityBtn {
-    color: rgb(214, 143, 143);
 }
 
 #aptOverviewParent {
@@ -440,18 +449,15 @@ a {
     float: left;
 }
 
-.utilityCard {
-    background-color: #eed2c5c9;
-}
-
 .utilityCardHeader {
     text-align: center;
 }
 
-#aptOverviewAddUtilityBtn {
+#addUtilityBtn {
     color: rgb(214, 143, 143);
-    margin-top: 80vh;
-    margin-right: 6vh;
+    font-size: 5vh;
+    margin-top: 77vh;
+    margin-right: 3vh;
 }
 
 /* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal */

@@ -55,6 +55,6 @@ TODO: Heroku link
 
 Bryce worked on 
 
-Leon worked on
+Leon worked on apt-creation.js, apt-overview.js, and routes in server.js for these files.
 
 Hannah worked on 
