@@ -8,14 +8,19 @@ GET Requests:
 
 /loginProfile This request returns a user password for a username to verify a user on the login page. Input: username or email. Output: User password
 
-/rentProgress This request gets the amount of rent a user has paid from the costs payed (progress) to be shown on the costs page. Output data: Dollar amount a user has paid 
+/rentPayments A list of payments that have been made by all apartment members.
 
-/billProgress This request gets the amount any user has paid on a bill shown on the apartment overview page. Input data: name of bill, name of user. Output data: Dollar amount user has paid
+/rent Get's the apartment's overall rent costs per month.
 
-/groceryItem This request goes from the grocery page to the grocery table. Output is all the data from the grocery table
+/rentShare:user Gets a certain user's contribution percentage towards the total rent cost.
 
-/inventoryItem This request goes from the grocery page to the inventory table. Output is all the data from the inventory table
+/budget:user Gets a certain user's grocery budget
 
+/bill:user Gets a certian user's bill so far for the month
+
+/groceries: Gets a list of all groceries requested for the apartment
+
+/inventory: Gets a list of the inventory items for the apartment
 
 POST Requests:
 
@@ -25,12 +30,26 @@ POST Requests:
 
 /newBill This request goes from the apartment creation page to the bills table. Input Data: Bill name, cost, and how many people are paying the bill. The output is the bill added to the apartment overview page.
 
-/payment This request comes from the costs page to the costs table whenever a user makes a payment. Input data: payment amount, and output is the progress bar of the bill being updated. 
+/addPayment Adds a payment to the ongoing list of payments
 
+/addGrocery Adds a grocery item to the list of apartment groceries
 
-/newGroceryItem This request goes from the grocery page to the grocery table. Input data: name, and quantity. Output is the item added to the apartment's grocery list. 
+/addInventory Adds an inventory item to the apartment's inventory.
 
-/newInventoryItem This request goes from the grocery page to the inventory table. Input data: name, quantity, and cost. Output is the item added to the apartment's inventory list. 
+PUT Requests:
+
+/addBill This request adds a user's grocery bill to the running total for the month.
+
+/editGrocery This request edits a current entry of the groceries list
+
+/editInventory This request edits a current entry of the apartment's inventory
+
+DELETE Requests:
+
+/removeGrocery This request removes a current entry of the groceries list
+
+/removeInventory This request removes a current entry of the apartment's inventory
+
 
 **Data Model**
 
@@ -68,7 +87,7 @@ The Login page uses a GET request (read) to verify that the user logging in is e
 
 ## Part 3
 
-TODO: Heroku link
+[Heroku website](https://cs326-gamma.herokuapp.com/)
 
 ## Division of Labor
 
