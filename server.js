@@ -84,17 +84,22 @@ app.get('/', (req, res) => {
 });
 
 app.get('/rentPayments', (req, res) => {
-  res.send(rentData.payments);
+  res.json(rentData.payments);
   res.end();
 });
 
 app.post('/addPayment', (req, res) => {
-  rentData.payments.push(res.body);
+  let body = '';
+  req.on('data', data => body += data);
+  req.on('end', () => {
+    const element = JSON.parse(body);
+    rentData.payments.push(element);
+  });
   res.end();
 });
 
 app.get('/rentShare/:user', (req, res) => {
-  res.send(rentData.shares[req.params.user]);
+  res.json(rentData.shares[req.params.user]);
   res.end();
 });
 
@@ -124,7 +129,7 @@ app.get('/groceries', (req, res) => {
 });
 
 app.get('/inventory', (req, res) => {
-  res.send(groceryData.inventory);
+  res.json(groceryData.inventory);
   res.end();
 });
 
