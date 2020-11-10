@@ -1,7 +1,5 @@
 let currentUser = 'Bryce';
 let currentElement = null;
-// const response = await fetch('/profiles');
-// const users = await response.json();
 
 function htmlToNode(html) { //https://stackoverflow.com/a/35385518
     const template = document.createElement('template');
