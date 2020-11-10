@@ -275,7 +275,8 @@ let prof1 = {
   email:"hnoordeen@umass.edu",
   password: "password",
   phoneNumber: "7777777777",
-  aptCode: "code123"
+  aptCode: "code123",
+  color: 'ff0000'
 };
 
 let prof2 = {
@@ -284,7 +285,8 @@ let prof2 = {
   email:"bparkman@umass.edu",
   password: "brycepassword",
   phoneNumber: "7777777777",
-  aptCode: "code123"
+  aptCode: "code123",
+  color: '00ff00'
 };
 
 let prof3 = {
@@ -293,7 +295,8 @@ let prof3 = {
   email:"ldjusberg@umass.edu",
   password: "leonpassword",
   phoneNumber: "7777777777",
-  aptCode: "20b2aa"
+  aptCode: "20b2aa",
+  color: '0000ff'
 };
 
 userProfiles.profiles.push(prof1);

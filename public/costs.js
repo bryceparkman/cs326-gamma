@@ -76,7 +76,7 @@ async function contributeRent(){
     const share = await rentShare(currentUser);
     let rentValue = parseFloat(input.value);
     const totalRent = await getRent();
-    if(!isNaN(rentValue) && rentValue >= 0){
+    if(!isNaN(rentValue) && rentValue > 0){
         if(moneyData + rentValue > (totalRent * share / 100)){
             rentValue = (totalRent * share / 100) - moneyData;
         }
@@ -90,12 +90,18 @@ async function contributeRent(){
     }
 
     if(rentValue > 0){
+        const data = await fetch('/rentPayments');
+        const json = await data.json();
         const payments = document.getElementById('payments');
+        const userColor = users.find(user => user.firstName === currentUser).color;
 
-        const htmlString = '<div class="card mb-3 border-0"><div class="row no-gutters"><div class="col-auto"><img src="https://via.placeholder.com/100/' + users.find(user => user.firstName === currentUser).color + '/FFFFFF" class="img-fluid rounded-circle" alt=""> </div><div class="col"><div class="card-block px-4 my-4"> <p class="card-text mb-0">' + currentUser + ' paid $' + rentValue.toFixed(2) + '</p><p class="card-text percentContributed ' + currentUser.toLowerCase() + 'Color">Contributing ' + ((rentValue / totalRent) * 100).toFixed(2) + '%</p></div></div></div></div>'
+        const htmlString = '<div class="card mb-3 border-0"><div class="row no-gutters"><div class="col-auto"><img src="https://via.placeholder.com/100/' + userColor + '/FFFFFF" class="img-fluid rounded-circle" alt=""> </div><div class="col"><div class="card-block px-4 my-4"> <p class="card-text mb-0">' + currentUser + ' paid $' + rentValue.toFixed(2) + '</p><p class="card-text percentContributed ' + currentUser +  'Color">Contributing ' + ((rentValue / totalRent) * 100).toFixed(2) + '%</p></div></div></div></div>'
     
         const node = htmlToNode(htmlString);
         payments.appendChild(node)
+        const progressBar = document.getElementsByClassName(currentUser + 'Color').item(json.length - 1);
+        
+        progressBar.style.color = '#' + userColor;
     }
     
     await calculatePage();
@@ -109,13 +115,16 @@ async function checkPayments(){
         const paymentsWrapper = document.getElementById('paymentsWrapper');
         const node = htmlToNode("<div id='payments' class='pre-scrollable'></div>")
         paymentsWrapper.replaceChild(node,paymentsWrapper.children[0]);
-        for(const payment of json){
+        for(let i=0;i<json.length;i++){
+            const payment = json[i];
             const payments = document.getElementById('payments');
-
-            const htmlString = '<div class="card mb-3 border-0"><div class="row no-gutters"><div class="col-auto"><img src="https://via.placeholder.com/100/' + users.find(user => user.firstName === payment.name).color + '/FFFFFF" class="img-fluid rounded-circle" alt=""> </div><div class="col"><div class="card-block px-4 my-4"> <p class="card-text mb-0">' + payment.name + ' paid $' + payment.amount.toFixed(2) + '</p><p class="card-text percentContributed ' + payment.name.toLowerCase() + 'Color">Contributing ' + ((payment.amount / totalRent) * 100).toFixed(2) + '%</p></div></div></div></div>'
-        
+            const userColor = users.find(user => user.firstName === payment.name).color;
+            const htmlString = '<div class="card mb-3 border-0"><div class="row no-gutters"><div class="col-auto"><img src="https://via.placeholder.com/100/' + userColor + '/FFFFFF" class="img-fluid rounded-circle" alt=""> </div><div class="col"><div class="card-block px-4 my-4"> <p class="card-text mb-0">' + payment.name + ' paid $' + payment.amount.toFixed(2) + '</p><p class="card-text percentContributed ' + payment.name + 'Color">Contributing ' + ((payment.amount / totalRent) * 100).toFixed(2) + '%</p></div></div></div></div>'    
             const node = htmlToNode(htmlString);
-            payments.appendChild(node)
+            payments.appendChild(node);
+            const progressBar = document.getElementsByClassName(payment.name + 'Color').item(i);
+            console.log(progressBar)
+            progressBar.style.color = '#' + userColor;
         }
     }
 }
@@ -124,6 +133,7 @@ async function calculatePage(){
     const total = document.getElementById('money');
     const owe = document.getElementById('amountToOwe');
     const share = document.getElementById('amountShared');
+    const mainbar = document.getElementById('mainBar');
 
     await checkPayments();
 
@@ -136,18 +146,25 @@ async function calculatePage(){
     share.innerHTML = "out of your " + shareVal.toFixed(2) + "% share";
 
     const personalProgress = document.getElementById('personalProgress');
-    personalProgress.classList.add(currentUser.toLowerCase() + 'BgColor');
+    const userColor = users.find(user => user.firstName === currentUser).color;
+    personalProgress.style.backgroundColor = '#' +  userColor;
     personalProgress.style.width = await calculatePersonalPercent() * 100 + '%';
     if(personalProgress.style.width === '100%'){      
         personalProgress.classList.add('progress-bar-striped');
     }
     for(const user of users){
+        const htmlStringProgress = '<div class="progress-bar progress-bar-animated" id="' + user.firstName + 'BgColor' + '" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="' + totalRent +'"></div>'
+        const nodeProgress = htmlToNode(htmlStringProgress);
+        mainbar.appendChild(nodeProgress);
+        const subProgressBar = document.getElementById(user.firstName + 'BgColor');
+        subProgressBar.style.backgroundColor = '#' + userColor;
+
         const moneyDataUser = await moneySpent(user.firstName);
         const shareUser = await rentShare(user.firstName);
-        const overallProgress = document.getElementsByClassName('progress' + user.firstName)[0];
-        overallProgress.style.width = (await calculateOverallPercent(user.firstName) * 100) + '%';
+
+        subProgressBar.style.width = (await calculateOverallPercent(user.firstName) * 100) + '%';
         if(moneyDataUser >= totalRent * shareUser / 100){      
-            overallProgress.classList.add('progress-bar-striped');
+            subProgressBar.classList.add('progress-bar-striped');
         }
     }
 }
