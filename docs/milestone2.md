@@ -85,6 +85,17 @@ Login page
 ![Login](images/login.png)
 The Login page uses a GET request (read) to verify that the user logging in is entering their password. It takes the users email as a paramater and then reads from the database and returns the correct password for that email. If the password matches what the user enters, it allows them to log in.
 
+Apartment creation page
+
+![Apartment creation](images/apartment-creation-2.0.png)
+The apartment creation page uses POST requests to add data(name, cost, contribution percentages) about rent and different monthly apartment costs to the database
+
+Apartment overview page
+
+![Apartment overview](images/apartment-overview-2.0.png)
+The apartment overview page uses the full crud API. The page uses a GET request to download data about an apartment groups monthly apartment costs. The button in the bottom right corner allows users to add new monthly costs to their apartment, and the edit and remove buttons on each utility allows users to change and remove data from the database.
+
+
 ## Part 3
 
 [Heroku website](https://cs326-gamma.herokuapp.com/)
@@ -93,6 +104,6 @@ The Login page uses a GET request (read) to verify that the user logging in is e
 
 Bryce worked on groceries.js, costs.js, and routes in server.js for these files.
 
-Leon worked on
+Leon worked on apt-creation.js, apt-overview.js, and routes in server.js for these files.
 
 Hannah worked on signup.js, login.js, and routes in server.js for these files as well as worked on the documentation in Part 0.
