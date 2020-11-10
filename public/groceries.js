@@ -1,4 +1,3 @@
-const budget = 200;
 let currentUser = 'Bryce';
 let currentElement = null;
 const data = {
@@ -72,24 +71,46 @@ function htmlToNode(html) { //https://stackoverflow.com/a/35385518
     return template.content.firstChild;
 }
 
-function moneySpent() {
-    return data.bills[currentUser];
+async function moneySpent() {
+    const moneySpent = await fetch('/bill/' + currentUser);
+    const json = await moneySpent.json();
+    return json;
 }
 
-function getWidthString() {
-    return Math.min(100, 100 * (moneySpent() / budget)) + '%';
+async function addBill(user, amount) {
+    await fetch('/addBill', {
+        method: 'PUT',
+        body: JSON.stringify({
+            user,
+            amount
+        })
+    });
 }
 
-function addGrocery() {
+async function getBudget() {
+    const userBudget = await fetch('/budget/' + currentUser);
+    const json = await userBudget.json();
+    return json;
+}
+
+async function getWidthString() {
+    const moneyCount = await moneySpent();
+    const budget = await getBudget();
+    return Math.min(100, 100 * (moneyCount / budget)) + '%';
+}
+
+async function addGrocery() {
+    const moneyCount = await moneySpent();
+    const budget = await getBudget();
     const input = document.getElementById('groceryBill');
     const progress = document.getElementById('progressBarMain');
     let billValue = parseFloat(input.value);
     if (!isNaN(billValue) && billValue >= 0) {
-        if (moneySpent() + billValue > budget) {
+        if (moneyCount + billValue > budget) {
             progress.classList.remove(currentUser.toLowerCase() + 'BgColor');
             progress.style.backgroundColor = '#ff0000';
         }
-        data.bills[currentUser] += billValue;
+        await addBill(currentUser, billValue);
     }
     calculatePage();
 }
@@ -164,7 +185,6 @@ function submitModal(type, isAdd) {
             const i = data[type].indexOf(currentElement)
             data[type][i].name = inputItem.value;
             data[type][i].amount = inputAmount.value;
-            console.log(data[type])
         }
     }
     modal.style.display = 'none';
@@ -173,24 +193,25 @@ function submitModal(type, isAdd) {
     getTable(type);
 }
 
-function calculatePage() {
+async function calculatePage() {
+    const moneyCount = await moneySpent();
+    const budget = await getBudget();
     const money = document.getElementById('money');
-    money.innerHTML = "<span id='bigMoney'>$" + moneySpent('Bryce').toFixed(2) + "</span>/ $" + budget.toFixed(2);
+    money.innerHTML = "<span id='bigMoney'>$" + moneyCount.toFixed(2) + "</span>/ $" + budget.toFixed(2);
 
     const progress = document.getElementById('progressBarMain');
     progress.classList.add(currentUser.toLowerCase() + 'BgColor');
-    const width = getWidthString();
+    const width = await getWidthString();
     progress.style.width = width;
 
     getTable('groceries');
     getTable('inventory');
 }
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
     const addBill = document.getElementById('rentButton');
     addBill.addEventListener('click', () => addGrocery());
-
-    calculatePage();
+    await calculatePage();
 });
 
 window.addEventListener('click', (event) => {
