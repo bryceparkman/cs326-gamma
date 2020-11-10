@@ -56,6 +56,16 @@ Groceries page
 ![Groceries](images/groceries.png)
 The groceries page implements the full CRUD API. The plus button creates a new item to the database of groceries / inventory respectively. The individual user budgets, groceries, and inventory implement a read api call. The edit function on the cards implements the update API, and the remove implements the delete API.
 
+Signup page
+
+![Signup](images/signup.png)
+The Signup page uses a POST request (create) to post the new user data to the server as a profile entry. The new data contains a body with the {firstName, lastName, email, password, color, aptCode} when a new user is created. This image also shows some of the JS functionality making sure users enter the correct entries in required fields.
+
+Login page
+
+![Login](images/login.png)
+The Login page uses a GET request (read) to verify that the user logging in is entering their password. It takes the users email as a paramater and then reads from the database and returns the correct password for that email. If the password matches what the user enters, it allows them to log in.
+
 ## Part 3
 
 TODO: Heroku link
@@ -66,4 +76,4 @@ Bryce worked on groceries.js, costs.js, and routes in server.js for these files.
 
 Leon worked on
 
-Hannah worked on 
+Hannah worked on signup.js, login.js, and routes in server.js for these files as well as worked on the documentation in Part 0.
