@@ -22,8 +22,58 @@ const groceryData = {
     'Hannah': 200,
     'Leon': 200
   },
-  groceries: [],
-  inventory: []
+  groceries: [
+    {
+      id: 0,
+      name: 'Eggs',
+      amount: '1 dozen',
+      requestedBy: 'Bryce'
+    },
+    {
+      id: 1,
+      name: 'Soccer ball cupcakes',
+      amount: null,
+      requestedBy: 'Leon'
+    },
+    {
+      id: 2,
+      name: 'Tropicana OJ',
+      amount: '1 gallon',
+      requestedBy: 'Hannah'
+    },
+    {
+      id: 3,
+      name: 'Russet Potatoes',
+      amount: '1 bag',
+      requestedBy: 'Bryce'
+    },
+  ],
+  inventory: [
+    {
+      id: 0,
+      name: 'Orange bell pepper',
+      amount: '2',
+      requestedBy: 'Bryce'
+    },
+    {
+      id: 1,
+      name: '2% Milk',
+      amount: 'Half gallon',
+      requestedBy: 'Leon'
+    },
+    {
+      id: 2,
+      name: 'Ben & Jerry\'s',
+      amount: '1 pint',
+      requestedBy: 'Hannah'
+    },
+    {
+      id: 3,
+      name: 'Paprika',
+      amount: null,
+      requestedBy: 'Bryce'
+    },
+  ]
 }
 
 app.use(express.static('public'));
@@ -62,14 +112,19 @@ app.put('/addBill', (req, res) => {
   let body = '';
   req.on('data', data => body += data);
   req.on('end', () => {
-      const data = JSON.parse(body);
-      groceryData.bills[data.user] += data.amount;
+    const data = JSON.parse(body);
+    groceryData.bills[data.user] += data.amount;
   });
   res.end();
 });
 
 app.get('/groceries', (req, res) => {
-  res.send(groceryData.groceries);
+  res.json(groceryData.groceries);
+  res.end();
+});
+
+app.get('/inventory', (req, res) => {
+  res.send(groceryData.inventory);
   res.end();
 });
 
@@ -80,6 +135,52 @@ app.post('/addGrocery', (req, res) => {
 
 app.post('/addInventory', (req, res) => {
   groceryData.inventory.push(res.body);
+  res.end();
+});
+
+app.put('/editGrocery', (req, res) => {
+  let body = '';
+  req.on('data', data => body += data);
+  req.on('end', () => {
+    const element = JSON.parse(body);
+    const index = groceryData.groceries.findIndex((obj) => obj.id === element.id)
+    groceryData.groceries[index].name = element.name;
+    groceryData.groceries[index].amount = element.amount;
+  });
+  res.end();
+});
+
+app.put('/editInventory', (req, res) => {
+  let body = '';
+  req.on('data', data => body += data);
+  req.on('end', () => {
+    const element = JSON.parse(body);
+    const index = groceryData.inventory.findIndex((obj) => obj.id === element.id)
+    groceryData.inventory[index].name = element.name;
+    groceryData.inventory[index].amount = element.amount;
+  });
+  res.end();
+});
+
+app.delete('/removeGrocery', (req, res) => {
+  let body = '';
+  req.on('data', data => body += data);
+  req.on('end', () => {
+    const element = JSON.parse(body);
+    const index = groceryData.groceries.findIndex((obj) => obj.id === element.id)
+    groceryData.groceries.splice(index, 1);
+  });
+  res.end();
+});
+
+app.delete('/removeInventory', (req, res) => {
+  let body = '';
+  req.on('data', data => body += data);
+  req.on('end', () => {
+    const element = JSON.parse(body);
+    const index = groceryData.inventory.findIndex((obj) => obj.id === element.id)
+    groceryData.inventory.splice(index, 1);
+  });
   res.end();
 });
 
