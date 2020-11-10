@@ -222,8 +222,7 @@ let prof1 = {
   email:"hnoordeen@umass.edu",
   password: "password",
   phoneNumber: "7777777777",
-  aptCode: "code123",
-  color: 'daa520'
+  aptCode: "code123"
 };
 
 let prof2 = {
@@ -232,8 +231,7 @@ let prof2 = {
   email:"bparkman@umass.edu",
   password: "brycepassword",
   phoneNumber: "7777777777",
-  aptCode: "code123",
-  color: '9400D3'
+  aptCode: "code123"
 };
 
 let prof3 = {
