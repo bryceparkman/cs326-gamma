@@ -3,6 +3,7 @@ const app = express();
 const port = 3000;
 
 const rentData = {
+  totalRent: 600,
   shares: {
     'Bryce': 33.3333,
     'Leon': 33.3333,
@@ -85,6 +86,11 @@ app.get('/', (req, res) => {
 
 app.get('/rentPayments', (req, res) => {
   res.json(rentData.payments);
+  res.end();
+});
+
+app.get('/rent', (req, res) => {
+  res.json(rentData.totalRent);
   res.end();
 });
 
@@ -216,7 +222,8 @@ let prof1 = {
   email:"hnoordeen@umass.edu",
   password: "password",
   phoneNumber: "7777777777",
-  aptCode: "code123"
+  aptCode: "code123",
+  color: 'daa520'
 };
 
 let prof2 = {
@@ -225,7 +232,8 @@ let prof2 = {
   email:"bparkman@umass.edu",
   password: "brycepassword",
   phoneNumber: "7777777777",
-  aptCode: "code123"
+  aptCode: "code123",
+  color: '9400D3'
 };
 
 let prof3 = {
@@ -234,13 +242,17 @@ let prof3 = {
   email:"ldjusberg@umass.edu",
   password: "leonpassword",
   phoneNumber: "7777777777",
-  aptCode: "code123"
+  aptCode: "20b2aa"
 };
 
 userProfiles.profiles.push(prof1);
 userProfiles.profiles.push(prof2);
 userProfiles.profiles.push(prof3);
 
+app.get('/profiles', (req, res) => {
+  res.json(userProfiles.profiles);
+  res.end();
+})
 
 app.get('/loginProfile/:email', (req, res) => {
     const email = req.params.email;
