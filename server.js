@@ -226,7 +226,6 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 
-<<<<<<< HEAD
 app.get('/aptCosts', (req, res) => {
   res.send(aptCosts);
   res.end();
@@ -264,7 +263,7 @@ app.delete('/removeAptCost', (req, res) => {
   });
   res.end();
 });
-=======
+
 const userProfiles = {
   profiles: []
 };
@@ -337,4 +336,3 @@ app.post('/userProfile', (req, res) => {
   });
   res.end();
 });
->>>>>>> 124f3e1e404a65b7fc4cb16cef49d1953a21a631
