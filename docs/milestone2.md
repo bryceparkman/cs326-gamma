@@ -58,7 +58,7 @@ The groceries page implements the full CRUD API. The plus button creates a new i
 
 ## Part 3
 
-TODO: Heroku link
+[Heroku website](https://cs326-gamma.herokuapp.com/)
 
 ## Division of Labor
 
