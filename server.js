@@ -247,7 +247,6 @@ app.get('/loginProfile/:email', (req, res) => {
     for(let i = 0; i < userProfiles.profiles.length; i++){
       profile = userProfiles.profiles[i];
       if(profile.email === email){
-        //console.log(profile.password);
         res.json(profile.password);
         res.end();
       }
@@ -270,7 +269,6 @@ app.post('/userProfile', (req, res) => {
       color: data.color,
       aptCode: data.aptCode
     };
-    console.log(profile);
     userProfiles.profiles.push(profile);
   });
   res.end();
