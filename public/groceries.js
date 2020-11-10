@@ -143,10 +143,14 @@ async function submitModal(type, isAdd) {
     }
     if (inputItem.value.length > 0) {  
         if (isAdd) {
-            data[type].push({
-                name: inputItem.value,
-                amount: (inputAmount.value.length > 0 ? inputAmount.value : null),
-                requestedBy: currentUser
+            const t = (type === 'groceries' ? 'Grocery' : 'Inventory');
+            await fetch('/add' + t, {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: inputItem.value,
+                    amount: inputAmount.value,
+                    requestedBy: currentUser
+                })
             });
         }
         else {

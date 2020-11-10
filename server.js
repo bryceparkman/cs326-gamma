@@ -129,12 +129,24 @@ app.get('/inventory', (req, res) => {
 });
 
 app.post('/addGrocery', (req, res) => {
-  groceryData.groceries.push(res.body);
+  let body = '';
+  req.on('data', data => body += data);
+  req.on('end', () => {
+    const element = JSON.parse(body);
+    element['id'] = groceryData.groceries.length;
+    groceryData.groceries.push(element);
+  });
   res.end();
 });
 
 app.post('/addInventory', (req, res) => {
-  groceryData.inventory.push(res.body);
+  let body = '';
+  req.on('data', data => body += data);
+  req.on('end', () => {
+    const element = JSON.parse(body);
+    element['id'] = groceryData.inventory.length;
+    groceryData.inventory.push(element);
+  });
   res.end();
 });
 
