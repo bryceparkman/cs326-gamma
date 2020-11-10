@@ -1,4 +1,3 @@
-const budget = 200;
 let currentUser = 'Bryce';
 let currentElement = null;
 const data = {
@@ -16,53 +15,6 @@ const data = {
             color: '20b2aa'
         }
     ],
-    bills: {
-        'Bryce': 100
-    },
-    groceries: [
-        {
-            name: 'Eggs',
-            amount: '1 dozen',
-            requestedBy: 'Bryce'
-        },
-        {
-            name: 'Soccer ball cupcakes',
-            amount: null,
-            requestedBy: 'Leon'
-        },
-        {
-            name: 'Tropicana OJ',
-            amount: '1 gallon',
-            requestedBy: 'Hannah'
-        },
-        {
-            name: 'Russet Potatoes',
-            amount: '1 bag',
-            requestedBy: 'Bryce'
-        },
-    ],
-    inventory: [
-        {
-            name: 'Orange bell pepper',
-            amount: '2',
-            requestedBy: 'Bryce'
-        },
-        {
-            name: '2% Milk',
-            amount: 'Half gallon',
-            requestedBy: 'Leon'
-        },
-        {
-            name: 'Ben & Jerry\'s',
-            amount: '1 pint',
-            requestedBy: 'Hannah'
-        },
-        {
-            name: 'Paprika',
-            amount: null,
-            requestedBy: 'Bryce'
-        },
-    ]
 }
 
 function htmlToNode(html) { //https://stackoverflow.com/a/35385518
@@ -72,26 +24,48 @@ function htmlToNode(html) { //https://stackoverflow.com/a/35385518
     return template.content.firstChild;
 }
 
-function moneySpent() {
-    return data.bills[currentUser];
+async function moneySpent() {
+    const moneySpent = await fetch('/bill/' + currentUser);
+    const json = await moneySpent.json();
+    return json;
 }
 
-function getWidthString() {
-    return Math.min(100, 100 * (moneySpent() / budget)) + '%';
+async function addBill(user, amount) {
+    await fetch('/addBill', {
+        method: 'PUT',
+        body: JSON.stringify({
+            user,
+            amount
+        })
+    });
 }
 
-function addGrocery() {
+async function getBudget() {
+    const userBudget = await fetch('/budget/' + currentUser);
+    const json = await userBudget.json();
+    return json;
+}
+
+async function getWidthString() {
+    const moneyCount = await moneySpent();
+    const budget = await getBudget();
+    return Math.min(100, 100 * (moneyCount / budget)) + '%';
+}
+
+async function addGrocery() {
+    const moneyCount = await moneySpent();
+    const budget = await getBudget();
     const input = document.getElementById('groceryBill');
     const progress = document.getElementById('progressBarMain');
     let billValue = parseFloat(input.value);
     if (!isNaN(billValue) && billValue >= 0) {
-        if (moneySpent() + billValue > budget) {
+        if (moneyCount + billValue > budget) {
             progress.classList.remove(currentUser.toLowerCase() + 'BgColor');
             progress.style.backgroundColor = '#ff0000';
         }
-        data.bills[currentUser] += billValue;
+        await addBill(currentUser, billValue);
     }
-    calculatePage();
+    await calculatePage();
 }
 
 function editItem(isGrocery, element) {
@@ -105,33 +79,42 @@ function editItem(isGrocery, element) {
     currentElement = element;
 }
 
-function removeItem(type, element) {
-    const index = data[type].indexOf(element);
-    data[type].splice(index, 1);
-    getTable(type);
+async function removeItem(type, element) {
+    const t = (type === 'groceries' ? 'Grocery' : 'Inventory')
+    await fetch('/remove' + t, {
+        method: 'DELETE',
+        body: JSON.stringify(element)
+    })
+    await getTable(type);
 }
 
-function getTable(type) {
+async function getTable(type) {
+    const data = await fetch('/' + type);
+    const json = await data.json();
     const id = (type === 'groceries' ? 'paymentsWrapper' : 'inventoryWrapper');
     const paymentsWrapper = document.getElementById(id);
     paymentsWrapper.innerHTML = '';
     let htmlString = '';
-    const nodes = []
-    for (let i = 0; i < data[type].length; i++) {
-        if (i % 2 === 0) {
-            if (i > 0) {
-                htmlString += '</div>';
-                nodes.push(htmlString);
-                htmlString = '';
+    const nodes = [];
+    if(json.length > 0){
+        for (let i = 0; i < json.length; i++) {
+            if (i % 2 === 0) {
+                if (i > 0) {
+                    htmlString += '</div>';
+                    nodes.push(htmlString);
+                    htmlString = '';
+                }
+                htmlString += "<div class='row mx-1'>";
             }
-            htmlString += "<div class='row mx-1'>";
+            let stringify = JSON.stringify(json[i]);
+            stringify = stringify.replace('\'', '&apos');
+            htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + json[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (json[i].amount !== null ? json[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + json[i].requestedBy.toLowerCase() + "Color'>Requested by " + json[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#_' class='card-link' onclick='editItem(" + (type === 'groceries') + "," + stringify +  ")'>Edit</a><a href='#_' class='card-link float-right' onclick='removeItem(\"" + type + "\", " + stringify +  ")'>Remove</a></div></div></div>";
         }
-        htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + data[type][i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (data[type][i].amount !== null ? data[type][i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + data[type][i].requestedBy.toLowerCase() + "Color'>Requested by " + data[type][i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#_' class='card-link' onclick='editItem(" + (type === 'groceries') + ",data[\"" + type + "\"][" + i + "])'>Edit</a><a href='#_' class='card-link float-right' onclick='removeItem(\"" + type + "\",data[\"" + type + "\"][" + i + "])'>Remove</a></div></div></div>";
-    }
-    htmlString += '</div>';
-    nodes.push(htmlString);
-    for (node of nodes) {
-        paymentsWrapper.appendChild(htmlToNode(node));
+        htmlString += '</div>';
+        nodes.push(htmlString);
+        for (node of nodes) {
+            paymentsWrapper.appendChild(htmlToNode(node));
+        }
     }
 }
 
@@ -145,7 +128,13 @@ function closeModal(type, isAdd) {
     modal.style.display = 'none';
 }
 
-function submitModal(type, isAdd) {
+async function submitModal(type, isAdd) {
+    let fetchType = type;
+    if(type === 'grocery'){
+        fetchType = 'groceries';
+    }
+    const data = await fetch('/' + fetchType);
+    const json = await data.json();
     const modal = document.getElementById(type + 'Modal' + (isAdd ? '' : 'Edit'));
     const inputItem = document.getElementById('input' + type + 'Item' + (isAdd ? '' : 'Edit'));
     const inputAmount = document.getElementById('input' + type + 'Amount' + (isAdd ? '' : 'Edit'));
@@ -154,43 +143,53 @@ function submitModal(type, isAdd) {
     }
     if (inputItem.value.length > 0) {  
         if (isAdd) {
-            data[type].push({
-                name: inputItem.value,
-                amount: (inputAmount.value.length > 0 ? inputAmount.value : null),
-                requestedBy: currentUser
+            const t = (type === 'groceries' ? 'Grocery' : 'Inventory');
+            await fetch('/add' + t, {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: inputItem.value,
+                    amount: inputAmount.value,
+                    requestedBy: currentUser
+                })
             });
         }
         else {
-            const i = data[type].indexOf(currentElement)
-            data[type][i].name = inputItem.value;
-            data[type][i].amount = inputAmount.value;
-            console.log(data[type])
+            const t = (type === 'groceries' ? 'Grocery' : 'Inventory');
+            await fetch('/edit' + t, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    id: currentElement.id,
+                    name: inputItem.value,
+                    amount: inputAmount.value
+                })
+            });
         }
     }
     modal.style.display = 'none';
     inputItem.value = ''
     inputAmount.value = '';
-    getTable(type);
+    await getTable(type);
 }
 
-function calculatePage() {
+async function calculatePage() {
+    const moneyCount = await moneySpent();
+    const budget = await getBudget();
     const money = document.getElementById('money');
-    money.innerHTML = "<span id='bigMoney'>$" + moneySpent('Bryce').toFixed(2) + "</span>/ $" + budget.toFixed(2);
+    money.innerHTML = "<span id='bigMoney'>$" + moneyCount.toFixed(2) + "</span>/ $" + budget.toFixed(2);
 
     const progress = document.getElementById('progressBarMain');
     progress.classList.add(currentUser.toLowerCase() + 'BgColor');
-    const width = getWidthString();
+    const width = await getWidthString();
     progress.style.width = width;
 
-    getTable('groceries');
-    getTable('inventory');
+    await getTable('groceries');
+    await getTable('inventory');
 }
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
     const addBill = document.getElementById('rentButton');
     addBill.addEventListener('click', () => addGrocery());
-
-    calculatePage();
+    await calculatePage();
 });
 
 window.addEventListener('click', (event) => {
