@@ -13,19 +13,31 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 
-app.get('/loginProfile', (req, res) => {
-  return res.send(req.body.email);
+const userProfiles = {
+  profiles: []
+};
+
+app.get('/loginProfile:user', (req, res) => {
+  res.send(userProfiles.profiles[req.params.user]);
+  res.end();
 });
- 
+
 
 app.post('/userProfile', (req, res) => {
-  const profile = {
-    firstName: req.body.fname,
-    lastName: req.body.lname,
-    password: req.body.password,
-    phoneNumber: req.body.phoneNumber,
-    aptCode: req.body.aptCode,
-  };
-  
-  return res.send(profile);
+  let body = '';
+        req.on('data', data => body += data);
+        req.on('end', () => {
+            const data = JSON.parse(body);
+        const profile = {
+          firstName: data.fname,
+          lastName: data.lname,
+          email:data.email,
+          password: data.password,
+          phoneNumber: data.phoneNumber,
+          aptCode: data.aptCode
+          };
+
+          userProfiles.profiles.push(profile);
+    });
+    res.end();
 });
