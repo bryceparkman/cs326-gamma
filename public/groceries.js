@@ -1,21 +1,5 @@
 let currentUser = 'Bryce';
 let currentElement = null;
-const data = {
-    users: [
-        {
-            name: 'Bryce',
-            color: '9400D3'
-        },
-        {
-            name: 'Hannah',
-            color: 'daa520'
-        },
-        {
-            name: 'Leon',
-            color: '20b2aa'
-        }
-    ],
-}
 
 function htmlToNode(html) { //https://stackoverflow.com/a/35385518
     const template = document.createElement('template');
