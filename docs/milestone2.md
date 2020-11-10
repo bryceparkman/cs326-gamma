@@ -6,6 +6,8 @@
 
 GET Requests: 
 
+/loginProfile This request returns a user password for a username to verify a user on the login page. Input: username or email. Output: User password
+
 /rentProgress This request gets the amount of rent a user has paid from the costs payed (progress) to be shown on the costs page. Output data: Dollar amount a user has paid 
 
 /billProgress This request gets the amount any user has paid on a bill shown on the apartment overview page. Input data: name of bill, name of user. Output data: Dollar amount user has paid
@@ -44,8 +46,25 @@ Our web page has six major components: User Profiles, Apartment, Bills, Costs, G
 ![Data Model](images/data_model.png)
 
 ## Part 2
+Costs page
 
-Screenshots of client interface
+![Costs](images/costs.png)
+The costs page uses create and read API endpoints. The 'Contribute Rent' button triggers a create endpoint to add the payment to the databases stored payments, and the read endpoints are used to get the total apartment costs and individual user contribution percentage.
+
+Groceries page
+
+![Groceries](images/groceries.png)
+The groceries page implements the full CRUD API. The plus button creates a new item to the database of groceries / inventory respectively. The individual user budgets, groceries, and inventory implement a read api call. The edit function on the cards implements the update API, and the remove implements the delete API.
+
+Signup page
+
+![Signup](images/signup.png)
+The Signup page uses a POST request (create) to post the new user data to the server as a profile entry. The new data contains a body with the {firstName, lastName, email, password, color, aptCode} when a new user is created. This image also shows some of the JS functionality making sure users enter the correct entries in required fields.
+
+Login page
+
+![Login](images/login.png)
+The Login page uses a GET request (read) to verify that the user logging in is entering their password. It takes the users email as a paramater and then reads from the database and returns the correct password for that email. If the password matches what the user enters, it allows them to log in.
 
 ## Part 3
 
@@ -53,8 +72,12 @@ TODO: Heroku link
 
 ## Division of Labor
 
-Bryce worked on 
+Bryce worked on groceries.js, costs.js, and routes in server.js for these files.
 
 Leon worked on apt-creation.js, apt-overview.js, and routes in server.js for these files.
 
+<<<<<<< HEAD
 Hannah worked on 
+=======
+Hannah worked on signup.js, login.js, and routes in server.js for these files as well as worked on the documentation in Part 0.
+>>>>>>> 124f3e1e404a65b7fc4cb16cef49d1953a21a631
