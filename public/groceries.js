@@ -1,5 +1,6 @@
 let currentUser = 'Bryce';
 let currentElement = null;
+let users;
 
 function htmlToNode(html) { //https://stackoverflow.com/a/35385518
     const template = document.createElement('template');
@@ -92,12 +93,20 @@ async function getTable(type) {
             }
             let stringify = JSON.stringify(json[i]);
             stringify = stringify.replace('\'', '&apos');
-            htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + json[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (json[i].amount !== null ? json[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + json[i].requestedBy.toLowerCase() + "Color'>Requested by " + json[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#_' class='card-link' onclick='editItem(" + (type === 'groceries') + "," + stringify +  ")'>Edit</a><a href='#_' class='card-link float-right' onclick='removeItem(\"" + type + "\", " + stringify +  ")'>Remove</a></div></div></div>";
+            htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + json[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (json[i].amount !== null ? json[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + json[i].requestedBy + "Color'>Requested by " + json[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#_' class='card-link' onclick='editItem(" + (type === 'groceries') + "," + stringify +  ")'>Edit</a><a href='#_' class='card-link float-right' onclick='removeItem(\"" + type + "\", " + stringify +  ")'>Remove</a></div></div></div>";
         }
         htmlString += '</div>';
         nodes.push(htmlString);
-        for (node of nodes) {
+        for (const node of nodes) {
             paymentsWrapper.appendChild(htmlToNode(node));
+        }
+        for(const user of users){
+            const userColor = users.find(dataUser => dataUser.firstName === user.firstName).color;
+            const elements = document.getElementsByClassName(user.firstName + 'Color');
+            for(let i=0;i<elements.length;i++){
+                const node = elements.item(i);
+                node.style.color = '#' + userColor;
+            }
         }
     }
 }
@@ -162,7 +171,7 @@ async function calculatePage() {
     money.innerHTML = "<span id='bigMoney'>$" + moneyCount.toFixed(2) + "</span>/ $" + budget.toFixed(2);
 
     const progress = document.getElementById('progressBarMain');
-    progress.classList.add(currentUser.toLowerCase() + 'BgColor');
+    progress.style.backgroundColor = '#' +  users.find(user => user.firstName === currentUser).color;
     const width = await getWidthString();
     progress.style.width = width;
 
@@ -173,6 +182,10 @@ async function calculatePage() {
 window.addEventListener('load', async () => {
     const addBill = document.getElementById('rentButton');
     addBill.addEventListener('click', () => addGrocery());
+
+    const response = await fetch('/profiles');
+    users = await response.json();
+
     await calculatePage();
 });
 
