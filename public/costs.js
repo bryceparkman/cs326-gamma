@@ -14,14 +14,6 @@ const data = {
             name: 'Leon',
             color: '20b2aa'
         }
-    ],
-    shares: {
-        'Bryce': 33.3333,
-        'Hannah': 33.3333,
-        'Leon': 33.3333
-    },
-    payments: [
-
     ]
 };
 
