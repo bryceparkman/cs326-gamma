@@ -1,7 +1,3 @@
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 3000;
-
 const rentData = {
   totalRent: 600,
   shares: {
@@ -76,6 +72,212 @@ const groceryData = {
     },
   ]
 }
+
+let prof1 = {
+  firstName: "Hannah",
+  lastName: "Noordeen",
+  email:"hnoordeen@umass.edu",
+  password: "password",
+  phoneNumber: "7777777777",
+  aptCode: "code123",
+  color: 'ff0000'
+};
+
+let prof2 = {
+  firstName: "Bryce",
+  lastName: "Parkman",
+  email:"bparkman@umass.edu",
+  password: "brycepassword",
+  phoneNumber: "7777777777",
+  aptCode: "code123",
+  color: '00ff00'
+};
+
+let prof3 = {
+  firstName: "Leon",
+  lastName: "Djusberg",
+  email:"ldjusberg@umass.edu",
+  password: "leonpassword",
+  phoneNumber: "7777777777",
+  aptCode: "20b2aa",
+  color: '0000ff'
+};
+
+userProfiles.profiles.push(prof1);
+userProfiles.profiles.push(prof2);
+userProfiles.profiles.push(prof3);
+
+let aptCosts = [
+
+  { name: 'Rent', cost: 3000, contributions: [
+      { user: { id: 'leon@gmail.com', name: 'leon', color: '20b2aa' }, percent: 33 }, 
+      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'daa520' }, percent: 33 }, 
+      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '9400D3' }, percent: 34 }
+  ]},
+  { name: 'Gas', cost: 50, contributions: [
+      { user: { id: 'leon@gmail.com', name: 'leon', color: '20b2aa' }, percent: 33 }, 
+      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'daa520' }, percent: 33 }, 
+      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '9400D3' }, percent: 34 }
+  ]}
+
+]
+
+
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
+
+const pgp = require("pg-promise")({
+  connect(client) {
+      console.log('Connected to database:', client.connectionParameters.database);
+  },
+
+  disconnect(client) {
+      console.log('Disconnected from database:', client.connectionParameters.database);
+  }
+});
+
+// Local PostgreSQL credentials
+const username = "postgres";
+const password = "admin";
+
+const url = process.env.DATABASE_URL || `postgres://${username}:${password}@localhost/`;
+const db = pgp(url);
+
+//only use first time creating tables
+function createTables(){
+    
+  //User Profile Table
+  db.none("CREATE TABLE UserProfile(firstName varchar(45), lastName varchar(45), email varchar(45), password varchar(45), phoneNumber varchar(11), aptCode varchar(45), color varchar(45), primary key (email))", (err, res) => {
+      console.log(err, res);
+      db.end();
+  });
+
+  //User Bills Table
+  db.none("CREATE TABLE UserBills(email varchar(45), RentOwed int, RentPaid int, NumBills int, GroceryBudget int, OutstandingPayments int, primary key (email))", (err, res) => {
+    console.log(err, res);
+    db.end();
+  });
+
+  //Apartment Table
+  db.none("CREATE TABLE Apartment(AptCode varchar(45), Rent int, NumMembers int, primary key (AptCode))", (err, res) => {
+    console.log(err, res);
+    db.end();
+  });
+
+  //Bill Table, create a new bill table for each bill added
+  db.none("CREATE TABLE Bill(BillName varchar(45), cost int, NumMembers int, primary key (BillName))", (err, res) => {
+    console.log(err, res);
+    db.end();
+  });
+
+  //Costs Table, each bill has a relating costs table
+  db.none("CREATE TABLE Costs(AptCodevarchar(45), BillName varchar foreign key references Bill, UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
+    console.log(err, res);
+    db.end();
+  });
+
+  //Groceries Table, id references apartment id?
+  db.none("CREATE TABLE Groceries(id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar (45), primary key (id))", (err, res) => {
+      console.log(err, res);
+      db.end();
+  });
+
+  //Inventory Table
+  db.none("CREATE TABLE Invenory(id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), Cost integer, primary key (id))", (err, res) => {
+    console.log(err, res);
+    db.end();
+  });
+}
+
+//uncomment this lines if tables haven't been created
+//createTables();
+
+
+async function connectAndRun(task) {
+  let connection = null;
+
+  try {
+      connection = await db.connect();
+      return await task(connection);
+  } catch (e) {
+      throw e;
+  } finally {
+      try {
+          connection.done();
+      } catch(ignored) {
+
+      }
+  }
+}
+
+async function getProfiles(){
+  return await connectAndRun(db => db.any('SELECT * from UserProfile', []));
+}
+
+async function getUserPassword(email){
+  return await connectAndRun(db => db.any('SELECT password from UserProfile WHERE email = $/email/', {
+    email: email
+  }));
+}
+
+
+//add aptCode or some apartment id 
+async function getRent(){
+  return await connectAndRun(db => db.any('SELECT Rent FROM Apartment', []));
+}
+
+async function getGroceries(){
+  return await connectAndRun(db => db.any('SELECT * from Groceries', []));
+}
+
+async function getInventory(){
+  return await connectAndRun(db => db.any('SELECT * from Inventory', []));
+}
+
+async function addUserProfile(firstName, lastName, email, password, phoneNumber, aptCode, color){
+  return await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES($/firstName/, $/lastName/, $/email/, $/password/, $/phoneNumber/, $/aptCode/, $/color/)', {
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    password: password,
+    phoneNumber: phoneNumber,
+    aptCode: aptCode,
+    color: color
+  }));
+}
+
+async function addGrocery(name, quantity, requestedBy){
+  return await connectAndRun(db => db.none('INSERT INTO Grocery VALUES($/name/, $/quantity/, $/requestedBy/)', {
+      name: name,
+      quantity: quantity,
+      requestedBy: requestedBy
+  }));
+}
+
+async function addInventory(name, quantity, requestedBy, cost){
+  return await connectAndRun(db => db.none('INSERT INTO Grocery VALUES($/name/, $/quantity/, $/requestedBy/, $/cost/)', {
+      name: name,
+      quantity: quantity,
+      requestedBy: requestedBy,
+      cost: cost
+  }));
+}
+
+//can change name to id depending on how items are classified
+async function deleteGrocery(name){
+  return await connectAndRun(db => db.none('DELETE FROM Grocery WHERE name = $/name/', {
+      name: name,
+  }));
+}
+
+//can change name to id depending on how items are classified
+async function deleteInventory(name){
+  return await connectAndRun(db => db.none('DELETE FROM Inventory WHERE name = $/name/', {
+      name: name,
+  }));
+}
+
 
 app.use(express.static('public'));
 
@@ -207,21 +409,6 @@ app.delete('/removeInventory', (req, res) => {
   res.end();
 });
 
-let aptCosts = [
-
-  { name: 'Rent', cost: 3000, contributions: [
-      { user: { id: 'leon@gmail.com', name: 'leon', color: '20b2aa' }, percent: 33 }, 
-      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'daa520' }, percent: 33 }, 
-      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '9400D3' }, percent: 34 }
-  ]},
-  { name: 'Gas', cost: 50, contributions: [
-      { user: { id: 'leon@gmail.com', name: 'leon', color: '20b2aa' }, percent: 33 }, 
-      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'daa520' }, percent: 33 }, 
-      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '9400D3' }, percent: 34 }
-  ]}
-
-]
-
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
@@ -269,40 +456,6 @@ const userProfiles = {
 };
 
 
-let prof1 = {
-  firstName: "Hannah",
-  lastName: "Noordeen",
-  email:"hnoordeen@umass.edu",
-  password: "password",
-  phoneNumber: "7777777777",
-  aptCode: "code123",
-  color: 'ff0000'
-};
-
-let prof2 = {
-  firstName: "Bryce",
-  lastName: "Parkman",
-  email:"bparkman@umass.edu",
-  password: "brycepassword",
-  phoneNumber: "7777777777",
-  aptCode: "code123",
-  color: '00ff00'
-};
-
-let prof3 = {
-  firstName: "Leon",
-  lastName: "Djusberg",
-  email:"ldjusberg@umass.edu",
-  password: "leonpassword",
-  phoneNumber: "7777777777",
-  aptCode: "20b2aa",
-  color: '0000ff'
-};
-
-userProfiles.profiles.push(prof1);
-userProfiles.profiles.push(prof2);
-userProfiles.profiles.push(prof3);
-
 app.get('/profiles', (req, res) => {
   res.json(userProfiles.profiles);
   res.end();
@@ -326,16 +479,8 @@ app.post('/userProfile', (req, res) => {
   req.on('data', data => body += data);
   req.on('end', () => {
     const data = JSON.parse(body);
-    const profile = {
-      firstName: data.fname,
-      lastName: data.lname,
-      email:data.email,
-      password: data.password,
-      phoneNumber: data.phoneNumber,
-      color: data.color,
-      aptCode: data.aptCode
-    };
-    userProfiles.profiles.push(profile);
+    await addUserProfile(data.firstName, data.lastName, data.email, data.password, data.phoneNumber, data.aptCode, data.color);
+    res.end();
   });
-  res.end();
 });
+

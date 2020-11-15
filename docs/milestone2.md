@@ -56,6 +56,7 @@ DELETE Requests:
 Our web page has six major components: User Profiles, Apartment, Bills, Costs, Groceries, and Inventory. 
 
 *  User profiles contain each user's personal information including the  initial setup data as well as the progress on their payments. 
+*  User bills contains all the bills and payments a user has or has made as well as their budget
 *  Apartments contains all the information about a group's apartment as defined in the apartment creation page. 
 *  Bills is a table where each entry is a defined bill shared by the apartment (electric, wifi, etc). 
 *  Costs is a table showing how much of each bill each user pays. 
