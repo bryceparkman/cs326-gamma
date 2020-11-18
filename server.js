@@ -103,6 +103,9 @@ let prof3 = {
   color: '0000ff'
 };
 
+const userProfiles = {
+  profiles: []
+};
 userProfiles.profiles.push(prof1);
 userProfiles.profiles.push(prof2);
 userProfiles.profiles.push(prof3);
@@ -451,9 +454,6 @@ app.delete('/removeAptCost', (req, res) => {
   res.end();
 });
 
-const userProfiles = {
-  profiles: []
-};
 
 
 app.get('/profiles', (req, res) => {
@@ -479,7 +479,7 @@ app.post('/userProfile', (req, res) => {
   req.on('data', data => body += data);
   req.on('end', () => {
     const data = JSON.parse(body);
-    await addUserProfile(data.firstName, data.lastName, data.email, data.password, data.phoneNumber, data.aptCode, data.color);
+    addUserProfile(data.fname, data.lname, data.email, data.password, data.phoneNumber, data.aptCode, data.color);
     res.end();
   });
 });
