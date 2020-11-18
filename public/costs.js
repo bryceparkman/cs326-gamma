@@ -1,4 +1,4 @@
-let currentUser = 'Bryce';
+let currentUser = 'Hannah';
 let users;
 
 async function moneySpent(name = null){
@@ -98,9 +98,8 @@ async function contributeRent(){
         const htmlString = '<div class="card mb-3 border-0"><div class="row no-gutters"><div class="col-auto"><img src="https://via.placeholder.com/100/' + userColor + '/FFFFFF" class="img-fluid rounded-circle" alt=""> </div><div class="col"><div class="card-block px-4 my-4"> <p class="card-text mb-0">' + currentUser + ' paid $' + rentValue.toFixed(2) + '</p><p class="card-text percentContributed ' + currentUser +  'Color">Contributing ' + ((rentValue / totalRent) * 100).toFixed(2) + '%</p></div></div></div></div>'
     
         const node = htmlToNode(htmlString);
-        payments.appendChild(node)
+        await payments.appendChild(node);
         const progressBar = document.getElementsByClassName(currentUser + 'Color').item(json.length - 1);
-        
         progressBar.style.color = '#' + userColor;
     }
     
@@ -121,9 +120,8 @@ async function checkPayments(){
             const userColor = users.find(user => user.firstName === payment.name).color;
             const htmlString = '<div class="card mb-3 border-0"><div class="row no-gutters"><div class="col-auto"><img src="https://via.placeholder.com/100/' + userColor + '/FFFFFF" class="img-fluid rounded-circle" alt=""> </div><div class="col"><div class="card-block px-4 my-4"> <p class="card-text mb-0">' + payment.name + ' paid $' + payment.amount.toFixed(2) + '</p><p class="card-text percentContributed ' + payment.name + 'Color">Contributing ' + ((payment.amount / totalRent) * 100).toFixed(2) + '%</p></div></div></div></div>'    
             const node = htmlToNode(htmlString);
-            payments.appendChild(node);
+            await payments.appendChild(node);
             const progressBar = document.getElementsByClassName(payment.name + 'Color').item(i);
-            console.log(progressBar)
             progressBar.style.color = '#' + userColor;
         }
     }
