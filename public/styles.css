@@ -15,6 +15,10 @@
     color: darkorange;
 }
 
+.darkorangeBG {
+    background-color: darkorange;
+}
+
 #bigMoney {
     font-size: 10vh;
 }
@@ -51,30 +55,6 @@
     font-size: 11px;
 }
 
-.bryceColor {
-    color: darkviolet;
-}
-
-.leonColor {
-    color: lightseagreen;
-}
-
-.hannahColor {
-    color: goldenrod;
-}
-
-.bryceBgColor {
-    background-color: darkviolet;
-}
-
-.leonBgColor {
-    background-color: lightseagreen;
-}
-
-.hannahBgColor {
-    background-color: gold;
-}
-
 .fontTwelve {
     font-size: 12px;
 }
@@ -84,7 +64,7 @@
 }
 
 .groceriesSubtitle {
-    font-size: 4vh;
+    font-size: 30px;
 }
 
 /*Home Page*/
@@ -298,10 +278,24 @@ a {
 
 /*Apartment Creation Page*/
 
+.aptPrimaryColor {
+    color: #eed2c5c9;
+}
+
+.aptSecondaryColor {
+    color: antiquewhite;
+}
+
+.aptPrimaryColorBG {
+    background-color: #eed2c5c9;
+}
+
+.aptSecondaryColorBG {
+    background-color: antiquewhite;
+}
 
 #aptCreationHeader {
     height: 12vh;
-    background-color: rgb(230, 255, 223);
     margin-bottom: 5vh;
     text-align: center;
     padding-top: 3vh;
@@ -322,7 +316,6 @@ a {
 
 .aptCreationBoxItem {
     height: 5vh;
-    background-color: rgb(175, 240, 202);
     padding-left: 2vh;
     padding-right: 2vh;
     margin-left: 2vh;
@@ -361,18 +354,21 @@ a {
     padding-top: 1.5vh;
 }
 
-#aptCreationAddUtilityBtn {
-    color: rgb(214, 143, 143);
-}
-
 #aptOverviewParent {
     display: flex;
+    height: 100%;
+    width: 100%;
 }
 
 #aptOverviewLeft {
-    margin-top: 10vh;
-    flex: 1;
-    float: right;
+    margin-top: 5vh;
+}
+
+#aptOverviewRight {
+    background-color: antiquewhite;
+    width: 100%;
+    height: 100%;
+    display: flex;
 }
 
 #apartmentMatesLbl {
@@ -381,8 +377,8 @@ a {
 }
 
 #aptMatesBox {
-    width:40vh;
-    height:61.5vh;
+    width:35vh;
+    height:40vh;
     margin-left: auto;
     margin-right: auto;
     margin-top: 3vh;
@@ -398,15 +394,12 @@ a {
     margin-left: 1vh;
 }
 
-.editAptMatesBtn {
-    margin-left: -1.5vh;
-}
-
-.aptUtilityBox {
-    height: 70vh;
-    width: 100vh;
-    margin-right: 15vh;
-    margin-top: 10vh;
+#aptUtilitiesBox {
+    height: 82vh;
+    width: 120vh;
+    margin-top: 5vh;
+    margin-left: 5vh;
+    margin-bottom: 5vh;
     overflow: scroll;
 }
 
@@ -423,31 +416,65 @@ a {
     font-size: 2vh;
 }
 
-.utilityContributors {
-    float: left;
-    width: auto;
-    overflow: scroll;
-    text-align: left;
-}
-
 .contributionPercentageBar {
-    width: calc(100% - 13vh);
+    width: calc(100% - 6vh);
+    margin-right: 3vh;
+    margin-left: 3vh;
     height: 5vh;
     margin-top: 1vh;
-    float: right;
-}
-
-.utilityCard {
-    background-color: #eed2c5c9;
+    float: left;
 }
 
 .utilityCardHeader {
     text-align: center;
 }
 
-#aptOverviewAddUtilityBtn {
+#addUtilityBtn {
     color: rgb(214, 143, 143);
-    float: right;
-    margin-top: -5vh;
+    font-size: 5vh;
+    margin-top: 77vh;
+    margin-right: 3vh;
 }
 
+/* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+  
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 100vh;
+}
+  
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+  
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.inputMb {
+    margin-bottom: 20px;
+}

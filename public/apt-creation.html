@@ -19,6 +19,7 @@
     <meta name="author" content="CS326 Gamma">
 
     <link rel="stylesheet" href="styles.css">
+    <script src="./apt-creation.js"></script>
 
 </head>
 
@@ -30,13 +31,13 @@
         <i id = houseicon class="fa fa-home fa-2x"></i> 
         <ul class="navbar-nav ml-auto"> 
             <li class="nav-item"> 
-                <a class="nav-link font-weight-bold text-dark" href="#">Apartment</a>
+                <a class="nav-link font-weight-bold text-dark" href="./costs.html">Apartment</a>
             </li> 
             <li class="nav-item"> 
-                <a class="nav-link font-weight-bold text-dark" href="#">Costs</a>
+                <a class="nav-link text-dark" href="./groceries.html">Costs</a>
             </li> 
             <li class="nav-item"> 
-                <a class="nav-link text-dark" href="#">Groceries</a>
+                <a class="nav-link text-dark" href="./apt-overview.html">Groceries</a>
             </li> 
             <li class='nav-item'>
                 <i class='fa fa-user-circle fa-3x'></i>
@@ -45,35 +46,39 @@
     </nav> 
 
     <!-- Header -->
-    <div id='aptCreationHeader'></div>
+    <div id='aptCreationHeader' class='aptSecondaryColorBG'></div>
 
     <!-- Rent input -->
     <div class="input-group flex-nowrap rentInput">
         <div class="input-group-prepend">
             <span class="input-group-text" id="addon-wrapping">$</span>
         </div>
-        <input class="form-control" placeholder='rent per month' aria-label="rent per month" aria-describedby="addon-wrapping">
+        <input id='rentInput' class='form-control' placeholder='rent per month' aria-label="rent per month" aria-describedby="addon-wrapping">
     </div>
 
     <br>
 
     <!-- add utilities/other label and button -->
     <p class='mb-5 text-center addUtilitiesTitle'>utilities/other
-        <span id='aptCreationAddUtilityBtn'>
-            <i class='fa fa-plus-circle'></i>
-        </span>
+        <a href='#_' onclick="openModal(true)">
+            <span class='aptPrimaryColor'>
+                <i class='fa fa-plus-circle'></i>
+            </span>
+        </a>
     </p>
+    <div id="utilityModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id='utilityClose' onclick="closeModal('utility',true)">&times;</span>
+            <h2>add utility/other</h2>
+            <br>
+            <input type='text' placeholder='name' id='inputName' class='inputMb'/>
+            <input type='text' placeholder='cost' id='inputCost' class='inputMb'/>
+            <button class='btn aptPrimaryColorBG' onclick="submitModal()">add</button>
+        </div>
+    </div>    
 
     <!-- added utilities/other box -->
     <div id='aptCreationBox'>
-        <div class='aptCreationBoxItem'>
-            <label class=aptCreationUtilityTypeLbl>Internet</label>
-            <label class=aptCreationUtilityCostLbl>$49.44</label>
-        </div>
-        <div class='aptCreationBoxItem'>
-            <label class=aptCreationUtilityTypeLbl>Gas</label>
-            <label class=aptCreationUtilityCostLbl>month to month</label>
-        </div>
     </div>
 
     <br><br>
