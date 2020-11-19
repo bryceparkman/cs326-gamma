@@ -113,14 +113,14 @@ userProfiles.profiles.push(prof3);
 let aptCosts = [
 
   { name: 'Rent', cost: 3000, contributions: [
-      { user: { id: 'leon@gmail.com', name: 'leon', color: '20b2aa' }, percent: 33 }, 
-      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'daa520' }, percent: 33 }, 
-      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '9400D3' }, percent: 34 }
+      { user: { id: 'leon@gmail.com', name: 'leon', color: '0000ff' }, percent: 33 }, 
+      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'ff0000' }, percent: 33 }, 
+      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '00ff00' }, percent: 34 }
   ]},
   { name: 'Gas', cost: 50, contributions: [
-      { user: { id: 'leon@gmail.com', name: 'leon', color: '20b2aa' }, percent: 33 }, 
-      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'daa520' }, percent: 33 }, 
-      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '9400D3' }, percent: 34 }
+      { user: { id: 'leon@gmail.com', name: 'leon', color: '0000ff' }, percent: 33 }, 
+      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'ff0000' }, percent: 33 }, 
+      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '00ff00' }, percent: 34 }
   ]}
 
 ]
@@ -175,7 +175,7 @@ function createTables(){
   });
 
   //Costs Table, each bill has a relating costs table
-  db.none("CREATE TABLE Costs(AptCodevarchar(45), BillName varchar foreign key references Bill, UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
+  db.none("CREATE TABLE Costs(AptCode varchar(45), BillName varchar foreign key references Bill, UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
     console.log(err, res);
     db.end();
   });
@@ -281,6 +281,36 @@ async function deleteInventory(name){
   }));
 }
 
+async function getAptCosts(code) {
+  return await connectAndRun(db => db.any('SELECT * FROM Apartment WHERE AptCode = $/code/'), {
+    code: code,
+  })
+}
+
+async function addAptCosts(code, name, cost, shares) {
+  return await connectAndRun(db => db.none('INSERT INTO Apartment VALUES($/code/, $/name/, $/requestedBy/)'), {
+    code: code,
+    name: name,
+    cost: cost,
+    shares: shares,
+  })
+}
+
+async function editAptCosts(code, name, cost, shares) {
+  return await connectAndRun(db => db.none('UPDATE Apartment SET cost = $/cost/, shares = $/shares/ WHERE AptCode = $/code/ AND name = $/name/'), {
+    code: code,
+    name: name,
+    cost: cost,
+    shares: shares
+  })
+}
+
+async function deleteAptCosts(code, name) {
+  return await connectAndRun(db => db.none('DELETE FROM Apartment WHERE AptCode = $/code/ AND name = $/name/'), {
+    code: code,
+    name: name,
+  })
+}
 
 app.use(express.static('public'));
 
@@ -453,8 +483,6 @@ app.delete('/removeAptCost', (req, res) => {
   });
   res.end();
 });
-
-
 
 app.get('/profiles', (req, res) => {
   res.json(userProfiles.profiles);
