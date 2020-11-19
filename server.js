@@ -175,7 +175,7 @@ function createTables() {
   });
 
   //User Bills Table
-  db.none("CREATE TABLE UserBills(email varchar(45), RentOwed int, RentPaid int, NumBills int, GroceryBudget int, OutstandingPayments int, primary key (email))", (err, res) => {
+  db.none("CREATE TABLE UserBills(email varchar(45), RentPaid int, NumBills int, GroceryBudget int, OutstandingPayments int, primary key (email))", (err, res) => {
     console.log(err, res);
     db.end();
   });
@@ -193,7 +193,7 @@ function createTables() {
   });
 
   //Costs Table, each bill has a relating costs table
-  db.none("CREATE TABLE Costs(AptCodevarchar(45), BillName varchar foreign key references Bill, UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
+  db.none("CREATE TABLE Costs(AptCode varchar(45), BillName varchar foreign key references Bill, UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
     console.log(err, res);
     db.end();
   });
@@ -205,7 +205,7 @@ function createTables() {
   });
 
   //Inventory Table
-  db.none("CREATE TABLE Invenory(id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), Cost integer, primary key (id))", (err, res) => {
+  db.none("CREATE TABLE Inventory(id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), Cost integer, primary key (id))", (err, res) => {
     console.log(err, res);
     db.end();
   });
@@ -242,10 +242,25 @@ async function getUserPassword(email) {
   }));
 }
 
+async function getUserAptId(email){
+  return await connectAndRun(db => db.any('SELECT AptCode FROM UserProfile WHERE email = $/email/', [{ email }]))
+}
 
-//add aptCode or some apartment id 
-async function getRent() {
-  return await connectAndRun(db => db.any('SELECT Rent FROM Apartment', []));
+async function getUserBudget(email){
+  return await connectAndRun(db => db.any('SELECT GroceryBudget FROM UserBills WHERE email = $/email/', [{ email }]))
+}
+
+async function getUserBill(email){
+  return await connectAndRun(db => db.any('SELECT RentPaid FROM UserBills WHERE email = $/email/', [{ email }]))
+}
+
+async function addUserBill(email, amount){
+  return await connectAndRun(db => db.any('UPDATE UserBills SET total = total + $/amount/ WHERE email = $/email/', [{ email, amount }]))
+}
+
+async function getRent(email) {
+  const id = await getUserAptId(email);
+  return await connectAndRun(db => db.any('SELECT Rent FROM Apartment WHERE AptCode = $/id/', [{ id }]));
 }
 
 async function getGroceries() {
@@ -269,34 +284,39 @@ async function addUserProfile(firstName, lastName, email, password, phoneNumber,
 }
 
 async function addGrocery(name, quantity, requestedBy) {
-  return await connectAndRun(db => db.none('INSERT INTO Grocery VALUES($/name/, $/quantity/, $/requestedBy/)', {
+  const groceries = await getGroceries();
+  return await connectAndRun(db => db.none('INSERT INTO Grocery VALUES($/id/, $/name/, $/quantity/, $/requestedBy/)', {
+    id: groceries.length,
     name: name,
     quantity: quantity,
     requestedBy: requestedBy
   }));
 }
 
-async function addInventory(name, quantity, requestedBy, cost) {
-  return await connectAndRun(db => db.none('INSERT INTO Grocery VALUES($/name/, $/quantity/, $/requestedBy/, $/cost/)', {
+async function addInventory(name, quantity, requestedBy) {
+  const inventory = await getInventory();
+  return await connectAndRun(db => db.none('INSERT INTO Inventory VALUES($/id/, $/name/, $/quantity/, $/requestedBy/)', {
+    id: inventory.length,
     name: name,
     quantity: quantity,
-    requestedBy: requestedBy,
-    cost: cost
+    requestedBy: requestedBy
   }));
 }
 
-//can change name to id depending on how items are classified
-async function deleteGrocery(name) {
-  return await connectAndRun(db => db.none('DELETE FROM Grocery WHERE name = $/name/', {
-    name: name,
-  }));
+async function editGrocery(id, name, amount) {
+  return await connectAndRun(db => db.none('UPDATE Grocery SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
 }
 
-//can change name to id depending on how items are classified
-async function deleteInventory(name) {
-  return await connectAndRun(db => db.none('DELETE FROM Inventory WHERE name = $/name/', {
-    name: name,
-  }));
+async function editInventory(id, name, amount) {
+  return await connectAndRun(db => db.none('UPDATE Inventory SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
+}
+
+async function deleteGrocery(id) {
+  return await connectAndRun(db => db.none('DELETE FROM Grocery WHERE id = $/id/', { id }));
+}
+
+async function deleteInventory(id) {
+  return await connectAndRun(db => db.none('DELETE FROM Inventory WHERE id = $/id/', { id }));
 }
 
 
