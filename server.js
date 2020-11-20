@@ -132,8 +132,7 @@ let aptCosts = [
 
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000;
-const secrets = require('secrets.json');
+const port = process.env.PORT || 3000
 
 const pgp = require("pg-promise")({
   connect(client) {
@@ -150,12 +149,14 @@ let username;
 let password;
 
 if (!process.env.USERNAME) {
+  const secrets = require('./secrets.json');
   username = secrets.username;
 } else {
   username = process.env.USERNAME;
 }
 
 if (!process.env.PASSWORD) {
+  const secrets = require('./secrets.json');
   password = secrets.password;
 } else {
   password = process.env.PASSWORD;
