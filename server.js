@@ -241,30 +241,28 @@ async function getProfiles() {
 }
 
 async function getUserPassword(email) {
-  return await connectAndRun(db => db.any('SELECT password from UserProfile WHERE email = $/email/', {
-    email: email
-  }));
+  return await connectAndRun(db => db.any('SELECT password from UserProfile WHERE email = $/email/', { email }));
 }
 
 async function getUserAptId(email){
-  return await connectAndRun(db => db.any('SELECT AptCode FROM UserProfile WHERE email = $/email/', [{ email }]))
+  return await connectAndRun(db => db.any('SELECT AptCode FROM UserProfile WHERE email = $/email/', { email }));
 }
 
 async function getUserBudget(email){
-  return await connectAndRun(db => db.any('SELECT GroceryBudget FROM UserBills WHERE email = $/email/', [{ email }]))
+  return await connectAndRun(db => db.any('SELECT GroceryBudget FROM UserBills WHERE email = $/email/', { email }));
 }
 
 async function getUserBill(email){
-  return await connectAndRun(db => db.any('SELECT RentPaid FROM UserBills WHERE email = $/email/', [{ email }]))
+  return await connectAndRun(db => db.any('SELECT RentPaid FROM UserBills WHERE email = $/email/', { email }));
 }
 
 async function addUserBill(email, amount){
-  return await connectAndRun(db => db.any('UPDATE UserBills SET total = total + $/amount/ WHERE email = $/email/', [{ email, amount }]))
+  return await connectAndRun(db => db.none('UPDATE UserBills SET total = total + $/amount/ WHERE email = $/email/', { email, amount }));
 }
 
 async function getRent(email) {
   const id = await getUserAptId(email);
-  return await connectAndRun(db => db.any('SELECT Rent FROM Apartment WHERE AptCode = $/id/', [{ id }]));
+  return await connectAndRun(db => db.any('SELECT Rent FROM Apartment WHERE AptCode = $/id/', { id }));
 }
 
 async function getGroceries() {
