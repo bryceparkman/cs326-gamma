@@ -22,6 +22,7 @@
   "homepage": "https://github.com/bryceparkman/cs326-gamma#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "faker": "^5.1.0"
+    "faker": "^5.1.0",
+    "pg-promise": "^10.8.0"
   }
 }
