@@ -1,9 +1,12 @@
+
 async function verifyData(){
     const email = document.getElementById('exampleEmail').value;
     const userEnteredPassword = document.getElementById('exampleInputPassword1').value;
-    const password = await fetch('/loginProfile/'+email);
-    const realPassword = await password.json();
-    if(realPassword === userEnteredPassword)
+
+    const passwordRequest = await fetch('/loginProfile/'+email);
+    const password = passwordRequest.ok ? await passwordRequest.json() : [];
+
+    if(password[0].password === userEnteredPassword)
         window.location.href = "apt-overview.html";
     else
         alert("Password Incorrect")

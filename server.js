@@ -237,12 +237,6 @@ async function getProfiles() {
   return await connectAndRun(db => db.any('SELECT * from UserProfile', []));
 }
 
-async function getUserPassword(email) {
-  return await connectAndRun(db => db.any('SELECT password from UserProfile WHERE email = $/email/', {
-    email: email
-  }));
-}
-
 async function getUserAptId(email){
   return await connectAndRun(db => db.any('SELECT AptCode FROM UserProfile WHERE email = $/email/', [{ email }]))
 }
@@ -500,17 +494,10 @@ app.get('/profiles', (req, res) => {
   res.end();
 })
 
-app.get('/loginProfile/:email', (req, res) => {
+app.get('/loginProfile/:email', async (req, res) => {
   const email = req.params.email;
-  for (let i = 0; i < userProfiles.profiles.length; i++) {
-    profile = userProfiles.profiles[i];
-    if (profile.email === email) {
-      res.json(profile.password);
-      res.end();
-    }
-  }
-  res.end();
-});
+  res.end(JSON.stringify(
+    await connectAndRun(db => db.any('SELECT password from UserProfile WHERE email = $1', [email]))))});
 
 
 app.post('/userProfile', (req, res) => {
