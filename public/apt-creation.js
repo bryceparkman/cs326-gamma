@@ -43,7 +43,7 @@ async function createApartment() {
             body: JSON.stringify({
                 name: utility.name,
                 cost: utility.cost,
-                contributions: { user: user, percent: 100 }
+                contributers: []
             })
         })
     }
