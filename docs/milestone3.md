@@ -1,11 +1,11 @@
 **Data Model**
 
-Our web page has six major components: User Profiles, User Bills, Apartment, Bills, Costs, Groceries, and Inventory. 
+Our web page has seven major components: User Profiles, User Grocery Bills, Apartment, User Payments, Utility Bills, Groceries, and Inventory. 
 
 *  User profiles contain each user's personal information including the  initial setup data as well as the progress on their payments. 
     *  Each field is an input field on the Sign Up Page
 
-*  User Grocery Bill Bills contains the data for a user's grocery spending
+*  User Grocery Bill contains the data for a user's grocery spending
     *  email is the primary key to id the user
     *  name is the users first name
     *  grocery budget is the user's total grocery budget ($)
