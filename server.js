@@ -170,43 +170,46 @@ const db = pgp(url);
 function createTables() {
 
   //User Profile Table
-  db.none("CREATE TABLE UserProfile(firstName varchar(45), lastName varchar(45), email varchar(45), password varchar(45), phoneNumber varchar(11), aptCode varchar(45), color varchar(45), primary key (email))", (err, res) => {
+  db.none("CREATE TABLE UserProfile(firstName varchar(45), lastName varchar(45), email varchar(45), password varchar(45), phoneNumber varchar(11), id varchar(45), color varchar(45), primary key (email))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
   //User Bills Table
-  db.none("CREATE TABLE UserBills(email varchar(45), RentPaid int, NumBills int, GroceryBudget int, OutstandingPayments int, primary key (email))", (err, res) => {
+  //MONEY STORED AS CENTS
+  db.none("CREATE TABLE UserGroceryBill(email varchar(45), GroceryBudget int, Spent int, primary key (email))", (err, res) => {
+    console.log(err, res);
+    db.end();
+  });
+
+  //User Payments Table
+  //MONEY STORED AS CENTS
+  db.none("CREATE TABLE UserPayments(email varchar(45), Name varchar(45), id varchar(45), BillName varchar(45), Payment int, BillType varchar(45), primary key (email))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
   //Apartment Table
-  db.none("CREATE TABLE Apartment(AptCode varchar(45), Rent int, NumMembers int, primary key (AptCode))", (err, res) => {
+  db.none("CREATE TABLE Apartment(id varchar(45), Rent int, NumMembers int, primary key (id))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
-  //Bill Table, create a new bill table for each bill added
-  db.none("CREATE TABLE Bill(BillName varchar(45), cost int, NumMembers int, primary key (BillName))", (err, res) => {
-    console.log(err, res);
-    db.end();
-  });
-
-  //Costs Table, each bill has a relating costs table
-  db.none("CREATE TABLE Costs(AptCode varchar(45), BillName varchar foreign key references Bill, UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
+  //Utilities Table
+  //MONEY STORED AS CENTS
+  db.none("CREATE TABLE UserGroceryBill(BillName varchar(45), id varchar(45), Cost int, NumMembers int, primary key (BillName))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
   //Groceries Table, id references apartment id?
-  db.none("CREATE TABLE Groceries(id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar (45), primary key (id))", (err, res) => {
+  db.none("CREATE TABLE Groceries(AptId varchar(45), id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), primary key (AptId))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
   //Inventory Table
-  db.none("CREATE TABLE Inventory(id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), Cost integer, primary key (id))", (err, res) => {
+  db.none("CREATE TABLE Inventory(AptId varchar(45), id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), primary key (AptId))", (err, res) => {
     console.log(err, res);
     db.end();
   });
