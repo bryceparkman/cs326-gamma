@@ -1,4 +1,4 @@
-let currentUser = 'Hannah';
+let currentUser = 'bparkman@umass.edu';
 let users;
 
 async function moneySpent(name = null){
@@ -83,7 +83,7 @@ async function contributeRent(){
         await fetch('/addPayment', {
             method: 'POST',
             body: JSON.stringify({
-                name: currentUser,
+                email: currentUser,
                 amount: rentValue
             })
         })
