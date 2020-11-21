@@ -6,7 +6,7 @@ async function moneySpent(email = null){
     const json = await data.json();
     let total = 0;
     for(const payment of json){
-        if(name === null || payment.email === email){
+        if(email === null || payment.email === email){
             total += payment.payment;
         }
     }
@@ -141,7 +141,7 @@ async function calculatePage(){
     const moneyData = await moneySpent();
     const shareVal = await rentShare(currentUser);
     const totalRent = await getRent();
-    
+    console.log(moneyData)
     total.innerHTML = "<span id='bigMoney'>$" + moneyData.toFixed(2) + "</span>/$" + totalRent.toFixed(2);
     owe.innerHTML = await calculateOwe();
     share.innerHTML = "out of your " + shareVal.toFixed(2) + "% share";
