@@ -175,7 +175,7 @@ function createTables() {
 
   //User Payments Table
   //MONEY STORED AS CENTS
-  db.none("CREATE TABLE IF NOT EXISTS UserPayments(email varchar(45), Name varchar(45), id varchar(45), BillName varchar(45), Payment int, BillType varchar(45), primary key (email))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS UserPayments(email varchar(45), Name varchar(45), aptid varchar(45), BillName varchar(45), Payment int, BillType varchar(45))", (err, res) => {
     console.log(err, res);
     db.end();
   });
@@ -188,19 +188,19 @@ function createTables() {
 
   //Utilities Table
   //MONEY STORED AS CENTS
-  db.none("CREATE TABLE IF NOT EXISTS UtilityBills(BillName varchar(45), id varchar(45), Cost int, NumMembers int, primary key (BillName))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS UtilityBills(BillName varchar(45), aptid varchar(45), Cost int, NumMembers int, primary key (BillName))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
   //Groceries Table, id references apartment id?
-  db.none("CREATE TABLE IF NOT EXISTS Groceries(AptId varchar(45), id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), primary key (AptId))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS Groceries(AptId varchar(45), id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), primary key (id))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
   //Inventory Table
-  db.none("CREATE TABLE IF NOT EXISTS Inventory(AptId varchar(45), id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), primary key (AptId))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS Inventory(AptId varchar(45), id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), primary key (id))", (err, res) => {
     console.log(err, res);
     db.end();
   });
@@ -208,6 +208,24 @@ function createTables() {
 
 createTables();
 
+async function addTestData(){
+  // await connectAndRun(db => db.none('INSERT INTO Apartment VALUES( $/id/, $/rent/, $/num/)', { id: 0, rent: 83000, num: 4 }));
+  // await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES( $/firstname/, $/lastname/, $/email/, $/password/, $/phonenumber/, $/aptid/, $/color/)', {  firstname: 'Bryce', lastname: 'Parkman', email: 'bparkman@umass.edu', password: 'brycepassword', phonenumber: '', aptid: 0, color: 'ff0000' }));
+  const {id, name, amount, requestedBy} = groceryData.groceries[0];
+  const aptid = await getUserAptId('bparkman@umass.edu')
+  await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
+}
+
+//addTestData();
+
+async function testFunctions(){
+  console.log('AptId by email:', await getUserAptId('bparkman@umass.edu'));
+  console.log('First name by email:', await getFirstNameByEmail('bparkman@umass.edu'));
+  console.log('Groceries', await getGroceries());
+  console.log('Inventory', await getInventory());
+}
+
+testFunctions();
 
 async function connectAndRun(task) {
   let connection = null;
@@ -227,19 +245,23 @@ async function connectAndRun(task) {
 }
 
 async function getUserAptId(email){
-  return await connectAndRun(db => db.any('SELECT AptId FROM UserProfile WHERE email = $/email/', { email }));
+  const { aptid } = await connectAndRun(db => db.one('SELECT AptId FROM UserProfile WHERE email = $/email/', { email }));
+  return aptid;
 }
 
 async function getFirstNameByEmail(email){
-  return await connectAndRun(db => db.any('SELECT fisrtName FROM UserProfile WHERE email = $/email/', { email }));
+  const { firstname } =  await connectAndRun(db => db.one('SELECT firstName FROM UserProfile WHERE email = $/email/', { email }));
+  return firstname;
 }
 
 async function getGroceries() {
-  return await connectAndRun(db => db.any('SELECT * from Groceries', []));
+  const id = await getUserAptId('bparkman@umass.edu');
+  return await connectAndRun(db => db.any('SELECT * from Groceries WHERE aptid = $/id/', { id }));
 }
 
 async function getInventory() {
-  return await connectAndRun(db => db.any('SELECT * from Inventory', []));
+  const id = await getUserAptId('bparkman@umass.edu');
+  return await connectAndRun(db => db.any('SELECT * from Inventory WHERE aptid = $/id/', { id }));
 }
 
 async function addUserProfile(firstName, lastName, email, password, phoneNumber, aptCode, color) {
@@ -261,39 +283,39 @@ app.get('/', (req, res) => {
 
 app.get('/rentPayments', async (req, res) => {
   const id = await getUserAptId('bparkman@umass.edu');
-  res.json(await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE BillType = Rent', { id })));
+  res.json(await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE aptid = $/id/ AND BillType = Rent', { id })));
   res.end();
 });
 
 app.get('/rent', async (req, res) => {
   const id = await getUserAptId('bparkman@umass.edu');
-  res.json(await connectAndRun(db => db.any('SELECT Rent FROM Apartment WHERE id = $/id/', { id })) / 100);
+  res.json(await connectAndRun(db => db.one('SELECT Rent FROM Apartment WHERE id = $/id/', { id })) / 100);
   res.end();
 });
 
 app.post('/addPayment', async (req, res) => {
   const {email, amount} = JSON.parse(req.body);
   const name = await getFirstNameByEmail(email);
-  await connectAndRun(db => db.none('INSERT INTO Grocery VALUES( $/name/, $/amount/)', { name, amount }));
+  await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/name/, $/amount/)', { name, amount }));
   res.end();
 });
 
 app.get('/rentShare/:email', async (req, res) => {
   const id = await getUserAptId(req.params.email);
-  const numMembers =  await connectAndRun(db => db.any('SELECT NumMembers FROM Apartment WHERE id = $/id/', { id }));
+  const numMembers =  await connectAndRun(db => db.one('SELECT NumMembers FROM Apartment WHERE id = $/id/', { id }));
   res.json(100 / numMembers);
   res.end();
 });
 
 app.get('/budget/:email', async (req, res) => {
   const email = req.params.email;
-  res.json(await connectAndRun(db => db.any('SELECT GroceryBudget FROM UserGroceryBill WHERE email = $/email/', { email })) / 100);
+  res.json(await connectAndRun(db => db.one('SELECT GroceryBudget FROM UserGroceryBill WHERE email = $/email/', { email })) / 100);
   res.end();
 });
 
 app.get('/bill/:email', async (req, res) => {
   const email = req.params.email;
-  res.json(await connectAndRun(db => db.any('SELECT Spent FROM UserGroceryBill WHERE email = $/email/', { email })) / 100);
+  res.json(await connectAndRun(db => db.one('SELECT Spent FROM UserGroceryBill WHERE email = $/email/', { email })) / 100);
   res.end();
 });
 
