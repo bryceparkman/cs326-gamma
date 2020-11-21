@@ -133,15 +133,17 @@ let aptCosts = [
 const express = require('express');
 const app = express();
 app.use(express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded());
 const port = process.env.PORT || 3000
 
 const pgp = require("pg-promise")({
   connect(client) {
-    console.log('Connected to database:', client.connectionParameters.database);
+    //console.log('Connected to database:', client.connectionParameters.database);
   },
 
   disconnect(client) {
-    console.log('Disconnected from database:', client.connectionParameters.database);
+    //console.log('Disconnected from database:', client.connectionParameters.database);
   }
 });
 
@@ -209,11 +211,11 @@ function createTables() {
 createTables();
 
 async function addTestData(){
-  // await connectAndRun(db => db.none('INSERT INTO Apartment VALUES( $/id/, $/rent/, $/num/)', { id: 0, rent: 83000, num: 4 }));
+  await connectAndRun(db => db.none('INSERT INTO Apartment VALUES( $/id/, $/rent/, $/num/)', { id: 0, rent: 75000, num: 3 }));
   // await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES( $/firstname/, $/lastname/, $/email/, $/password/, $/phonenumber/, $/aptid/, $/color/)', {  firstname: 'Bryce', lastname: 'Parkman', email: 'bparkman@umass.edu', password: 'brycepassword', phonenumber: '', aptid: 0, color: 'ff0000' }));
-  const {id, name, amount, requestedBy} = groceryData.groceries[0];
-  const aptid = await getUserAptId('bparkman@umass.edu')
-  await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
+  // const {id, name, amount, requestedBy} = groceryData.groceries[0];
+  // const aptid = await getUserAptId('bparkman@umass.edu')
+  // await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
 }
 
 //addTestData();
@@ -223,6 +225,10 @@ async function testFunctions(){
   console.log('First name by email:', await getFirstNameByEmail('bparkman@umass.edu'));
   console.log('Groceries', await getGroceries());
   console.log('Inventory', await getInventory());
+  let id = await getUserAptId('bparkman@umass.edu');
+  const { rent } = await connectAndRun(db => db.one('SELECT Rent FROM Apartment WHERE id = $/id/', { id }));
+  console.log('Rent: ', rent / 100);
+  console.log('Rent payments: ', await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE aptid = $/id/ AND billtype = $/type/', { id, type: 'Rent' })))
 }
 
 testFunctions();
@@ -283,44 +289,52 @@ app.get('/', (req, res) => {
 
 app.get('/rentPayments', async (req, res) => {
   const id = await getUserAptId('bparkman@umass.edu');
-  res.json(await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE aptid = $/id/ AND BillType = Rent', { id })));
+  res.json(await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE aptid = $/id/ AND billtype = $/type/', { id, type: 'Rent' })));
   res.end();
 });
 
 app.get('/rent', async (req, res) => {
   const id = await getUserAptId('bparkman@umass.edu');
-  res.json(await connectAndRun(db => db.one('SELECT Rent FROM Apartment WHERE id = $/id/', { id })) / 100);
+  const { rent } = await connectAndRun(db => db.one('SELECT Rent FROM Apartment WHERE id = $/id/', { id }));
+  res.json(rent / 100);
   res.end();
 });
 
+app.get('/name:email', async (req, res) => {
+  return await getFirstNameByEmail(req.params.email);
+})
+
 app.post('/addPayment', async (req, res) => {
-  const {email, amount} = JSON.parse(req.body);
+  const {email, amount} = req.body;
+  const aptid = await getUserAptId('bparkman@umass.edu');
   const name = await getFirstNameByEmail(email);
-  await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/name/, $/amount/)', { name, amount }));
+  await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/aptid/, $/billname/, $/amount/, $/billtype/)', { email, name, aptid, billname: 'Rent', amount, billtype: 'Rent' }));
   res.end();
 });
 
 app.get('/rentShare/:email', async (req, res) => {
   const id = await getUserAptId(req.params.email);
-  const numMembers =  await connectAndRun(db => db.one('SELECT NumMembers FROM Apartment WHERE id = $/id/', { id }));
-  res.json(100 / numMembers);
+  const { nummembers } = await connectAndRun(db => db.one('SELECT NumMembers FROM Apartment WHERE id = $/id/', { id }));
+  res.json(100 / nummembers);
   res.end();
 });
 
 app.get('/budget/:email', async (req, res) => {
   const email = req.params.email;
-  res.json(await connectAndRun(db => db.one('SELECT GroceryBudget FROM UserGroceryBill WHERE email = $/email/', { email })) / 100);
+  const { grocerybudget } = await connectAndRun(db => db.one('SELECT GroceryBudget FROM UserGroceryBill WHERE email = $/email/', { email }));
+  res.json(grocerybudget / 100);
   res.end();
 });
 
 app.get('/bill/:email', async (req, res) => {
   const email = req.params.email;
-  res.json(await connectAndRun(db => db.one('SELECT Spent FROM UserGroceryBill WHERE email = $/email/', { email })) / 100);
+  const { spent } = await connectAndRun(db => db.one('SELECT Spent FROM UserGroceryBill WHERE email = $/email/', { email }));
+  res.json(spent / 100);
   res.end();
 });
 
 app.put('/addBill', async (req, res) => {
-  const {email, amount} = JSON.parse(req.body);
+  const {email, amount} = req.body;
   await connectAndRun(db => db.none('UPDATE UserGroceryBill SET Spent = Spent + $/amount/ WHERE email = $/email/', { email, amount }));
   res.end();
 });
@@ -338,33 +352,33 @@ app.get('/inventory', async (req, res) => {
 app.post('/addGrocery', async (req, res) => {
   const groceries = await getGroceries();
   const id = groceries.length;
-  const {name, amount, requestedBy} = JSON.parse(req.body);
-  await connectAndRun(db => db.none('INSERT INTO Grocery VALUES($/id/, $/name/, $/quantity/, $/requestedBy/)', {id, name, amount, requestedBy}));
+  const {name, amount, requestedBy} = req.body;
+  await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/id/, $/name/, $/quantity/, $/requestedBy/)', {id, name, amount, requestedBy}));
   res.end();
 });
 
 app.post('/addInventory', async (req, res) => {
   const inventory = await getInventory();
   const id = inventory.length;
-  const {name, amount, requestedBy} = JSON.parse(req.body);
+  const {name, amount, requestedBy} = req.body;
   await connectAndRun(db => db.none('INSERT INTO Inventory VALUES($/id/, $/name/, $/quantity/, $/requestedBy/)', {id, name, amount, requestedBy}));
   res.end();
 });
 
 app.put('/editGrocery', async (req, res) => {
-  const {id, name, amount} = JSON.parse(req.body);
-  await connectAndRun(db => db.none('UPDATE Grocery SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
+  const {id, name, amount} = req.body;
+  await connectAndRun(db => db.none('UPDATE Groceries SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
   res.end();
 });
 
 app.put('/editInventory', async (req, res) => {
-  const {id, name, amount} = JSON.parse(req.body);
+  const {id, name, amount} = req.body;
   await connectAndRun(db => db.none('UPDATE Inventory SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
   res.end();
 });
 
 app.delete('/removeGrocery:id', async (req, res) => {
-  await connectAndRun(db => db.none('DELETE FROM Grocery WHERE id = $/id/', { id: req.params.id }));
+  await connectAndRun(db => db.none('DELETE FROM Groceries WHERE id = $/id/', { id: req.params.id }));
   res.end();
 });
 
