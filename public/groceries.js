@@ -21,7 +21,10 @@ async function addBill(user, amount) {
         body: JSON.stringify({
             email: user,
             amount
-        })
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
     });
 }
 
@@ -142,7 +145,10 @@ async function submitModal(type, isAdd) {
                     name: inputItem.value,
                     amount: inputAmount.value,
                     requestedBy: currentUser
-                })
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
         }
         else {
@@ -153,7 +159,10 @@ async function submitModal(type, isAdd) {
                     id: currentElement.id,
                     name: inputItem.value,
                     amount: inputAmount.value
-                })
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
         }
     }
