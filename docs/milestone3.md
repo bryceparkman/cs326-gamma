@@ -1,33 +1,34 @@
 **Data Model**
 
-Our web page has six major components: User Profiles, User Bills, Apartment, Bills, Costs, Groceries, and Inventory. 
+Our web page has seven major components: User Profiles, User Grocery Bills, Apartment, User Payments, Utility Bills, Groceries, and Inventory. 
 
 *  User profiles contain each user's personal information including the  initial setup data as well as the progress on their payments. 
     *  Each field is an input field on the Sign Up Page
 
-*  User Bills contains all the bills and payments a user has or has made as well as their budget
-    *  grocerybudget is how much ($) that user can spend on groceries
-    *  rentoewed is the proportion of rent in dollars the user owes
-    *  rentpaid is how much of the user paid as a %
-    *  numbills is the total number of bills a user pays
-    *  outstanding is the total of a users outstanding payments
+*  User Grocery Bill contains the data for a user's grocery spending
+    *  email is the primary key to id the user
+    *  name is the users first name
+    *  grocery budget is the user's total grocery budget ($)
+    *  spent is how much the user has spent on groceries so far
 
 *  Apartment contains all the information about a group's apartment as defined in the apartment creation page. 
     *  Apartment code is the apartment identifier
     *  Rent is the total rent of the apartment
     *  nummembers is how many people live in the apartment
 
-*  Bills is a table where each entry is a defined bill shared by the apartment (electric, wifi, etc). 
-    *  billname is the name of the bill
-    *  cost is the total cost of the bill
-    *  nummembers is how many people are paying the bill
+*  User Payments contains all the user payment data
+    *  Email address is the primart key to determine whose payment data it is
+    *  name is the user's first name
+    *  aptcode is the code for which apartment the user is in
+    *  billname is the name of the bill which the payment is for
+    *  payment is for each new payment a user has made ($)
+    *  bill type is whether the bill is rent or utility
 
-*  Costs is a table showing how much of each bill each user pays. 
-    *  Apartment code is the primary key to identify which apartment the bill is for
-    *  billname is a foreign key referencing the bill table for each bill in the apartment
-    *  proportionpaidd$ is measuring how much of the bill is paid in dollars
-    *  proportionpaid% is measuring how much of the bill is paid as a percentage
-    *  progress is a percetage measuring how much of the total bill is paid
+*  Utility Bills is the bill cost definitions for each non-rent bill in the apartment
+    *  Bill name is the name of the bill
+    *  Apartment Code is the code for which apartment the bill is in
+    *  Cost is the total bill cost
+    * nummembers is how many members are contributing to the bill
 
 *  Groceries contains the list of groceries bought/needed for an apartment. 
     *  Apartment code is the primary key to identify which apartment the grocery list is for
@@ -42,7 +43,7 @@ Our web page has six major components: User Profiles, User Bills, Apartment, Bil
     *  boughtby is the name of whoever bought the item
     *  cost is how much the item cost
 
-![Data Model](images/data_model.png)
+![Data Model](images/new_data_model.png)
 
 ## Division of Labor
 
