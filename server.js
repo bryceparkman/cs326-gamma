@@ -218,7 +218,7 @@ async function addTestData(){
   await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
 }
 
-addTestData();
+//addTestData();
 
 async function testFunctions(){
   console.log('AptId by email:', await getUserAptId('bparkman@umass.edu'));
