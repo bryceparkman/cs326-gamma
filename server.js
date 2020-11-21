@@ -146,78 +146,67 @@ const pgp = require("pg-promise")({
 });
 
 // Local PostgreSQL credentials
-let username;
-let password;
+let url;
 
-if (!process.env.USERNAME) {
+if (!process.env.DATABASE_URL) { //If not on Heroku deployment
   const secrets = require('./secrets.json');
-  username = secrets.username;
+  url = `postgres://${secrets.username}:${secrets.password}@localhost:${secrets.db_port}`;
 } else {
-  username = process.env.USERNAME;
+  url = process.env.DATABASE_URL;
 }
 
-if (!process.env.PASSWORD) {
-  const secrets = require('./secrets.json');
-  password = secrets.password;
-} else {
-  password = process.env.PASSWORD;
-}
-
-
-const url = process.env.DATABASE_URL || `postgres://${username}:${password}@localhost/5432`;
 const db = pgp(url);
 
 //only use first time creating tables
 function createTables() {
 
   //User Profile Table
-  db.none("CREATE TABLE UserProfile(firstName varchar(45), lastName varchar(45), email varchar(45), password varchar(45), phoneNumber varchar(11), AptId varchar(45), color varchar(45), primary key (email))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS UserProfile(firstName varchar(45), lastName varchar(45), email varchar(45), password varchar(45), phoneNumber varchar(11), AptId varchar(45), color varchar(45), primary key (email))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
   //User Bills Table
   //MONEY STORED AS CENTS
-  db.none("CREATE TABLE UserGroceryBill(email varchar(45), GroceryBudget int, Spent int, primary key (email))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS UserGroceryBill(email varchar(45), GroceryBudget int, Spent int, primary key (email))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
   //User Payments Table
   //MONEY STORED AS CENTS
-  db.none("CREATE TABLE UserPayments(email varchar(45), Name varchar(45), id varchar(45), BillName varchar(45), Payment int, BillType varchar(45), primary key (email))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS UserPayments(email varchar(45), Name varchar(45), id varchar(45), BillName varchar(45), Payment int, BillType varchar(45), primary key (email))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
   //Apartment Table
-  db.none("CREATE TABLE Apartment(id varchar(45), Rent int, NumMembers int, primary key (id))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS Apartment(id varchar(45), Rent int, NumMembers int, primary key (id))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
   //Utilities Table
   //MONEY STORED AS CENTS
-  db.none("CREATE TABLE UtilityBills(BillName varchar(45), id varchar(45), Cost int, NumMembers int, primary key (BillName))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS UtilityBills(BillName varchar(45), id varchar(45), Cost int, NumMembers int, primary key (BillName))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
   //Groceries Table, id references apartment id?
-  db.none("CREATE TABLE Groceries(AptId varchar(45), id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), primary key (AptId))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS Groceries(AptId varchar(45), id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), primary key (AptId))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 
   //Inventory Table
-  db.none("CREATE TABLE Inventory(AptId varchar(45), id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), primary key (AptId))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS Inventory(AptId varchar(45), id varchar(45), Name varchar(45), Amount varchar(45), requestedBy varchar(45), primary key (AptId))", (err, res) => {
     console.log(err, res);
     db.end();
   });
 }
 
-//uncomment this lines if tables haven't been created
-//createTables();
+createTables();
 
 
 async function connectAndRun(task) {
