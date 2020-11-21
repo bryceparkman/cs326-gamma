@@ -164,7 +164,7 @@ if (!process.env.PASSWORD) {
 }
 
 
-const url = process.env.DATABASE_URL || `postgres://${username}:${password}@localhost/`;
+const url = process.env.DATABASE_URL || `postgres://${username}:${password}@localhost/5432`;
 const db = pgp(url);
 
 //only use first time creating tables
@@ -271,13 +271,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/rentPayments', async (req, res) => {
-  const id = await getUserAptId(email);
+  const id = await getUserAptId('bparkman@umass.edu');
   res.json(await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE BillType = Rent', { id })));
   res.end();
 });
 
-app.get('/rent', (req, res) => {
-  const id = await getUserAptId(email);
+app.get('/rent', async (req, res) => {
+  const id = await getUserAptId('bparkman@umass.edu');
   res.json(await connectAndRun(db => db.any('SELECT Rent FROM Apartment WHERE id = $/id/', { id })) / 100);
   res.end();
 });
@@ -296,35 +296,35 @@ app.get('/rentShare/:email', async (req, res) => {
   res.end();
 });
 
-app.get('/budget/:email', (req, res) => {
+app.get('/budget/:email', async (req, res) => {
   const email = req.params.email;
   res.json(await connectAndRun(db => db.any('SELECT GroceryBudget FROM UserGroceryBill WHERE email = $/email/', { email })) / 100);
   res.end();
 });
 
-app.get('/bill/:email', (req, res) => {
+app.get('/bill/:email', async (req, res) => {
   const email = req.params.email;
   res.json(await connectAndRun(db => db.any('SELECT Spent FROM UserGroceryBill WHERE email = $/email/', { email })) / 100);
   res.end();
 });
 
-app.put('/addBill', (req, res) => {
+app.put('/addBill', async (req, res) => {
   const {email, amount} = JSON.parse(req.body);
   await connectAndRun(db => db.none('UPDATE UserGroceryBill SET Spent = Spent + $/amount/ WHERE email = $/email/', { email, amount }));
   res.end();
 });
 
-app.get('/groceries', (req, res) => {
+app.get('/groceries', async (req, res) => {
   res.json(await getGroceries());
   res.end();
 });
 
-app.get('/inventory', (req, res) => {
+app.get('/inventory', async (req, res) => {
   res.json(await getInventory());
   res.end();
 });
 
-app.post('/addGrocery', (req, res) => {
+app.post('/addGrocery', async (req, res) => {
   const groceries = await getGroceries();
   const id = groceries.length;
   const {name, amount, requestedBy} = JSON.parse(req.body);
@@ -332,7 +332,7 @@ app.post('/addGrocery', (req, res) => {
   res.end();
 });
 
-app.post('/addInventory', (req, res) => {
+app.post('/addInventory', async (req, res) => {
   const inventory = await getInventory();
   const id = inventory.length;
   const {name, amount, requestedBy} = JSON.parse(req.body);
@@ -340,24 +340,24 @@ app.post('/addInventory', (req, res) => {
   res.end();
 });
 
-app.put('/editGrocery', (req, res) => {
+app.put('/editGrocery', async (req, res) => {
   const {id, name, amount} = JSON.parse(req.body);
   await connectAndRun(db => db.none('UPDATE Grocery SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
   res.end();
 });
 
-app.put('/editInventory', (req, res) => {
+app.put('/editInventory', async (req, res) => {
   const {id, name, amount} = JSON.parse(req.body);
   await connectAndRun(db => db.none('UPDATE Inventory SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
   res.end();
 });
 
-app.delete('/removeGrocery:id', (req, res) => {
+app.delete('/removeGrocery:id', async (req, res) => {
   await connectAndRun(db => db.none('DELETE FROM Grocery WHERE id = $/id/', { id: req.params.id }));
   res.end();
 });
 
-app.delete('/removeInventory:id', (req, res) => {
+app.delete('/removeInventory:id', async (req, res) => {
   await connectAndRun(db => db.none('DELETE FROM Inventory WHERE id = $/id/', { id: req.params.id }));
   res.end();
 });
@@ -400,7 +400,7 @@ app.delete('/removeAptCost', (req, res) => {
   res.end();
 });
 
-app.get('/profiles', (req, res) => {
+app.get('/profiles', async (req, res) => {
   res.json(await connectAndRun(db => db.any('SELECT * FROM UserProfile', [])));
   res.end();
 })
