@@ -132,6 +132,7 @@ let aptCosts = [
 
 const express = require('express');
 const app = express();
+app.use(express.static('public'));
 const port = process.env.PORT || 3000
 
 const pgp = require("pg-promise")({
@@ -236,48 +237,12 @@ async function connectAndRun(task) {
   }
 }
 
-async function getProfiles() {
-  return await connectAndRun(db => db.any('SELECT * FROM UserProfile', []));
-}
-
-async function getUserPassword(email) {
-  return await connectAndRun(db => db.any('SELECT password FROM UserProfile WHERE email = $/email/', { email }));
-}
-
 async function getUserAptId(email){
   return await connectAndRun(db => db.any('SELECT AptId FROM UserProfile WHERE email = $/email/', { email }));
 }
 
-async function getUserBudget(email){
-  return await connectAndRun(db => db.any('SELECT GroceryBudget FROM UserGroceryBill WHERE email = $/email/', { email })) / 100;
-}
-
-async function getUserBill(email){
-  return await connectAndRun(db => db.any('SELECT Spent FROM UserGroceryBill WHERE email = $/email/', { email })) / 100;
-}
-
-async function addUserBill(email, amount){
-  return await connectAndRun(db => db.none('UPDATE UserGroceryBill SET Spent = Spent + $/amount/ WHERE email = $/email/', { email, amount }));
-}
-
-async function getRent(email) {
-  const id = await getUserAptId(email);
-  return await connectAndRun(db => db.any('SELECT Rent FROM Apartment WHERE id = $/id/', { id })) / 100;
-}
-
-async function getRentPayments(email) {
-  const id = await getUserAptId(email);
-  return await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE BillType = Rent', { id }));
-}
-
-async function getNumMembers(email) {
-  const id = await getUserAptId(email);
-  return await connectAndRun(db => db.any('SELECT NumMembers FROM Apartment WHERE id = $/id/', { id }));
-}
-
-async function getRentShares(email) {
-  const numMembers = await getNumMembers(email);
-  return 100 / numMembers //assume even split for now
+async function getFirstNameByEmail(email){
+  return await connectAndRun(db => db.any('SELECT fisrtName FROM UserProfile WHERE email = $/email/', { email }));
 }
 
 async function getGroceries() {
@@ -300,175 +265,101 @@ async function addUserProfile(firstName, lastName, email, password, phoneNumber,
   }));
 }
 
-async function addGrocery(name, quantity, requestedBy) {
-  const groceries = await getGroceries();
-  return await connectAndRun(db => db.none('INSERT INTO Grocery VALUES($/id/, $/name/, $/quantity/, $/requestedBy/)', {
-    id: groceries.length,
-    name: name,
-    quantity: quantity,
-    requestedBy: requestedBy
-  }));
-}
-
-async function addInventory(name, quantity, requestedBy) {
-  const inventory = await getInventory();
-  return await connectAndRun(db => db.none('INSERT INTO Inventory VALUES($/id/, $/name/, $/quantity/, $/requestedBy/)', {
-    id: inventory.length,
-    name: name,
-    quantity: quantity,
-    requestedBy: requestedBy
-  }));
-}
-
-async function editGrocery(id, name, amount) {
-  return await connectAndRun(db => db.none('UPDATE Grocery SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
-}
-
-async function editInventory(id, name, amount) {
-  return await connectAndRun(db => db.none('UPDATE Inventory SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
-}
-
-async function deleteGrocery(id) {
-  return await connectAndRun(db => db.none('DELETE FROM Grocery WHERE id = $/id/', { id }));
-}
-
-async function deleteInventory(id) {
-  return await connectAndRun(db => db.none('DELETE FROM Inventory WHERE id = $/id/', { id }));
-}
-
-
-app.use(express.static('public'));
-
 app.get('/', (req, res) => {
   res.sendFile('index.html');
   res.end();
 });
 
-app.get('/rentPayments', (req, res) => {
-  res.json(rentData.payments);
+app.get('/rentPayments', async (req, res) => {
+  const id = await getUserAptId(email);
+  res.json(await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE BillType = Rent', { id })));
   res.end();
 });
 
 app.get('/rent', (req, res) => {
-  res.json(rentData.totalRent);
+  const id = await getUserAptId(email);
+  res.json(await connectAndRun(db => db.any('SELECT Rent FROM Apartment WHERE id = $/id/', { id })) / 100);
   res.end();
 });
 
-app.post('/addPayment', (req, res) => {
-  let body = '';
-  req.on('data', data => body += data);
-  req.on('end', () => {
-    const element = JSON.parse(body);
-    rentData.payments.push(element);
-  });
+app.post('/addPayment', async (req, res) => {
+  const {email, amount} = JSON.parse(req.body);
+  const name = await getFirstNameByEmail(email);
+  await connectAndRun(db => db.none('INSERT INTO Grocery VALUES( $/name/, $/amount/)', { name, amount }));
   res.end();
 });
 
-app.get('/rentShare/:user', (req, res) => {
-  res.json(rentData.shares[req.params.user]);
+app.get('/rentShare/:email', async (req, res) => {
+  const id = await getUserAptId(req.params.email);
+  const numMembers =  await connectAndRun(db => db.any('SELECT NumMembers FROM Apartment WHERE id = $/id/', { id }));
+  res.json(100 / numMembers);
   res.end();
 });
 
-app.get('/budget/:user', (req, res) => {
-  res.json(groceryData.budgets[req.params.user]);
+app.get('/budget/:email', (req, res) => {
+  const email = req.params.email;
+  res.json(await connectAndRun(db => db.any('SELECT GroceryBudget FROM UserGroceryBill WHERE email = $/email/', { email })) / 100);
   res.end();
 });
 
-app.get('/bill/:user', (req, res) => {
-  res.json(groceryData.bills[req.params.user]);
+app.get('/bill/:email', (req, res) => {
+  const email = req.params.email;
+  res.json(await connectAndRun(db => db.any('SELECT Spent FROM UserGroceryBill WHERE email = $/email/', { email })) / 100);
   res.end();
 });
 
 app.put('/addBill', (req, res) => {
-  let body = '';
-  req.on('data', data => body += data);
-  req.on('end', () => {
-    const data = JSON.parse(body);
-    groceryData.bills[data.user] += data.amount;
-  });
+  const {email, amount} = JSON.parse(req.body);
+  await connectAndRun(db => db.none('UPDATE UserGroceryBill SET Spent = Spent + $/amount/ WHERE email = $/email/', { email, amount }));
   res.end();
 });
 
 app.get('/groceries', (req, res) => {
-  res.json(groceryData.groceries);
+  res.json(await getGroceries());
   res.end();
 });
 
 app.get('/inventory', (req, res) => {
-  res.json(groceryData.inventory);
+  res.json(await getInventory());
   res.end();
 });
 
 app.post('/addGrocery', (req, res) => {
-  let body = '';
-  req.on('data', data => body += data);
-  req.on('end', () => {
-    const element = JSON.parse(body);
-    element['id'] = groceryData.groceries.length;
-    groceryData.groceries.push(element);
-  });
+  const groceries = await getGroceries();
+  const id = groceries.length;
+  const {name, amount, requestedBy} = JSON.parse(req.body);
+  await connectAndRun(db => db.none('INSERT INTO Grocery VALUES($/id/, $/name/, $/quantity/, $/requestedBy/)', {id, name, amount, requestedBy}));
   res.end();
 });
 
 app.post('/addInventory', (req, res) => {
-  let body = '';
-  req.on('data', data => body += data);
-  req.on('end', () => {
-    const element = JSON.parse(body);
-    element['id'] = groceryData.inventory.length;
-    groceryData.inventory.push(element);
-  });
+  const inventory = await getInventory();
+  const id = inventory.length;
+  const {name, amount, requestedBy} = JSON.parse(req.body);
+  await connectAndRun(db => db.none('INSERT INTO Inventory VALUES($/id/, $/name/, $/quantity/, $/requestedBy/)', {id, name, amount, requestedBy}));
   res.end();
 });
 
 app.put('/editGrocery', (req, res) => {
-  let body = '';
-  req.on('data', data => body += data);
-  req.on('end', () => {
-    const element = JSON.parse(body);
-    const index = groceryData.groceries.findIndex((obj) => obj.id === element.id)
-    groceryData.groceries[index].name = element.name;
-    groceryData.groceries[index].amount = element.amount;
-  });
+  const {id, name, amount} = JSON.parse(req.body);
+  await connectAndRun(db => db.none('UPDATE Grocery SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
   res.end();
 });
 
 app.put('/editInventory', (req, res) => {
-  let body = '';
-  req.on('data', data => body += data);
-  req.on('end', () => {
-    const element = JSON.parse(body);
-    const index = groceryData.inventory.findIndex((obj) => obj.id === element.id)
-    groceryData.inventory[index].name = element.name;
-    groceryData.inventory[index].amount = element.amount;
-  });
+  const {id, name, amount} = JSON.parse(req.body);
+  await connectAndRun(db => db.none('UPDATE Inventory SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
   res.end();
 });
 
-app.delete('/removeGrocery', (req, res) => {
-  let body = '';
-  req.on('data', data => body += data);
-  req.on('end', () => {
-    const element = JSON.parse(body);
-    const index = groceryData.groceries.findIndex((obj) => obj.id === element.id)
-    groceryData.groceries.splice(index, 1);
-  });
+app.delete('/removeGrocery:id', (req, res) => {
+  await connectAndRun(db => db.none('DELETE FROM Grocery WHERE id = $/id/', { id: req.params.id }));
   res.end();
 });
 
-app.delete('/removeInventory', (req, res) => {
-  let body = '';
-  req.on('data', data => body += data);
-  req.on('end', () => {
-    const element = JSON.parse(body);
-    const index = groceryData.inventory.findIndex((obj) => obj.id === element.id)
-    groceryData.inventory.splice(index, 1);
-  });
+app.delete('/removeInventory:id', (req, res) => {
+  await connectAndRun(db => db.none('DELETE FROM Inventory WHERE id = $/id/', { id: req.params.id }));
   res.end();
-});
-
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
 });
 
 app.get('/aptCosts', (req, res) => {
@@ -509,10 +400,8 @@ app.delete('/removeAptCost', (req, res) => {
   res.end();
 });
 
-
-
 app.get('/profiles', (req, res) => {
-  res.json(userProfiles.profiles);
+  res.json(await connectAndRun(db => db.any('SELECT * FROM UserProfile', [])));
   res.end();
 })
 
@@ -528,7 +417,6 @@ app.get('/loginProfile/:email', (req, res) => {
   res.end();
 });
 
-
 app.post('/userProfile', (req, res) => {
   let body = '';
   req.on('data', data => body += data);
@@ -539,3 +427,6 @@ app.post('/userProfile', (req, res) => {
   });
 });
 
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+});

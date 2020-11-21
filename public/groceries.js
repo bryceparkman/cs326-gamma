@@ -19,7 +19,7 @@ async function addBill(user, amount) {
     await fetch('/addBill', {
         method: 'PUT',
         body: JSON.stringify({
-            user,
+            email: user,
             amount
         })
     });
@@ -66,9 +66,8 @@ function editItem(isGrocery, element) {
 
 async function removeItem(type, element) {
     const t = (type === 'groceries' ? 'Grocery' : 'Inventory')
-    await fetch('/remove' + t, {
-        method: 'DELETE',
-        body: JSON.stringify(element)
+    await fetch('/remove' + t + '/' + element.id, {
+        method: 'DELETE'
     })
     await getTable(type);
 }
