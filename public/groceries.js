@@ -48,7 +48,7 @@ async function addGrocery() {
     let billValue = parseFloat(input.value);
     if (!isNaN(billValue) && billValue >= 0) {
         if (moneyCount + billValue > budget) {
-            progress.classList.remove(currentUser.replace(/@/,'') + 'BgColor');
+            progress.classList.remove((currentUser.replace('@','')).replace('.','') + 'BgColor');
             progress.style.backgroundColor = '#ff0000';
             progress.innerHTML = "Over budget"
         }
@@ -98,8 +98,7 @@ async function getTable(type) {
             stringify = stringify.replace('\'', '&apos');
             const res = await fetch('/name/' + json[i].requestedby);
             const firstName = await res.json();
-            console.log(json[i].amount)
-            htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + json[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (json[i].amount.length > 0 ? json[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + json[i].requestedby.replace(/@/,'') + "Color'>Requested by " + firstName + "</p></div><div class='card-footer text-muted'><a href='#_' class='card-link' onclick='editItem(" + (type === 'groceries') + "," + stringify +  ")'>Edit</a><a href='#_' class='card-link float-right' onclick='removeItem(\"" + type + "\", " + stringify +  ")'>Remove</a></div></div></div>";
+            htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + json[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (json[i].amount.length > 0 ? json[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + (json[i].requestedby.replace('@','')).replace('.','') + "Color'>Requested by " + firstName + "</p></div><div class='card-footer text-muted'><a href='#_' class='card-link' onclick='editItem(" + (type === 'groceries') + "," + stringify +  ")'>Edit</a><a href='#_' class='card-link float-right' onclick='removeItem(\"" + type + "\", " + stringify +  ")'>Remove</a></div></div></div>";
         }
         htmlString += '</div>';
         nodes.push(htmlString);
@@ -108,7 +107,7 @@ async function getTable(type) {
         }
         for(const user of users){
             const userColor = users.find(dataUser => dataUser.email === user.email).color;
-            const elements = document.getElementsByClassName(user.email.replace(/@/,'') + 'Color');
+            const elements = document.getElementsByClassName((user.email.replace('@','')).replace('.','') + 'Color');
             for(let i=0;i<elements.length;i++){
                 const node = elements.item(i);
                 node.style.color = '#' + userColor;
