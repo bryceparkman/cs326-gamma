@@ -1,19 +1,14 @@
 let users = []
 let utilities = []
 
-function getUsers() {
-
-    users = [
-        { id: 'leon@gmail.com', name: 'leon', color: '' }, 
-        { id: 'hannah@gmail.com', name: 'hannah', color: '' }, 
-        { id: 'bryce@gmail.com', name: 'bryce', color: '' }
-    ]
-
+async function getUsers(id) {
+    let data = await fetch('/allUsersInApt/' + id);
+    let json = await data.json();
     return users;
 }
 
-async function getAptCosts() {
-    let data = await fetch('/aptCosts');
+async function getAptCosts(id) {
+    let data = await fetch('/aptCosts/' + id);
     let json = await data.json();
     return json;
 }
@@ -31,15 +26,10 @@ function loadUsers() { // load users in apartment group with given code
 
 function loadAptCosts() { // load users in apartment group with given code
 
-    utilities = [
-        { name: 'Rent', cost: 3000, contributers: ['leon@gmail.com', 'hannah@gmail.com', 'bryce@gmail.com']},
-        { name: 'Gas', cost: 50, contributers: ['leon@gmail.com', 'hannah@gmail.com', 'bryce@gmail.com']}
-    ]
-
     // front end stuff
     for (let i = 0; i < utilities.length; i++) {
         let utility = utilities[i];
-        addUtility(i, utility.name, utility.cost, utility.contributers);
+        addUtility(i, utility.name, utility.cost, utility.contributors);
     }
 
     return utilities;
@@ -60,7 +50,7 @@ function addUser(user) {
     container.appendChild(containerItem);
 }
 
-function addUtility(index, name, cost, contributers) {
+function addUtility(index, name, cost, contributors) {
     let container = document.getElementById('aptUtilitiesBox');
     let column = document.createElement('div');
     column.className = 'col px-3 mr-2';
@@ -79,11 +69,11 @@ function addUtility(index, name, cost, contributers) {
     utilityInfoLabelsBox.appendChild(priceLbl);
     let utilityContributionBar = document.createElement('div');
     utilityContributionBar.className = 'progress contributionPercentageBar';
-    for (let i = 0; i < contributers.length; i++) {
-        let id = contributers[i];
+    for (let i = 0; i < contributors.length; i++) {
+        let id = contributors[i];
         let subBar = document.createElement('div');
         subBar.className = 'progress-bar';
-        subBar.style.width = 100/contributers.length;
+        subBar.style.width = 100/contributors.length;
         let user = users.find(user => user.id === id);
         subBar.style.color = user.color;
     }
@@ -165,8 +155,8 @@ function openModal(isAdd, index) {
             span.appendChild(input);
             content.appendChild(span);
 
-            // if id is in utility.contributers, add check mark next to name
-            if (utility.contributers.includes(users[i].id)) {
+            // if id is in utility.contributors, add check mark next to name
+            if (utility.contributors.includes(users[i].id)) {
                 input.checked = true;
             } else {
                 input.checked = false;
@@ -199,10 +189,10 @@ async function submitModal(isAdd, index) {
             let utility = { 
                 name: inputName.value, 
                 cost: parseInt(inputCost.value), 
-                contributers: []
+                contributors: []
             };
             for (user in users) {
-                utility.contributers.push(user.id);
+                utility.contributors.push(user.id);
             }
             utilities.push(utility);
 
@@ -211,7 +201,7 @@ async function submitModal(isAdd, index) {
                 body: JSON.stringify({
                     name: utility.name,
                     cost: utility.cost,
-                    contributers: utility.contributers
+                    contributors: utility.contributors
                 })
             })
 
@@ -220,12 +210,20 @@ async function submitModal(isAdd, index) {
             let utility = utilities[index];
             utility.name = inputName.value;
             utility.cost = parseInt(inputCost.value);
-            utility.contributers = [];
+            let oldContributors = utility.contributors;
+            let contributorsAdded = [];
+            let contributorsDropped = [];
+            utility.contributors = [];
             for (let i = 0; i < users.length; i++) {
                 let user = users[i];
                 let input = document.getElementById('contributer' + i);
-                if (input.checked == true) {
-                    utility.contributers.push(user.id);
+                if (input.checked === true) {
+                    utility.contributors.push(user.id);
+                }
+                if (input.checked === true && !oldContributors.includes(user.id)) {
+                    contributorsAdded.push(user.id);
+                } else if (input.checked === false && oldContributors.includes(user.id)) {
+                    contributorsDropped.push(user.id);
                 }
             }
 
@@ -234,7 +232,9 @@ async function submitModal(isAdd, index) {
                 body: JSON.stringify({
                     name: utility.name,
                     cost: utility.cost,
-                    contributers: utility.contributers
+                    contributors: utility.contributors,
+                    contributorsAdded: contributorsAdded,
+                    contributorsDropped: contributorsDropped
                 })
             });
 
@@ -246,8 +246,9 @@ async function submitModal(isAdd, index) {
 }
 
 window.addEventListener('load', () => {
-    users = getUsers();
-    utilities = getAptCosts();
+    id = '123'
+    users = getUsers(id);
+    utilities = getAptCosts(id);
     loadUsers();
     loadAptCosts();
 });
