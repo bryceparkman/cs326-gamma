@@ -1,19 +1,14 @@
 let users = []
 let utilities = []
 
-function getUsers() {
-
-    users = [
-        { id: 'leon@gmail.com', name: 'leon', color: '' }, 
-        { id: 'hannah@gmail.com', name: 'hannah', color: '' }, 
-        { id: 'bryce@gmail.com', name: 'bryce', color: '' }
-    ]
-
+async function getUsers(id) {
+    let data = await fetch('/allUsersInApt/' + id);
+    let json = await data.json();
     return users;
 }
 
-async function getAptCosts() {
-    let data = await fetch('/aptCosts');
+async function getAptCosts(id) {
+    let data = await fetch('/aptCosts/' + id);
     let json = await data.json();
     return json;
 }
@@ -31,23 +26,10 @@ function loadUsers() { // load users in apartment group with given code
 
 function loadAptCosts() { // load users in apartment group with given code
 
-    utilities = [
-        { name: 'Rent', cost: 3000, contributions: [
-            { user: { id: 'leon@gmail.com', name: 'leon', color: '20b2aa' }, percent: 33 }, 
-            { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'daa520' }, percent: 33 }, 
-            { user: { id: 'bryce@gmail.com', name: 'bryce', color: '9400D3' }, percent: 34 }
-        ]},
-        { name: 'Gas', cost: 50, contributions: [
-            { user: { id: 'leon@gmail.com', name: 'leon', color: '20b2aa' }, percent: 33 }, 
-            { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'daa520' }, percent: 33 }, 
-            { user: { id: 'bryce@gmail.com', name: 'bryce', color: '9400D3' }, percent: 34 }
-        ]}
-    ]
-
     // front end stuff
     for (let i = 0; i < utilities.length; i++) {
         let utility = utilities[i];
-        addUtility(i, utility.name, utility.cost, utility.contributions);
+        addUtility(i, utility.name, utility.cost, utility.contributors);
     }
 
     return utilities;
@@ -68,7 +50,7 @@ function addUser(user) {
     container.appendChild(containerItem);
 }
 
-function addUtility(index, name, cost, contributions) {
+function addUtility(index, name, cost, contributors) {
     let container = document.getElementById('aptUtilitiesBox');
     let column = document.createElement('div');
     column.className = 'col px-3 mr-2';
@@ -87,13 +69,13 @@ function addUtility(index, name, cost, contributions) {
     utilityInfoLabelsBox.appendChild(priceLbl);
     let utilityContributionBar = document.createElement('div');
     utilityContributionBar.className = 'progress contributionPercentageBar';
-    for (let i = 0; i < contributions.length; i++) {
-        // add contributing percentages for each user
-        let contribution = contributions[i];
+    for (let i = 0; i < contributors.length; i++) {
+        let id = contributors[i];
         let subBar = document.createElement('div');
         subBar.className = 'progress-bar';
-        subBar.style.width = contribution.percent;
-        subBar.style.color = contribution.user.color;
+        subBar.style.width = 100/contributors.length;
+        let user = users.find(user => user.id === id);
+        subBar.style.color = user.color;
     }
     let footer = document.createElement('div');
     footer.className = 'card-footer text-muted'
@@ -160,17 +142,26 @@ function openModal(isAdd, index) {
         inputName.value = utilities[index].name;
         let inputCost = document.getElementById('inputCostEdit');
         inputCost.value = utilities[index].cost;
+        let utility = utilities[index]
         for (let i = 0; i < users.length; i++) {
             let span = document.createElement('span');
             let label = document.createElement('label');
             let input = document.createElement('input');
             span.className = 'inputMb'
-            label.innerHTML = users[i].name + '\'s contibution: %';
-            input.id = 'contribution' + i
+            label.innerHTML = users[i].name;
+            input.type = 'checkbox';
+            input.id = 'contributer' + i;
             span.appendChild(label);
             span.appendChild(input);
             content.appendChild(span);
-            input.value = utilities[index].contributions[i].percent;
+
+            // if id is in utility.contributors, add check mark next to name
+            if (utility.contributors.includes(users[i].id)) {
+                input.checked = true;
+            } else {
+                input.checked = false;
+            }
+
         }
         let button = document.createElement('button');
         button.innerHTML = 'save';
@@ -198,10 +189,10 @@ async function submitModal(isAdd, index) {
             let utility = { 
                 name: inputName.value, 
                 cost: parseInt(inputCost.value), 
-                contributions: []
+                contributors: []
             };
             for (user in users) {
-                utility.contributions.push({ user: user, percent: 100/users.length});
+                utility.contributors.push(user.id);
             }
             utilities.push(utility);
 
@@ -210,7 +201,7 @@ async function submitModal(isAdd, index) {
                 body: JSON.stringify({
                     name: utility.name,
                     cost: utility.cost,
-                    contributions: utility.contributions
+                    contributors: utility.contributors
                 })
             })
 
@@ -219,10 +210,21 @@ async function submitModal(isAdd, index) {
             let utility = utilities[index];
             utility.name = inputName.value;
             utility.cost = parseInt(inputCost.value);
+            let oldContributors = utility.contributors;
+            let contributorsAdded = [];
+            let contributorsDropped = [];
+            utility.contributors = [];
             for (let i = 0; i < users.length; i++) {
                 let user = users[i];
-                let contribution = document.getElementById('contribution' + i);
-                utility.contributions[i] = { user: user, percent: parseInt(contribution.value)}
+                let input = document.getElementById('contributer' + i);
+                if (input.checked === true) {
+                    utility.contributors.push(user.id);
+                }
+                if (input.checked === true && !oldContributors.includes(user.id)) {
+                    contributorsAdded.push(user.id);
+                } else if (input.checked === false && oldContributors.includes(user.id)) {
+                    contributorsDropped.push(user.id);
+                }
             }
 
             await fetch('/editAptCost', {
@@ -230,7 +232,9 @@ async function submitModal(isAdd, index) {
                 body: JSON.stringify({
                     name: utility.name,
                     cost: utility.cost,
-                    contributions: utility.contributions
+                    contributors: utility.contributors,
+                    contributorsAdded: contributorsAdded,
+                    contributorsDropped: contributorsDropped
                 })
             });
 
@@ -242,9 +246,9 @@ async function submitModal(isAdd, index) {
 }
 
 window.addEventListener('load', () => {
-    users = getUsers();
-    console.log(users);
-    utilities = getAptCosts();
+    id = '123'
+    users = getUsers(id);
+    utilities = getAptCosts(id);
     loadUsers();
     loadAptCosts();
 });

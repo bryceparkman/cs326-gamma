@@ -112,6 +112,16 @@ userProfiles.profiles.push(prof3);
 
 let aptCosts = [
 
+  { name: 'Rent', cost: 3000, contributions: [
+      { user: { id: 'leon@gmail.com', name: 'leon', color: '0000ff' }, percent: 33 }, 
+      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'ff0000' }, percent: 33 }, 
+      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '00ff00' }, percent: 34 }
+  ]},
+  { name: 'Gas', cost: 50, contributions: [
+      { user: { id: 'leon@gmail.com', name: 'leon', color: '0000ff' }, percent: 33 }, 
+      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'ff0000' }, percent: 33 }, 
+      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '00ff00' }, percent: 34 }
+  ]},
   {
     name: 'Rent', cost: 3000, contributions: [
       { user: { id: 'leon@gmail.com', name: 'leon', color: '20b2aa' }, percent: 33 },
@@ -184,6 +194,12 @@ function createTables() {
 
   //Apartment Table
   db.none("CREATE TABLE IF NOT EXISTS Apartment(id varchar(45), Rent int, NumMembers int, primary key (id))", (err, res) => {
+    console.log(err, res);
+    db.end();
+  });
+
+  //Costs Table, each bill has a relating costs table
+  db.none("CREATE TABLE Costs(AptCode varchar(45), BillName varchar foreign key references Bill, UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
     console.log(err, res);
     db.end();
   });
@@ -387,8 +403,137 @@ app.delete('/removeInventory:id', async (req, res) => {
   res.end();
 });
 
-app.get('/aptCosts', (req, res) => {
-  res.send(aptCosts);
+async function getAptCosts(id) {
+
+  // grab utilities
+  let utilities = await connectAndRun(db => db.any('SELECT * FROM UtilityBills WHERE id = $/id/'), {
+    id: id,
+  })
+
+  // populate utilities with contributors
+  for (let i = 0; i < utilities.length; i++) {
+
+    let utility = utilities[i];
+    let contributors = await connectAndRun(db => db.any('SELECT email FROM UserPayments WHERE id = $/id/ AND BillName = $/billName/'), {
+      id: id,
+      billName: utility.name
+    })
+    utility['contributors'] = contributors;
+
+  }
+
+  return utilities;
+}
+
+async function addAptCosts(id, name, cost, contributors) {
+  
+  // add utility
+  await connectAndRun(db => db.none('INSERT INTO UtilityBills VALUES($/billName/, $/id/, $/cost/, $/numMembers/)'), {
+    name: name,
+    id: id,
+    cost: cost,
+    numMembers: contributors.length,
+  })
+
+  // add user payments
+  for (let i = 0; i < contributors.length; i++) {
+    await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/id/, $/billName/, $/cost/, $/type/)'), {
+      email: contributors[i],
+      name: '',
+      id: id,
+      billName: name,
+      cost: cost,
+      type: name === 'rent' ? 'rent' : 'utility',
+    })
+  }
+  return
+}
+
+async function editAptCosts(id, name, cost, contributors, contributorsAdded, contributorsDropped) {
+  
+  // update utility
+  await connectAndRun(db => db.none('UPDATE UtilityBills SET cost = $/cost/, numMembers = $/numMembers/ WHERE AptCode = $/id/ AND name = $/name/'), {
+    id: id,
+    name: name,
+    cost: cost,
+    numMembers: contributors.length,
+  })
+
+  // add user payment for new contributors
+  for (let i = 0; i < contributorsAdded.length; i++) {
+    await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/id/, $/billName/, $/cost/, $/type/)'), {
+      email: contributersAdded[i],
+      name: '',
+      id: id,
+      billName: name,
+      cost: cost,
+      type: name === 'rent' ? 'rent' : 'utility',
+    })
+  }
+
+  // remove user payment for new contributors
+  for (let i = 0; i < contributorsDropped.length; i++) {
+    await connectAndRun(db => db.none('DELETE FROM UserPayments WHERE id = $/id/ AND email = $/email/ AND BillName = $/billName/'), {
+      email: contributersDropped[i],
+      id: id,
+      billName: name,
+    })
+  }
+
+  // update user payments in case cost changed
+  await connectAndRun(db => db.none('UPDATE UserPayments SET Payment = $/payment/ WHERE id = $/id/ AND BillName = $/billName/'), {
+    id: id,
+    email: contributors[i],
+    payment: cost/contributors.length,
+    billName: name,
+  })
+
+  return
+}
+
+async function deleteAptCosts(id, name) {
+
+  // delete utility
+  await connectAndRun(db => db.none('DELETE FROM UtilityBills WHERE AptCode = $/code/ AND name = $/name/'), {
+    id: id,
+    name: name,
+  })
+
+  // delete user payments
+  await connectAndRun(db => db.none('DELETE FROM UserPayments WHERE id = $/code/ AND BillName = $/billName/'), {
+    id: id,
+    billName: name,
+  })
+
+  return
+}
+
+async function getAptCodes() {
+  // get all apt codes
+  return await connectAndRun(db => db.none('SELECT id FROM Apartments'))
+}
+
+async function getUsersInApt(id) {
+  // get all apt codes
+  return await connectAndRun(db => db.none('SELECT * FROM UserProfile WHERE AptId = $/id/', {
+    id: id,
+  }))
+}
+
+async function addAptCode(id, rent) {
+  
+  // add utility
+  await connectAndRun(db => db.none('INSERT INTO Apartment VALUES($/id/, $/rent/, $/numMembers/)'), {
+    id: id,
+    rent: rent,
+    numMembers: 1,
+  })
+
+  return
+}
+
+app.get('/aptCosts/:id', (req, res) => {
+  res.send(getAptCosts(req.params.id));
   res.end();
 });
 
@@ -397,8 +542,7 @@ app.post('/addAptCost', (req, res) => {
   req.on('data', data => body += data);
   req.on('end', () => {
     const element = JSON.parse(body);
-    aptCosts.push(element);
-    console.log(aptCosts);
+    addAptCosts(element.id, element.name, element.cost, element.contributors);
   });
   res.end();
 });
@@ -408,8 +552,7 @@ app.put('/editAptCost', (req, res) => {
   req.on('data', data => body += data);
   req.on('end', () => {
     const element = JSON.parse(body);
-    const index = aptCosts.findIndex((obj) => obj.name === element.name);
-    aptCosts[index] = element;
+    editAptCosts(element.id, element.name, element.cost, element.contributors, element.contributorsAdded, element.contributorsDropped);
   });
   res.end();
 });
@@ -419,14 +562,33 @@ app.delete('/removeAptCost', (req, res) => {
   req.on('data', data => body += data);
   req.on('end', () => {
     const element = JSON.parse(body);
-    const index = aptCosts.findIndex((obj) => obj.name === element.name);
-    aptCosts = aptCosts.splice(index, 1);
+    deleteAptCosts(element.id, element.name);
   });
   res.end();
 });
 
-app.get('/profiles', async (req, res) => {
-  res.json(await connectAndRun(db => db.any('SELECT * FROM UserProfile', [])));
+app.get('/allAptCodes', (req, res) => {
+  res.send(getAptCodes());
+  res.end();
+});
+
+app.get('/allUsersInApt/:id', (req, res) => {
+  res.send(getUsersInApt(req.params.id));
+  res.end();
+});
+
+app.post('/createApartment', (req, res) => {
+  let body = '';
+  req.on('data', data => body += data);
+  req.on('end', () => {
+    const element = JSON.parse(body);
+    addAptCode(element.id, element.rent);
+  });
+  res.end();
+});
+
+app.get('/profiles', (req, res) => {
+  res.json(userProfiles.profiles);
   res.end();
 })
 

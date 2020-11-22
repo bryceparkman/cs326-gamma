@@ -30,10 +30,6 @@ async function createApartment() {
         return;
     }
 
-    let rent = {
-        name: 'rent',
-        cost: rentCost
-    };
     utilities.push(rent)
 
     for (let i = 0; i < utilities.length; i++) {
@@ -43,13 +39,33 @@ async function createApartment() {
             body: JSON.stringify({
                 name: utility.name,
                 cost: utility.cost,
-                contributions: { user: user, percent: 100 }
+                contributors: []
             })
         })
     }
 
+    let id = generateAptCode();
+
+    await fetch('/createApartment', {
+        method: 'POST',
+        body: JSON.stringify({
+            id: id,
+            rent: rentCost,
+        })
+    })
+
     window.location.href = "apt-creation.html";
 
+}
+
+async function generateAptCode() {
+    let data = await fetch('/allAptCodes/' + id);
+    let allAptCodes = await data.json();
+    let newCode = '_' + Math.random().toString(36).substr(2, 9);
+    while (allAptCodes.includes(newCode)) {
+        newCode = '_' + Math.random().toString(36).substr(2, 9);
+    }
+    return newCode
 }
 
 function openModal() {
