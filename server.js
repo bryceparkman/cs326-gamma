@@ -142,7 +142,7 @@ function createTables() {
   });
 
   //Costs Table, each bill has a relating costs table
-  db.none("CREATE TABLE Costs(AptCode varchar(45), BillName varchar foreign key references Bill, UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
+  db.none("CREATE TABLE Costs(AptCode varchar(45), BillName varchar(45), UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
     console.log(err, res);
     db.end();
   });
@@ -180,7 +180,7 @@ async function addTestData(){
   await connectAndRun(db => db.none('INSERT INTO UserGroceryBill VALUES( $/email/, $/budget/, $/spent/)', { email: 'hnoordeen@umass.edu', budget: 20000, spent: 0 }));
 }
 
-addTestData();
+// addTestData();
 
 async function connectAndRun(task) {
   let connection = null;
@@ -523,8 +523,8 @@ app.post('/createApartment', (req, res) => {
   res.end();
 });
 
-app.get('/profiles', (req, res) => {
-  res.json(userProfiles.profiles);
+app.get('/profiles', async (req, res) => {
+  res.json(await connectAndRun(db => db.any('SELECT * FROM UserProfile', [])));
   res.end();
 })
 
