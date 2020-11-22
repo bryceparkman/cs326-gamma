@@ -1,4 +1,4 @@
-let currentUser = 'hnoordeen@umass.edu';
+let currentUser = 'bparkman@umass.edu';
 let currentElement = null;
 let users;
 
