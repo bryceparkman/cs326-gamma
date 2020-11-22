@@ -1,78 +1,3 @@
-const rentData = {
-  totalRent: 600,
-  shares: {
-    'Bryce': 33.3333,
-    'Leon': 33.3333,
-    'Hannah': 33.3333
-  },
-  payments: []
-};
-
-const groceryData = {
-  bills: {
-    'Bryce': 100,
-    'Hannah': 0,
-    'Leon': 0
-  },
-  budgets: {
-    'Bryce': 200,
-    'Hannah': 200,
-    'Leon': 200
-  },
-  groceries: [
-    {
-      id: 0,
-      name: 'Eggs',
-      amount: '1 dozen',
-      requestedBy: 'Bryce'
-    },
-    {
-      id: 1,
-      name: 'Soccer ball cupcakes',
-      amount: null,
-      requestedBy: 'Leon'
-    },
-    {
-      id: 2,
-      name: 'Tropicana OJ',
-      amount: '1 gallon',
-      requestedBy: 'Hannah'
-    },
-    {
-      id: 3,
-      name: 'Russet Potatoes',
-      amount: '1 bag',
-      requestedBy: 'Bryce'
-    },
-  ],
-  inventory: [
-    {
-      id: 0,
-      name: 'Orange bell pepper',
-      amount: '2',
-      requestedBy: 'Bryce'
-    },
-    {
-      id: 1,
-      name: '2% Milk',
-      amount: 'Half gallon',
-      requestedBy: 'Leon'
-    },
-    {
-      id: 2,
-      name: 'Ben & Jerry\'s',
-      amount: '1 pint',
-      requestedBy: 'Hannah'
-    },
-    {
-      id: 3,
-      name: 'Paprika',
-      amount: null,
-      requestedBy: 'Bryce'
-    },
-  ]
-}
-
 let prof1 = {
   firstName: "Hannah",
   lastName: "Noordeen",
@@ -141,10 +66,28 @@ let aptCosts = [
 
 
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+
 const app = express();
+
 app.use(express.static('public'));
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+let secret;
+
+if (!process.env.SESSION_SECRET) { //If not on Heroku deployment
+  const secrets = require('./secrets.json');
+  secret = secrets.session_secret;
+} else {
+  secret = process.env.SESSION_SECRET;
+}
+
+app.use(session({ secret, resave: true, saveUninitialized: false }));
+
+
 const port = process.env.PORT || 3000
 
 const pgp = require("pg-promise")({
@@ -199,7 +142,7 @@ function createTables() {
   });
 
   //Costs Table, each bill has a relating costs table
-  db.none("CREATE TABLE Costs(AptCode varchar(45), BillName varchar foreign key references Bill, UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
+  db.none("CREATE TABLE Costs(AptCode varchar(45), BillName varchar(45), UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
     console.log(err, res);
     db.end();
   });
@@ -229,25 +172,15 @@ createTables();
 async function addTestData(){
   await connectAndRun(db => db.none('INSERT INTO Apartment VALUES( $/id/, $/rent/, $/num/)', { id: 0, rent: 75000, num: 3 }));
   await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES( $/firstname/, $/lastname/, $/email/, $/password/, $/phonenumber/, $/aptid/, $/color/)', {  firstname: 'Bryce', lastname: 'Parkman', email: 'bparkman@umass.edu', password: 'brycepassword', phonenumber: '', aptid: 0, color: 'ff0000' }));
-  const {id, name, amount, requestedBy} = groceryData.groceries[0];
+  await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES( $/firstname/, $/lastname/, $/email/, $/password/, $/phonenumber/, $/aptid/, $/color/)', {  firstname: 'Hannah', lastname: 'Noordeen', email: 'hnoordeen@umass.edu', password: 'hannahpassword', phonenumber: '', aptid: 0, color: '00ff00' }));
+  const {id, name, amount, requestedBy} = {id: 0, name: 'Eggs', amount: '1 dozen', requestedBy: 'bparkman@umass.edu'};
   const aptid = await getUserAptId('bparkman@umass.edu')
   await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
+  await connectAndRun(db => db.none('INSERT INTO UserGroceryBill VALUES( $/email/, $/budget/, $/spent/)', { email: 'bparkman@umass.edu', budget: 20000, spent: 0 }));
+  await connectAndRun(db => db.none('INSERT INTO UserGroceryBill VALUES( $/email/, $/budget/, $/spent/)', { email: 'hnoordeen@umass.edu', budget: 20000, spent: 0 }));
 }
 
-//addTestData();
-
-async function testFunctions(){
-  console.log('AptId by email:', await getUserAptId('bparkman@umass.edu'));
-  console.log('First name by email:', await getFirstNameByEmail('bparkman@umass.edu'));
-  console.log('Groceries', await getGroceries());
-  console.log('Inventory', await getInventory());
-  let id = await getUserAptId('bparkman@umass.edu');
-  const { rent } = await connectAndRun(db => db.one('SELECT Rent FROM Apartment WHERE id = $/id/', { id }));
-  console.log('Rent: ', rent / 100);
-  console.log('Rent payments: ', await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE aptid = $/id/ AND billtype = $/type/', { id, type: 'Rent' })))
-}
-
-testFunctions();
+// addTestData();
 
 async function connectAndRun(task) {
   let connection = null;
@@ -272,7 +205,7 @@ async function getUserAptId(email){
 }
 
 async function getFirstNameByEmail(email){
-  const { firstname } =  await connectAndRun(db => db.one('SELECT firstName FROM UserProfile WHERE email = $/email/', { email }));
+  const { firstname } = await connectAndRun(db => db.one('SELECT firstName FROM UserProfile WHERE email = $/email/', { email }));
   return firstname;
 }
 
@@ -433,6 +366,10 @@ async function addAptCode(id, rent) {
   return;
 }
 
+//async function getEmails() {
+  //return await connectAndRun(db => db.any('SELECT email from userprofile;'));
+//}
+
 app.get('/', (req, res) => {
   res.sendFile('index.html');
   res.end();
@@ -451,8 +388,9 @@ app.get('/rent', async (req, res) => {
   res.end();
 });
 
-app.get('/name:email', async (req, res) => {
-  return await getFirstNameByEmail(req.params.email);
+app.get('/name/:email', async (req, res) => {
+  res.json(await getFirstNameByEmail(req.params.email));
+  res.end();
 })
 
 app.post('/addPayment', async (req, res) => {
@@ -502,38 +440,40 @@ app.get('/inventory', async (req, res) => {
 
 app.post('/addGrocery', async (req, res) => {
   const groceries = await getGroceries();
+  const aptid = await getUserAptId('bparkman@umass.edu');
   const id = groceries.length;
   const {name, amount, requestedBy} = req.body;
-  await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/id/, $/name/, $/quantity/, $/requestedBy/)', {id, name, amount, requestedBy}));
+  await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
   res.end();
 });
 
 app.post('/addInventory', async (req, res) => {
   const inventory = await getInventory();
+  const aptid = await getUserAptId('bparkman@umass.edu');
   const id = inventory.length;
   const {name, amount, requestedBy} = req.body;
-  await connectAndRun(db => db.none('INSERT INTO Inventory VALUES($/id/, $/name/, $/quantity/, $/requestedBy/)', {id, name, amount, requestedBy}));
+  await connectAndRun(db => db.none('INSERT INTO Inventory VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
   res.end();
 });
 
 app.put('/editGrocery', async (req, res) => {
   const {id, name, amount} = req.body;
-  await connectAndRun(db => db.none('UPDATE Groceries SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
+  await connectAndRun(db => db.none('UPDATE Groceries SET Name = $/name/, Amount = $/amount/ WHERE id = $/id/', { id, name, amount }));
   res.end();
 });
 
 app.put('/editInventory', async (req, res) => {
   const {id, name, amount} = req.body;
-  await connectAndRun(db => db.none('UPDATE Inventory SET Name = $/name/, Amount = $/amount$ WHERE id = $/id/', { id, name, amount }));
+  await connectAndRun(db => db.none('UPDATE Inventory SET Name = $/name/, Amount = $/amount/ WHERE id = $/id/', { id, name, amount }));
   res.end();
 });
 
-app.delete('/removeGrocery:id', async (req, res) => {
+app.delete('/removeGrocery/:id', async (req, res) => {
   await connectAndRun(db => db.none('DELETE FROM Groceries WHERE id = $/id/', { id: req.params.id }));
   res.end();
 });
 
-app.delete('/removeInventory:id', async (req, res) => {
+app.delete('/removeInventory/:id', async (req, res) => {
   await connectAndRun(db => db.none('DELETE FROM Inventory WHERE id = $/id/', { id: req.params.id }));
   res.end();
 });
@@ -593,24 +533,36 @@ app.post('/createApartment', async (req, res) => {
   res.end();
 });
 
-app.get('/profiles', (req, res) => {
-  res.json(userProfiles.profiles);
+app.get('/profiles', async (req, res) => {
+  res.json(await connectAndRun(db => db.any('SELECT * FROM UserProfile', [])));
   res.end();
 })
 
 app.get('/loginProfile/:email', async (req, res) => {
   const email = req.params.email;
   res.end(JSON.stringify(
-    await connectAndRun(db => db.any('SELECT password from UserProfile WHERE email = $1', [email]))))});
+    await connectAndRun(db => db.one('SELECT password from UserProfile WHERE email = $1', [email]))))});
+
+app.get('/email/:email', async (req, res) => {
+  const email = req.params.email;
+  let isUnique = true;
+  let emailList = await connectAndRun(db => db.any('SELECT email from userprofile;'));
+  for (let tempemail = 0; tempemail < emailList.length; tempemail++){
+    let temp = emailList[tempemail].email;
+    if(temp === email)
+      isUnique = false;
+  }
+  if(isUnique)
+    res.json(("true"));
+  else 
+    res.json(("false"));
+  res.end();
+});
 
 app.post('/userProfile', (req, res) => {
-  let body = '';
-  req.on('data', data => body += data);
-  req.on('end', () => {
-    const data = JSON.parse(body);
-    addUserProfile(data.fname, data.lname, data.email, data.password, data.phoneNumber, data.aptCode, data.color);
-    res.end();
-  });
+  const {fname, lname, email, password, phoneNumber, aptCode, color} = req.body;
+  addUserProfile(fname, lname, email,password, phoneNumber, aptCode, color);
+  res.end();
 });
 
 app.listen(port, () => {
