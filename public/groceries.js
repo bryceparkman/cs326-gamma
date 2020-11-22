@@ -19,9 +19,12 @@ async function addBill(user, amount) {
     await fetch('/addBill', {
         method: 'PUT',
         body: JSON.stringify({
-            user,
+            email: user,
             amount
-        })
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
     });
 }
 
@@ -66,9 +69,8 @@ function editItem(isGrocery, element) {
 
 async function removeItem(type, element) {
     const t = (type === 'groceries' ? 'Grocery' : 'Inventory')
-    await fetch('/remove' + t, {
-        method: 'DELETE',
-        body: JSON.stringify(element)
+    await fetch('/remove' + t + '/' + element.id, {
+        method: 'DELETE'
     })
     await getTable(type);
 }
@@ -143,7 +145,10 @@ async function submitModal(type, isAdd) {
                     name: inputItem.value,
                     amount: inputAmount.value,
                     requestedBy: currentUser
-                })
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
         }
         else {
@@ -154,7 +159,10 @@ async function submitModal(type, isAdd) {
                     id: currentElement.id,
                     name: inputItem.value,
                     amount: inputAmount.value
-                })
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
         }
     }

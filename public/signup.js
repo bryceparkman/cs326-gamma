@@ -17,8 +17,9 @@ async function postData(){
     if (!response.ok) {
         console.error("Could not save the user profile to the server.");
     }
-
-    //window.location.href = "apt-creation.html";
+    else{
+        window.location.href = "apt-creation.html";
+    }
 
 }
 
