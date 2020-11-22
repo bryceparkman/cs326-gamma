@@ -82,7 +82,7 @@ if (!process.env.SESSION_SECRET) { //If not on Heroku deployment
   const secrets = require('./secrets.json');
   secret = secrets.session_secret;
 } else {
-  url = process.env.SESSION_SECRET;
+  secret = process.env.SESSION_SECRET;
 }
 
 app.use(session({ secret }));
