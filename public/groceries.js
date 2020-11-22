@@ -1,4 +1,4 @@
-let currentUser = 'Bryce';
+let currentUser = 'bparkman@umass.edu';
 let currentElement = null;
 let users;
 
@@ -20,7 +20,7 @@ async function addBill(user, amount) {
         method: 'PUT',
         body: JSON.stringify({
             email: user,
-            amount
+            amount: amount * 100
         }),
         headers: {
             'Content-Type': 'application/json'
@@ -48,8 +48,9 @@ async function addGrocery() {
     let billValue = parseFloat(input.value);
     if (!isNaN(billValue) && billValue >= 0) {
         if (moneyCount + billValue > budget) {
-            progress.classList.remove(currentUser.toLowerCase() + 'BgColor');
+            progress.classList.remove((currentUser.replace('@','')).replace('.','') + 'BgColor');
             progress.style.backgroundColor = '#ff0000';
+            progress.innerHTML = "Over budget"
         }
         await addBill(currentUser, billValue);
     }
@@ -95,7 +96,9 @@ async function getTable(type) {
             }
             let stringify = JSON.stringify(json[i]);
             stringify = stringify.replace('\'', '&apos');
-            htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + json[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (json[i].amount !== null ? json[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + json[i].requestedBy + "Color'>Requested by " + json[i].requestedBy + "</p></div><div class='card-footer text-muted'><a href='#_' class='card-link' onclick='editItem(" + (type === 'groceries') + "," + stringify +  ")'>Edit</a><a href='#_' class='card-link float-right' onclick='removeItem(\"" + type + "\", " + stringify +  ")'>Remove</a></div></div></div>";
+            const res = await fetch('/name/' + json[i].requestedby);
+            const firstName = await res.json();
+            htmlString += "<div class='col px-1'><div class='card mb-2'><div class='card-block px-4 my-4'><p class='card-title mb-1'> " + json[i].name + "</p><p class='card-subtitle text-muted mb-1 fontTwelve'>" + (json[i].amount.length > 0 ? json[i].amount : 'Quantity not specified') + "</p><p class='card-subtitle percentContributed " + (json[i].requestedby.replace('@','')).replace('.','') + "Color'>Requested by " + firstName + "</p></div><div class='card-footer text-muted'><a href='#_' class='card-link' onclick='editItem(" + (type === 'groceries') + "," + stringify +  ")'>Edit</a><a href='#_' class='card-link float-right' onclick='removeItem(\"" + type + "\", " + stringify +  ")'>Remove</a></div></div></div>";
         }
         htmlString += '</div>';
         nodes.push(htmlString);
@@ -103,8 +106,8 @@ async function getTable(type) {
             paymentsWrapper.appendChild(htmlToNode(node));
         }
         for(const user of users){
-            const userColor = users.find(dataUser => dataUser.firstName === user.firstName).color;
-            const elements = document.getElementsByClassName(user.firstName + 'Color');
+            const userColor = users.find(dataUser => dataUser.email === user.email).color;
+            const elements = document.getElementsByClassName((user.email.replace('@','')).replace('.','') + 'Color');
             for(let i=0;i<elements.length;i++){
                 const node = elements.item(i);
                 node.style.color = '#' + userColor;
@@ -179,7 +182,10 @@ async function calculatePage() {
     money.innerHTML = "<span id='bigMoney'>$" + moneyCount.toFixed(2) + "</span>/ $" + budget.toFixed(2);
 
     const progress = document.getElementById('progressBarMain');
-    progress.style.backgroundColor = '#' +  users.find(user => user.firstName === currentUser).color;
+    progress.style.backgroundColor = '#' +  users.find(user => user.email === currentUser).color;
+    if(moneyCount > budget){
+        progress.innerHTML = "Over budget"
+    }
     const width = await getWidthString();
     progress.style.width = width;
 
