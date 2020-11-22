@@ -63,7 +63,7 @@ const app = express();
 
 app.use(express.static('public'));
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 let secret;
@@ -75,7 +75,7 @@ if (!process.env.SESSION_SECRET) { //If not on Heroku deployment
   secret = process.env.SESSION_SECRET;
 }
 
-app.use(session({ secret }));
+app.use(session({ secret, resave: true, saveUninitialized: false }));
 
 
 const port = process.env.PORT || 3000
