@@ -180,7 +180,7 @@ async function addTestData(){
   await connectAndRun(db => db.none('INSERT INTO UserGroceryBill VALUES( $/email/, $/budget/, $/spent/)', { email: 'hnoordeen@umass.edu', budget: 20000, spent: 0 }));
 }
 
-// addTestData();
+addTestData();
 
 async function testFunctions(){
   console.log('AptId by email:', await getUserAptId('bparkman@umass.edu'));
