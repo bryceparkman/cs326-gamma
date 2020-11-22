@@ -11,14 +11,21 @@ async function postData(){
             phoneNumber: document.getElementById("phoneNumber").value,
             color: globColor,
             aptCode: document.getElementById("exampleFirstName2").value
-        })
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+      }
     });
 
     if (!response.ok) {
         console.error("Could not save the user profile to the server.");
+        alert("Could not save profile");
     }
     else{
+      if(document.getElementById("exampleFirstName2").value === '')
         window.location.href = "apt-creation.html";
+      else 
+        window.location.href = "apt-overview.html";
     }
 
 }

@@ -433,16 +433,12 @@ app.get('/profiles', async (req, res) => {
 app.get('/loginProfile/:email', async (req, res) => {
   const email = req.params.email;
   res.end(JSON.stringify(
-    await connectAndRun(db => db.any('SELECT password from UserProfile WHERE email = $1', [email]))))});
+    await connectAndRun(db => db.one('SELECT password from UserProfile WHERE email = $1', [email]))))});
 
 app.post('/userProfile', (req, res) => {
-  let body = '';
-  req.on('data', data => body += data);
-  req.on('end', () => {
-    const data = JSON.parse(body);
-    addUserProfile(data.fname, data.lname, data.email, data.password, data.phoneNumber, data.aptCode, data.color);
-    res.end();
-  });
+  const {fname, lname, email, password, phoneNumber, aptCode, color} = req.body;
+  addUserProfile(fname, lname, email,password, phoneNumber, aptCode, color);
+  res.end();
 });
 
 app.listen(port, () => {
