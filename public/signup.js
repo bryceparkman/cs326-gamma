@@ -1,6 +1,25 @@
 let globColor = "FF0000";
 
+async function checkEmail(){
+  const email = document.getElementById('exampleEmail').value;
+  const emailRequest = await fetch('/email/'+email);
+  const unique = emailRequest.ok ? await emailRequest.json() : [];
+  if(unique === "true"){
+    return true;
+  }
+  else {
+    alert("This email is already registered to an account");
+    window.location.href = "signup.html";
+    return false;
+  }
+}
+
 async function postData(){
+  let check = checkEmail();
+
+  if(check === false)
+    return;
+
     const response = await fetch('/userProfile', {
         method: 'POST',
         body: JSON.stringify({
