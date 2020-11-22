@@ -56,10 +56,28 @@ let aptCosts = [
 
 
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+
 const app = express();
+
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(cookieParser());
+
+let secret;
+
+if (!process.env.SESSION_SECRET) { //If not on Heroku deployment
+  const secrets = require('./secrets.json');
+  secret = secrets.session_secret;
+} else {
+  url = process.env.SESSION_SECRET;
+}
+
+app.use(session({ secret }));
+
+
 const port = process.env.PORT || 3000
 
 const pgp = require("pg-promise")({
