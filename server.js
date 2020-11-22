@@ -182,23 +182,6 @@ async function addTestData(){
 
 addTestData();
 
-async function testFunctions(){
-  console.log('AptId by email:', await getUserAptId('bparkman@umass.edu'));
-  console.log('First name by email:', await getFirstNameByEmail('bparkman@umass.edu'));
-  console.log('Groceries', await getGroceries());
-  console.log('Inventory', await getInventory());
-  let id = await getUserAptId('bparkman@umass.edu');
-  const { rent } = await connectAndRun(db => db.one('SELECT Rent FROM Apartment WHERE id = $/id/', { id }));
-  console.log('Rent: ', rent / 100);
-  console.log('Rent payments: ', await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE aptid = $/id/ AND billtype = $/type/', { id, type: 'Rent' })))
-  const { grocerybudget } = await connectAndRun(db => db.one('SELECT GroceryBudget FROM UserGroceryBill WHERE email = $/email/', { email: 'bparkman@umass.edu' }));
-  console.log('Budget: ', grocerybudget / 100);
-  const { spent } = await connectAndRun(db => db.one('SELECT Spent FROM UserGroceryBill WHERE email = $/email/', { email: 'bparkman@umass.edu' }));
-  console.log('Spent: ', spent / 100);
-}
-
-testFunctions();
-
 async function connectAndRun(task) {
   let connection = null;
 

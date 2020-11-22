@@ -97,7 +97,7 @@ async function contributeRent(){
         const json = await data.json();
         const payments = document.getElementById('payments');
         const userColor = users.find(user => user.email === currentUser).color;
-        const className = currentUser.replace(/@/,'');
+        const className = (currentUser.replace('@','')).replace('.','');
         const res = await fetch('/name/' + currentUser);
         const firstName = await res.json();
         const htmlString = '<div class="card mb-3 border-0"><div class="row no-gutters"><div class="col-auto"><img src="https://via.placeholder.com/100/' + userColor + '/FFFFFF" class="img-fluid rounded-circle" alt=""> </div><div class="col"><div class="card-block px-4 my-4"> <p class="card-text mb-0">' + firstName + ' paid $' + rentValue.toFixed(2) + '</p><p class="card-text percentContributed ' + className +  'Color">Contributing ' + ((rentValue / totalRent) * 100).toFixed(2) + '%</p></div></div></div></div>'
@@ -123,7 +123,7 @@ async function checkPayments(){
             const payment = json[i];
             const payments = document.getElementById('payments');
             const userColor = users.find(user => user.email === payment.email).color;
-            const className = payment.email.replace(/@/,'')
+            const className = (payment.email.replace('@','')).replace('.','')
             const htmlString = '<div class="card mb-3 border-0"><div class="row no-gutters"><div class="col-auto"><img src="https://via.placeholder.com/100/' + userColor + '/FFFFFF" class="img-fluid rounded-circle" alt=""> </div><div class="col"><div class="card-block px-4 my-4"> <p class="card-text mb-0">' + payment.name + ' paid $' + (payment.payment / 100).toFixed(2) + '</p><p class="card-text percentContributed ' + className + 'Color">Contributing ' + (((payment.payment / 100) / totalRent) * 100).toFixed(2) + '%</p></div></div></div></div>'    
             const node = htmlToNode(htmlString);
             await payments.appendChild(node);
@@ -157,10 +157,10 @@ async function calculatePage(){
         personalProgress.classList.add('progress-bar-striped');
     }
     for(const user of users){
-        const htmlStringProgress = '<div class="progress-bar progress-bar-animated" id="' + user.email.replace('/@/','') + 'BgColor' + '" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="' + totalRent +'"></div>'
+        const htmlStringProgress = '<div class="progress-bar progress-bar-animated" id="' + (user.email.replace('@','')).replace('.','') + 'BgColor' + '" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="' + totalRent +'"></div>'
         const nodeProgress = htmlToNode(htmlStringProgress);
         mainbar.appendChild(nodeProgress);
-        const subProgressBar = document.getElementById(user.email.replace('/@/','') + 'BgColor');
+        const subProgressBar = document.getElementById((user.email.replace('@','')).replace('.','') + 'BgColor');
         const userColor = users.find(userVal => userVal.email === user.email).color;
         subProgressBar.style.backgroundColor = '#' + userColor;
 
