@@ -231,6 +231,141 @@ async function addUserProfile(firstName, lastName, email, password, phoneNumber,
   }));
 }
 
+async function getAptCosts(id) {
+
+  // grab utilities
+  let utilities = await connectAndRun(db => db.any('SELECT BillName, aptid, Cost FROM UtilityBills WHERE aptid = $/id/', {
+    id: id,
+  }));
+
+  // populate utilities with contributors
+  for (let i = 0; i < utilities.length; i++) {
+
+    let utility = utilities[i];
+    let contributors = await connectAndRun(db => db.any('SELECT email FROM UserPayments WHERE aptid = $/id/ AND BillName = $/billName/', {
+      id: id,
+      billName: utility.billname,
+    }));
+    utility.contributors = []
+    
+    for (let i = 0; i < contributors.length; i++) {
+      utility.contributors.push(contributors[i].email)
+    }
+
+  }
+
+  return utilities;
+}
+
+async function addAptCosts(id, name, cost, contributors) {
+
+  // add utility
+  await connectAndRun(db => db.none('INSERT INTO UtilityBills VALUES( $/name/, $/id/, $/cost/, $/numMembers/ )', {
+    name: name,
+    id: id,
+    cost: cost,
+    numMembers: contributors.length,
+  }));
+
+  // add user payments
+  for (let i = 0; i < contributors.length; i++) {
+    await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/id/, $/billName/, $/cost/, $/type/)', {
+      email: contributors[i],
+      name: '',
+      id: id,
+      billName: name,
+      cost: cost/contributors.length,
+      type: name === 'rent' ? 'rent' : 'utility',
+    }));
+  }
+  return;
+}
+
+async function editAptCosts(id, name, cost, contributors, contributorsAdded, contributorsDropped) {
+  
+  // update utility
+  await connectAndRun(db => db.none('UPDATE UtilityBills SET cost = $/cost/, numMembers = $/numMembers/ WHERE aptid = $/id/ AND BillName = $/name/', {
+    id: id,
+    name: name,
+    cost: cost,
+    numMembers: contributors.length,
+  }));
+
+  // add user payment for new contributors
+  for (let i = 0; i < contributorsAdded.length; i++) {
+    await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/id/, $/billName/, $/cost/, $/type/)', {
+      email: contributersAdded[i],
+      name: '',
+      id: id,
+      billName: name,
+      cost: cost,
+      type: name === 'rent' ? 'rent' : 'utility',
+    }));
+  }
+
+  // remove user payment for new contributors
+  for (let i = 0; i < contributorsDropped.length; i++) {
+    await connectAndRun(db => db.none('DELETE FROM UserPayments WHERE aptid = $/id/ AND email = $/email/ AND BillName = $/billName/', {
+      email: contributersDropped[i],
+      id: id,
+      billName: name,
+    }));
+  }
+
+  // update user payments in case cost changed
+  if (contributors.length > 0) {
+    await connectAndRun(db => db.none('UPDATE UserPayments SET Payment = $/payment/ WHERE aptid = $/id/ AND BillName = $/billName/', {
+      id: id,
+      payment: cost/contributors.length,
+      billName: name,
+    }));
+  }
+
+  return;
+}
+
+async function removeAptCost(id, name) {
+
+  console.log('testccc')
+  // delete utility
+  await connectAndRun(db => db.none('DELETE FROM UtilityBills WHERE aptid = $/id/ AND BillName = $/name/', {
+    id: id,
+    name: name,
+  }));
+
+  // delete user payments
+  await connectAndRun(db => db.none('DELETE FROM UserPayments WHERE aptid = $/id/ AND BillName = $/billName/', {
+    id: id,
+    billName: name,
+  }));
+
+  return;
+}
+
+async function getAptCodes() {
+  // get all apt codes
+  return await connectAndRun(db => db.any('SELECT id FROM Apartment'));
+}
+
+async function getUsersInApt(id) {
+  // get all apt codes
+  return await connectAndRun(db => db.any('SELECT firstName, email, AptId, color FROM UserProfile WHERE AptId = $/id/', {
+    id: id,
+  }));
+}
+
+async function addAptCode(id, rent) {
+  
+  // add utility
+  await connectAndRun(db => db.none('INSERT INTO Apartment VALUES($/id/, $/rent/, $/numMembers/)', {
+    id: id,
+    rent: rent,
+    numMembers: 1,
+  }))
+
+  return;
+}
+
 //async function getEmails() {
   //return await connectAndRun(db => db.any('SELECT email from userprofile;'));
 //}
@@ -343,186 +478,57 @@ app.delete('/removeInventory/:id', async (req, res) => {
   res.end();
 });
 
-async function getAptCosts(id) {
-
-  // grab utilities
-  let utilities = await connectAndRun(db => db.any('SELECT * FROM UtilityBills WHERE id = $/id/'), {
-    id: id,
-  })
-
-  // populate utilities with contributors
-  for (let i = 0; i < utilities.length; i++) {
-
-    let utility = utilities[i];
-    let contributors = await connectAndRun(db => db.any('SELECT email FROM UserPayments WHERE id = $/id/ AND BillName = $/billName/'), {
-      id: id,
-      billName: utility.name
-    })
-    utility['contributors'] = contributors;
-
-  }
-
-  return utilities;
-}
-
-async function addAptCosts(id, name, cost, contributors) {
-  
-  // add utility
-  await connectAndRun(db => db.none('INSERT INTO UtilityBills VALUES($/billName/, $/id/, $/cost/, $/numMembers/)'), {
-    name: name,
-    id: id,
-    cost: cost,
-    numMembers: contributors.length,
-  })
-
-  // add user payments
-  for (let i = 0; i < contributors.length; i++) {
-    await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/id/, $/billName/, $/cost/, $/type/)'), {
-      email: contributors[i],
-      name: '',
-      id: id,
-      billName: name,
-      cost: cost,
-      type: name === 'rent' ? 'rent' : 'utility',
-    })
-  }
-  return
-}
-
-async function editAptCosts(id, name, cost, contributors, contributorsAdded, contributorsDropped) {
-  
-  // update utility
-  await connectAndRun(db => db.none('UPDATE UtilityBills SET cost = $/cost/, numMembers = $/numMembers/ WHERE AptCode = $/id/ AND name = $/name/'), {
-    id: id,
-    name: name,
-    cost: cost,
-    numMembers: contributors.length,
-  })
-
-  // add user payment for new contributors
-  for (let i = 0; i < contributorsAdded.length; i++) {
-    await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/id/, $/billName/, $/cost/, $/type/)'), {
-      email: contributersAdded[i],
-      name: '',
-      id: id,
-      billName: name,
-      cost: cost,
-      type: name === 'rent' ? 'rent' : 'utility',
-    })
-  }
-
-  // remove user payment for new contributors
-  for (let i = 0; i < contributorsDropped.length; i++) {
-    await connectAndRun(db => db.none('DELETE FROM UserPayments WHERE id = $/id/ AND email = $/email/ AND BillName = $/billName/'), {
-      email: contributersDropped[i],
-      id: id,
-      billName: name,
-    })
-  }
-
-  // update user payments in case cost changed
-  await connectAndRun(db => db.none('UPDATE UserPayments SET Payment = $/payment/ WHERE id = $/id/ AND BillName = $/billName/'), {
-    id: id,
-    email: contributors[i],
-    payment: cost/contributors.length,
-    billName: name,
-  })
-
-  return
-}
-
-async function deleteAptCosts(id, name) {
-
-  // delete utility
-  await connectAndRun(db => db.none('DELETE FROM UtilityBills WHERE AptCode = $/code/ AND name = $/name/'), {
-    id: id,
-    name: name,
-  })
-
-  // delete user payments
-  await connectAndRun(db => db.none('DELETE FROM UserPayments WHERE id = $/code/ AND BillName = $/billName/'), {
-    id: id,
-    billName: name,
-  })
-
-  return
-}
-
-async function getAptCodes() {
-  // get all apt codes
-  return await connectAndRun(db => db.none('SELECT id FROM Apartments'))
-}
-
-async function getUsersInApt(id) {
-  // get all apt codes
-  return await connectAndRun(db => db.none('SELECT * FROM UserProfile WHERE AptId = $/id/', {
-    id: id,
-  }))
-}
-
-async function addAptCode(id, rent) {
-  
-  // add utility
-  await connectAndRun(db => db.none('INSERT INTO Apartment VALUES($/id/, $/rent/, $/numMembers/)'), {
-    id: id,
-    rent: rent,
-    numMembers: 1,
-  })
-
-  return
-}
-
-app.get('/aptCosts/:id', (req, res) => {
-  res.send(getAptCosts(req.params.id));
+app.get('/aptCosts/:id', async (req, res) => {
+  res.send(await getAptCosts(req.params.id));
   res.end();
 });
 
-app.post('/addAptCost', (req, res) => {
+app.post('/addAptCost', async (req, res) => {
   let body = '';
   req.on('data', data => body += data);
-  req.on('end', () => {
+  req.on('end', async () => {
     const element = JSON.parse(body);
-    addAptCosts(element.id, element.name, element.cost, element.contributors);
+    await addAptCosts(element.id, element.name, element.cost, element.contributors);
   });
   res.end();
 });
 
-app.put('/editAptCost', (req, res) => {
+app.put('/editAptCost', async (req, res) => {
   let body = '';
   req.on('data', data => body += data);
-  req.on('end', () => {
+  req.on('end', async () => {
     const element = JSON.parse(body);
-    editAptCosts(element.id, element.name, element.cost, element.contributors, element.contributorsAdded, element.contributorsDropped);
+    await editAptCosts(element.id, element.name, element.cost, element.contributors, element.contributorsAdded, element.contributorsDropped);
   });
   res.end();
 });
 
-app.delete('/removeAptCost', (req, res) => {
+app.delete('/removeAptCost', async (req, res) => {
   let body = '';
   req.on('data', data => body += data);
-  req.on('end', () => {
+  req.on('end', async () => {
     const element = JSON.parse(body);
-    deleteAptCosts(element.id, element.name);
+    await removeAptCost(element.id, element.name);
   });
   res.end();
 });
 
-app.get('/allAptCodes', (req, res) => {
-  res.send(getAptCodes());
+app.get('/allAptCodes', async (req, res) => {
+  res.send(await getAptCodes());
   res.end();
 });
 
-app.get('/allUsersInApt/:id', (req, res) => {
-  res.send(getUsersInApt(req.params.id));
+app.get('/allUsersInApt/:id', async (req, res) => {
+  res.send(await getUsersInApt(req.params.id));
   res.end();
 });
 
-app.post('/createApartment', (req, res) => {
+app.post('/createApartment', async (req, res) => {
   let body = '';
   req.on('data', data => body += data);
-  req.on('end', () => {
+  req.on('end', async () => {
     const element = JSON.parse(body);
-    addAptCode(element.id, element.rent);
+    await addAptCode(element.id, element.rent);
   });
   res.end();
 });
