@@ -51,4 +51,4 @@ Bryce worked on creating the SQL routes for each of the routes associated with t
 
 Leon worked on 
 
-Hannah worked on 
+Hannah worked on creating the SQL routes for each of the routes associated with the signup and login pages as well as wrote the data model descriptions.

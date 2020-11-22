@@ -231,6 +231,10 @@ async function addUserProfile(firstName, lastName, email, password, phoneNumber,
   }));
 }
 
+//async function getEmails() {
+  //return await connectAndRun(db => db.any('SELECT email from userprofile;'));
+//}
+
 app.get('/', (req, res) => {
   res.sendFile('index.html');
   res.end();
@@ -532,6 +536,22 @@ app.get('/loginProfile/:email', async (req, res) => {
   const email = req.params.email;
   res.end(JSON.stringify(
     await connectAndRun(db => db.one('SELECT password from UserProfile WHERE email = $1', [email]))))});
+
+app.get('/email/:email', async (req, res) => {
+  const email = req.params.email;
+  let isUnique = true;
+  let emailList = await connectAndRun(db => db.any('SELECT email from userprofile;'));
+  for (let tempemail = 0; tempemail < emailList.length; tempemail++){
+    let temp = emailList[tempemail].email;
+    if(temp === email)
+      isUnique = false;
+  }
+  if(isUnique)
+    res.json(("true"));
+  else 
+    res.json(("false"));
+  res.end();
+});
 
 app.post('/userProfile', (req, res) => {
   const {fname, lname, email, password, phoneNumber, aptCode, color} = req.body;

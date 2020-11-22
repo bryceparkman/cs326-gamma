@@ -7,7 +7,7 @@ async function verifyData(){
     if(password.password === userEnteredPassword)
         window.location.href = "apt-overview.html";
     else
-        alert("Password Incorrect")
+        alert("Password Incorrect");
 
 }
 
