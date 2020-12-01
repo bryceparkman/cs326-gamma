@@ -242,7 +242,7 @@ app.get('/', (req, res) => {
 
 app.get('/payments/:type', async (req, res) => {
   const id = await getUserAptId(currentEmail);
-  res.json(await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE aptid = $/id/ AND billtype = $/type/', { id, type : req.params.type })));
+  res.json(await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE aptid = $/id/ AND billname = $/type/', { id, type : req.params.type })));
   res.end();
 });
 
@@ -370,23 +370,23 @@ async function getAptCosts(id) {
 async function addAptCosts(id, name, cost, contributors) {
   
   // add utility
-  await connectAndRun(db => db.none('INSERT INTO UtilityBills VALUES($/billName/, $/id/, $/cost/, $/numMembers/)'), {
+  await connectAndRun(db => db.none('INSERT INTO UtilityBills VALUES($/billName/, $/id/, $/cost/, $/numMembers/)', {
     name: name,
     id: id,
     cost: cost,
     numMembers: contributors.length,
-  })
+  }));
 
   // add user payments
   for (let i = 0; i < contributors.length; i++) {
-    await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/id/, $/billName/, $/cost/, $/type/)'), {
+    await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/id/, $/billName/, $/cost/, $/type/)', {
       email: contributors[i],
       name: '',
       id: id,
       billName: name,
       cost: cost,
       type: name === 'rent' ? 'rent' : 'utility',
-    })
+    }));
   }
   return
 }
@@ -394,41 +394,41 @@ async function addAptCosts(id, name, cost, contributors) {
 async function editAptCosts(id, name, cost, contributors, contributorsAdded, contributorsDropped) {
   
   // update utility
-  await connectAndRun(db => db.none('UPDATE UtilityBills SET cost = $/cost/, numMembers = $/numMembers/ WHERE AptCode = $/id/ AND name = $/name/'), {
+  await connectAndRun(db => db.none('UPDATE UtilityBills SET cost = $/cost/, numMembers = $/numMembers/ WHERE AptCode = $/id/ AND name = $/name/', {
     id: id,
     name: name,
     cost: cost,
     numMembers: contributors.length,
-  })
+  }))
 
   // add user payment for new contributors
   for (let i = 0; i < contributorsAdded.length; i++) {
-    await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/id/, $/billName/, $/cost/, $/type/)'), {
+    await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/id/, $/billName/, $/cost/, $/type/)', {
       email: contributersAdded[i],
       name: '',
       id: id,
       billName: name,
       cost: cost,
       type: name === 'rent' ? 'rent' : 'utility',
-    })
+    }));
   }
 
   // remove user payment for new contributors
   for (let i = 0; i < contributorsDropped.length; i++) {
-    await connectAndRun(db => db.none('DELETE FROM UserPayments WHERE id = $/id/ AND email = $/email/ AND BillName = $/billName/'), {
+    await connectAndRun(db => db.none('DELETE FROM UserPayments WHERE id = $/id/ AND email = $/email/ AND BillName = $/billName/', {
       email: contributersDropped[i],
       id: id,
       billName: name,
-    })
+    }));
   }
 
   // update user payments in case cost changed
-  await connectAndRun(db => db.none('UPDATE UserPayments SET Payment = $/payment/ WHERE id = $/id/ AND BillName = $/billName/'), {
+  await connectAndRun(db => db.none('UPDATE UserPayments SET Payment = $/payment/ WHERE id = $/id/ AND BillName = $/billName/', {
     id: id,
     email: contributors[i],
     payment: cost/contributors.length,
     billName: name,
-  })
+  }));
 
   return
 }
@@ -436,16 +436,16 @@ async function editAptCosts(id, name, cost, contributors, contributorsAdded, con
 async function deleteAptCosts(id, name) {
 
   // delete utility
-  await connectAndRun(db => db.none('DELETE FROM UtilityBills WHERE AptCode = $/code/ AND name = $/name/'), {
+  await connectAndRun(db => db.none('DELETE FROM UtilityBills WHERE AptCode = $/code/ AND name = $/name/', {
     id: id,
     name: name,
-  })
+  }));
 
   // delete user payments
-  await connectAndRun(db => db.none('DELETE FROM UserPayments WHERE id = $/code/ AND BillName = $/billName/'), {
+  await connectAndRun(db => db.none('DELETE FROM UserPayments WHERE id = $/code/ AND BillName = $/billName/', {
     id: id,
     billName: name,
-  })
+  }));
 
   return
 }
@@ -465,11 +465,11 @@ async function getUsersInApt(id) {
 async function addAptCode(id, rent) {
   
   // add utility
-  await connectAndRun(db => db.none('INSERT INTO Apartment VALUES($/id/, $/rent/, $/numMembers/)'), {
+  await connectAndRun(db => db.none('INSERT INTO Apartment VALUES($/id/, $/rent/, $/numMembers/)', {
     id: id,
     rent: rent,
     numMembers: 1,
-  })
+  }));
 
   return
 }

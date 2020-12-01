@@ -87,7 +87,7 @@ async function contributeCost(){
                 email: currentUser,
                 amount: inputValue * 100,
                 billname: currentMode,
-                billtype: currentMode
+                billtype: currentMode === 'Rent' ? currentMode : 'Utility'
             }),
             headers: {
                 'Content-Type': 'application/json'
