@@ -78,6 +78,8 @@ app.use(cookieParser());
 
 let secret;
 
+const currentEmail = 'bparkman@umass.edu'
+
 if (!process.env.SESSION_SECRET) { //If not on Heroku deployment
   const secrets = require('./secrets.json');
   secret = secrets.session_secret;
@@ -142,7 +144,7 @@ function createTables() {
   });
 
   //Costs Table, each bill has a relating costs table
-  db.none("CREATE TABLE Costs(AptCode varchar(45), BillName varchar(45), UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS Costs(AptCode varchar(45), BillName varchar(45), UnpaidDollars int, UnpaidPercent int, Progress int, primary key (AptCode))", (err, res) => {
     console.log(err, res);
     db.end();
   });
@@ -170,17 +172,19 @@ function createTables() {
 createTables();
 
 async function addTestData(){
-  await connectAndRun(db => db.none('INSERT INTO Apartment VALUES( $/id/, $/rent/, $/num/)', { id: 0, rent: 75000, num: 3 }));
-  await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES( $/firstname/, $/lastname/, $/email/, $/password/, $/phonenumber/, $/aptid/, $/color/)', {  firstname: 'Bryce', lastname: 'Parkman', email: 'bparkman@umass.edu', password: 'brycepassword', phonenumber: '', aptid: 0, color: 'ff0000' }));
-  await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES( $/firstname/, $/lastname/, $/email/, $/password/, $/phonenumber/, $/aptid/, $/color/)', {  firstname: 'Hannah', lastname: 'Noordeen', email: 'hnoordeen@umass.edu', password: 'hannahpassword', phonenumber: '', aptid: 0, color: '00ff00' }));
-  const {id, name, amount, requestedBy} = {id: 0, name: 'Eggs', amount: '1 dozen', requestedBy: 'bparkman@umass.edu'};
-  const aptid = await getUserAptId('bparkman@umass.edu')
-  await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
-  await connectAndRun(db => db.none('INSERT INTO UserGroceryBill VALUES( $/email/, $/budget/, $/spent/)', { email: 'bparkman@umass.edu', budget: 20000, spent: 0 }));
-  await connectAndRun(db => db.none('INSERT INTO UserGroceryBill VALUES( $/email/, $/budget/, $/spent/)', { email: 'hnoordeen@umass.edu', budget: 20000, spent: 0 }));
+  // await connectAndRun(db => db.none('INSERT INTO Apartment VALUES( $/id/, $/rent/, $/num/)', { id: 0, rent: 75000, num: 3 }));
+  // await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES( $/firstname/, $/lastname/, $/email/, $/password/, $/phonenumber/, $/aptid/, $/color/)', {  firstname: 'Bryce', lastname: 'Parkman', email: 'bparkman@umass.edu', password: 'brycepassword', phonenumber: '', aptid: 0, color: 'ff0000' }));
+  // await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES( $/firstname/, $/lastname/, $/email/, $/password/, $/phonenumber/, $/aptid/, $/color/)', {  firstname: 'Hannah', lastname: 'Noordeen', email: 'hnoordeen@umass.edu', password: 'hannahpassword', phonenumber: '', aptid: 0, color: '00ff00' }));
+  // const {id, name, amount, requestedBy} = {id: 0, name: 'Eggs', amount: '1 dozen', requestedBy: 'bparkman@umass.edu'};
+  // const aptid = await getUserAptId(currentEmail)
+  // await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
+  // await connectAndRun(db => db.none('INSERT INTO UserGroceryBill VALUES( $/email/, $/budget/, $/spent/)', { email: 'bparkman@umass.edu', budget: 20000, spent: 0 }));
+  // await connectAndRun(db => db.none('INSERT INTO UserGroceryBill VALUES( $/email/, $/budget/, $/spent/)', { email: 'hnoordeen@umass.edu', budget: 20000, spent: 0 }));
+  await connectAndRun(db => db.none('INSERT INTO UtilityBills VALUES( $/billname/, $/id/, $/cost/, $/nummembers/)', { billname: 'Electric', id: 0, cost: 100, nummembers: 3 }));
+  await connectAndRun(db => db.none('INSERT INTO UtilityBills VALUES( $/billname/, $/id/, $/cost/, $/nummembers/)', { billname: 'Water', id: 0, cost: 100, nummembers: 3 }));
 }
 
-// addTestData();
+//addTestData();
 
 async function connectAndRun(task) {
   let connection = null;
@@ -210,12 +214,12 @@ async function getFirstNameByEmail(email){
 }
 
 async function getGroceries() {
-  const id = await getUserAptId('bparkman@umass.edu');
+  const id = await getUserAptId(currentEmail);
   return await connectAndRun(db => db.any('SELECT * from Groceries WHERE aptid = $/id/', { id }));
 }
 
 async function getInventory() {
-  const id = await getUserAptId('bparkman@umass.edu');
+  const id = await getUserAptId(currentEmail);
   return await connectAndRun(db => db.any('SELECT * from Inventory WHERE aptid = $/id/', { id }));
 }
 
@@ -375,16 +379,22 @@ app.get('/', (req, res) => {
   res.end();
 });
 
-app.get('/rentPayments', async (req, res) => {
-  const id = await getUserAptId('bparkman@umass.edu');
-  res.json(await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE aptid = $/id/ AND billtype = $/type/', { id, type: 'Rent' })));
+app.get('/payments/:type', async (req, res) => {
+  const id = await getUserAptId(currentEmail);
+  res.json(await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE aptid = $/id/ AND billname = $/type/', { id, type : req.params.type })));
   res.end();
 });
 
-app.get('/rent', async (req, res) => {
-  const id = await getUserAptId('bparkman@umass.edu');
-  const { rent } = await connectAndRun(db => db.one('SELECT Rent FROM Apartment WHERE id = $/id/', { id }));
-  res.json(rent / 100);
+app.get('/cost/:type', async (req, res) => {
+  const id = await getUserAptId(currentEmail);
+  if(req.params.type === 'Rent'){
+    const { rent } = await connectAndRun(db => db.one('SELECT Rent FROM Apartment WHERE id = $/id/', { id }));
+    res.json(rent / 100);
+  }
+  else {
+    const { cost } = await connectAndRun(db => db.one('SELECT cost FROM UtilityBills WHERE aptid = $/id/ AND billname = $/type/', { id, type: req.params.type }));
+    res.json(cost / 100);
+  }
   res.end();
 });
 
@@ -394,17 +404,17 @@ app.get('/name/:email', async (req, res) => {
 })
 
 app.post('/addPayment', async (req, res) => {
-  const {email, amount} = req.body;
-  const aptid = await getUserAptId('bparkman@umass.edu');
+  const {email, amount, billname, billtype} = req.body;
+  const aptid = await getUserAptId(currentEmail);
   const name = await getFirstNameByEmail(email);
-  await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/aptid/, $/billname/, $/amount/, $/billtype/)', { email, name, aptid, billname: 'Rent', amount, billtype: 'Rent' }));
+  await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/aptid/, $/billname/, $/amount/, $/billtype/)', { email, name, aptid, billname, amount, billtype }));
   res.end();
 });
 
-app.get('/rentShare/:email', async (req, res) => {
+app.get('/share/:email', async (req, res) => {
   const id = await getUserAptId(req.params.email);
   const { nummembers } = await connectAndRun(db => db.one('SELECT NumMembers FROM Apartment WHERE id = $/id/', { id }));
-  res.json(100 / nummembers);
+  res.json(100 / nummembers); //assume equal portions
   res.end();
 });
 
@@ -440,7 +450,7 @@ app.get('/inventory', async (req, res) => {
 
 app.post('/addGrocery', async (req, res) => {
   const groceries = await getGroceries();
-  const aptid = await getUserAptId('bparkman@umass.edu');
+  const aptid = await getUserAptId(currentEmail);
   const id = groceries.length;
   const {name, amount, requestedBy} = req.body;
   await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
@@ -449,7 +459,7 @@ app.post('/addGrocery', async (req, res) => {
 
 app.post('/addInventory', async (req, res) => {
   const inventory = await getInventory();
-  const aptid = await getUserAptId('bparkman@umass.edu');
+  const aptid = await getUserAptId(currentEmail);
   const id = inventory.length;
   const {name, amount, requestedBy} = req.body;
   await connectAndRun(db => db.none('INSERT INTO Inventory VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
@@ -478,8 +488,10 @@ app.delete('/removeInventory/:id', async (req, res) => {
   res.end();
 });
 
+//id should be pulled from current user email
 app.get('/aptCosts/:id', async (req, res) => {
-  res.send(await getAptCosts(req.params.id));
+  const costs = await getAptCosts(req.params.id);
+  res.json(costs);
   res.end();
 });
 
