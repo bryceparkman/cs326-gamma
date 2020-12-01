@@ -172,17 +172,19 @@ function createTables() {
 createTables();
 
 async function addTestData(){
-  await connectAndRun(db => db.none('INSERT INTO Apartment VALUES( $/id/, $/rent/, $/num/)', { id: 0, rent: 75000, num: 3 }));
-  await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES( $/firstname/, $/lastname/, $/email/, $/password/, $/phonenumber/, $/aptid/, $/color/)', {  firstname: 'Bryce', lastname: 'Parkman', email: 'bparkman@umass.edu', password: 'brycepassword', phonenumber: '', aptid: 0, color: 'ff0000' }));
-  await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES( $/firstname/, $/lastname/, $/email/, $/password/, $/phonenumber/, $/aptid/, $/color/)', {  firstname: 'Hannah', lastname: 'Noordeen', email: 'hnoordeen@umass.edu', password: 'hannahpassword', phonenumber: '', aptid: 0, color: '00ff00' }));
-  const {id, name, amount, requestedBy} = {id: 0, name: 'Eggs', amount: '1 dozen', requestedBy: 'bparkman@umass.edu'};
-  const aptid = await getUserAptId(currentEmail)
-  await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
-  await connectAndRun(db => db.none('INSERT INTO UserGroceryBill VALUES( $/email/, $/budget/, $/spent/)', { email: 'bparkman@umass.edu', budget: 20000, spent: 0 }));
-  await connectAndRun(db => db.none('INSERT INTO UserGroceryBill VALUES( $/email/, $/budget/, $/spent/)', { email: 'hnoordeen@umass.edu', budget: 20000, spent: 0 }));
+  // await connectAndRun(db => db.none('INSERT INTO Apartment VALUES( $/id/, $/rent/, $/num/)', { id: 0, rent: 75000, num: 3 }));
+  // await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES( $/firstname/, $/lastname/, $/email/, $/password/, $/phonenumber/, $/aptid/, $/color/)', {  firstname: 'Bryce', lastname: 'Parkman', email: 'bparkman@umass.edu', password: 'brycepassword', phonenumber: '', aptid: 0, color: 'ff0000' }));
+  // await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES( $/firstname/, $/lastname/, $/email/, $/password/, $/phonenumber/, $/aptid/, $/color/)', {  firstname: 'Hannah', lastname: 'Noordeen', email: 'hnoordeen@umass.edu', password: 'hannahpassword', phonenumber: '', aptid: 0, color: '00ff00' }));
+  // const {id, name, amount, requestedBy} = {id: 0, name: 'Eggs', amount: '1 dozen', requestedBy: 'bparkman@umass.edu'};
+  // const aptid = await getUserAptId(currentEmail)
+  // await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
+  // await connectAndRun(db => db.none('INSERT INTO UserGroceryBill VALUES( $/email/, $/budget/, $/spent/)', { email: 'bparkman@umass.edu', budget: 20000, spent: 0 }));
+  // await connectAndRun(db => db.none('INSERT INTO UserGroceryBill VALUES( $/email/, $/budget/, $/spent/)', { email: 'hnoordeen@umass.edu', budget: 20000, spent: 0 }));
+  await connectAndRun(db => db.none('INSERT INTO UtilityBills VALUES( $/billname/, $/id/, $/cost/, $/nummembers/)', { billname: 'Electric', id: 0, cost: 100, nummembers: 3 }));
+  await connectAndRun(db => db.none('INSERT INTO UtilityBills VALUES( $/billname/, $/id/, $/cost/, $/nummembers/)', { billname: 'Water', id: 0, cost: 100, nummembers: 3 }));
 }
 
-// addTestData();
+//addTestData();
 
 async function connectAndRun(task) {
   let connection = null;
@@ -251,7 +253,8 @@ app.get('/cost/:type', async (req, res) => {
     res.json(rent / 100);
   }
   else {
-
+    const { cost } = await connectAndRun(db => db.one('SELECT cost FROM UtilityBills WHERE aptid = $/id/ AND billname = $/type/', { id, type: req.params.type }));
+    res.json(cost / 100);
   }
   res.end();
 });
@@ -347,24 +350,20 @@ app.delete('/removeInventory/:id', async (req, res) => {
 });
 
 async function getAptCosts(id) {
-
+  if(id === '0'){
+    id = await getUserAptId(currentEmail);
+   }
   // grab utilities
-  let utilities = await connectAndRun(db => db.any('SELECT * FROM UtilityBills WHERE id = $/id/'), {
-    id: id,
-  })
+  let utilities = await connectAndRun(db => db.any('SELECT * FROM UtilityBills WHERE aptid = $/id/', { id }));
 
   // populate utilities with contributors
   for (let i = 0; i < utilities.length; i++) {
 
     let utility = utilities[i];
-    let contributors = await connectAndRun(db => db.any('SELECT email FROM UserPayments WHERE id = $/id/ AND BillName = $/billName/'), {
-      id: id,
-      billName: utility.name
-    })
+    let contributors = await connectAndRun(db => db.any('SELECT email FROM UserPayments WHERE aptid = $/id/ AND BillName = $/billName/', { id, billName: utility.name }));
     utility['contributors'] = contributors;
 
   }
-
   return utilities;
 }
 
@@ -475,8 +474,10 @@ async function addAptCode(id, rent) {
   return
 }
 
-app.get('/aptCosts/:id', (req, res) => {
-  res.send(getAptCosts(req.params.id));
+//id should be pulled from current user email
+app.get('/aptCosts/:id', async (req, res) => {
+  const costs = await getAptCosts(req.params.id);
+  res.json(costs);
   res.end();
 });
 

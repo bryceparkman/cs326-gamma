@@ -31,10 +31,10 @@ async function calculateOwe(){
     const share = await shareAmount(currentUser);
     const totalCost = await getCost();
     const diff = (totalCost * share / 100) - moneyData;
-    if(diff > 0){
+    if(parseFloat(diff.toFixed(2)) > 0){
         return 'You still owe $' + diff.toFixed(2);
     }
-    return 'Great job! You have paid your share of the ' + currentMode.toLowerCase()  + 'bill this month.';
+    return 'Great job! You have paid your share of the ' + currentMode.toLowerCase()  + ' bill this month.';
 }
 
 async function calculatePersonalPercent(){
@@ -42,7 +42,7 @@ async function calculatePersonalPercent(){
     const share = await shareAmount(currentUser);
     const totalCost = await getCost();
     const diff = (totalCost * share / 100) - moneyData;
-    if(diff > 0){
+    if(parseFloat(diff.toFixed(2)) > 0){
         return moneyData / (totalCost * share / 100);
     }
     return 1;
@@ -116,11 +116,11 @@ async function contributeCost(){
 async function checkPayments(){
     const data = await fetch('/payments/' + currentMode);
     const json = await data.json();
+    const paymentsWrapper = document.getElementById('paymentsWrapper');
     if(json.length > 0){
-        const totalCost = await getCost();
-        const paymentsWrapper = document.getElementById('paymentsWrapper');
-        const node = htmlToNode("<div id='payments' class='pre-scrollable'></div>")
-        paymentsWrapper.replaceChild(node,paymentsWrapper.children[0]);
+        const totalCost = await getCost();     
+        const node = htmlToNode("<div id='payments' class='pre-scrollable'></div>");
+        paymentsWrapper.replaceChild(node, paymentsWrapper.children[0]);
         for(let i=0;i<json.length;i++){
             const payment = json[i];
             const payments = document.getElementById('payments');
@@ -132,6 +132,10 @@ async function checkPayments(){
             const percentContributed = document.getElementsByClassName('percentContributed').item(i);
             percentContributed.style.color = '#' + userColor;
         }
+    }
+    else {
+        const node = htmlToNode("<div id='blankPayments'><h2>No payments have been made yet</h2></div>");
+        paymentsWrapper.replaceChild(node, paymentsWrapper.children[0]);
     }
 }
 
@@ -152,6 +156,7 @@ async function calculatePage(){
     share.innerHTML = "out of your " + shareVal.toFixed(2) + "% share";
 
     const personalProgress = document.getElementById('personalProgress');
+    personalProgress.classList.remove('progress-bar-striped');
     const personalUserColor = users.find(user => user.email === currentUser).color;
     personalProgress.style.backgroundColor = '#' +  personalUserColor;
     personalProgress.style.width = await calculatePersonalPercent() * 100 + '%';
@@ -163,14 +168,15 @@ async function calculatePage(){
         const nodeProgress = htmlToNode(htmlStringProgress);
         mainbar.appendChild(nodeProgress);
         const subProgressBar = document.getElementById((user.email.replace('@','')).replace('.','') + 'BgColor');
+        subProgressBar.classList.remove('progress-bar-striped');
         const userColor = users.find(userVal => userVal.email === user.email).color;
         subProgressBar.style.backgroundColor = '#' + userColor;
 
         const moneyDataUser = await moneySpent(user.email);
         const shareUser = await shareAmount(user.email);
-
         subProgressBar.style.width = (await calculateOverallPercent(user.email) * 100) + '%';
-        if(moneyDataUser >= totalCost * shareUser / 100){      
+        console.log(totalCost * shareUser / 100)
+        if(moneyDataUser >= parseFloat((totalCost * shareUser / 100).toFixed(2))){      
             subProgressBar.classList.add('progress-bar-striped');
         }
     }
@@ -182,6 +188,24 @@ window.addEventListener('load', async () => {
 
     const response = await fetch('/profiles');
     users = await response.json();
+
+    const dropdown = document.getElementById('selectMode');
+
+    dropdown.addEventListener('change', () => {
+        currentMode = dropdown.value;
+        calculatePage();
+    });
+
+    const rentElement = document.createElement('option');
+    rentElement.innerHTML = 'Rent';
+    dropdown.appendChild(rentElement);
+    const res = await fetch('/aptCosts/0');
+    const bills = await res.json();
+    for(const bill of bills){
+        const element = document.createElement('option');
+        element.innerHTML = bill.billname;
+        dropdown.appendChild(element);
+    }
 
     calculatePage();
 })
