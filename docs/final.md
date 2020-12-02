@@ -14,7 +14,7 @@ A final up-to-date list/table describing your application’s user interface. Th
 
 ## APIs
 
-**A final up-to-date list/table describing your application’s API**
+A final up-to-date list/table describing your application’s API
 
 ## Database
 
@@ -22,7 +22,7 @@ A final up-to-date representation of your database including a brief description
 
 ## URL Routes/Mappings
 
-**A final up-to-date table of all the URL routes that your application supports and a short description of what those routes are used for. You should also indicate any authentication and permissions on those routes.**
+A final up-to-date table of all the URL routes that your application supports and a short description of what those routes are used for. You should also indicate any authentication and permissions on those routes.
 
 ## Authentication/Authorization
 
