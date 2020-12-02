@@ -550,11 +550,13 @@ app.get('/profiles', async (req, res) => {
   res.end();
 })
 
+//Gets the password of a user profile given an email
 app.get('/loginProfile/:email', async (req, res) => {
   const email = req.params.email;
   res.end(JSON.stringify(
     await connectAndRun(db => db.one('SELECT password from UserProfile WHERE email = $1', [email]))))});
 
+//Checks if a users email exists in the database, returns true if it's unique, false otherwise
 app.get('/email/:email', async (req, res) => {
   const email = req.params.email;
   let isUnique = true;
@@ -571,6 +573,7 @@ app.get('/email/:email', async (req, res) => {
   res.end();
 });
 
+//Posts a new users data 
 app.post('/userProfile', (req, res) => {
   const {fname, lname, email, password, phoneNumber, aptCode, color} = req.body;
   addUserProfile(fname, lname, email,password, phoneNumber, aptCode, color);

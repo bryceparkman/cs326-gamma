@@ -1,5 +1,8 @@
 let globColor = "FF0000";
 
+/*
+* Checks if a users given email doesn't currently exist in the database.
+*/
 async function checkEmail(){
   const email = document.getElementById('exampleEmail').value;
   const emailRequest = await fetch('/email/'+email);
@@ -14,6 +17,9 @@ async function checkEmail(){
   }
 }
 
+/*
+* Posts the new user's data to the database
+*/
 async function postData(){
   let check = checkEmail();
 
@@ -53,6 +59,7 @@ function setColor(color){
     globColor = color;
 }
 
+//Checks which color radio button the user selects
 window.addEventListener('load', () => {
     document.getElementById('blackusericon').addEventListener('click', () => setColor("000000"));
     document.getElementById('purpleusericon').addEventListener('click', () => setColor("800080"));
