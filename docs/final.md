@@ -95,7 +95,7 @@ Our database has eight tables: User Profiles, User Grocery Bills, User Payments,
 *  Groceries contains the list of groceries bought/needed for an apartment. 
 *  Inventory is a table the contains all the grocieries/goods that are in the apartment (have been bought). 
 
-![Data Model](images/data_model.png)
+![Data Model](images/data_model_final.png)
 
 
 ## URL Routes/Mappings
