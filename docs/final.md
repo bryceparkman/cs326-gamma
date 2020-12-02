@@ -15,25 +15,39 @@ ExpenseMate is a website to help people track their apartments' or households' s
 ## User Interface
 
 Homepage: This is the homepage of the site where user's can read about what the site does as well as sign up or log in.
+
 ![Homepage](images/homepage.png)
 
+
 Login Page: This is the login page for existing users.
+
 ![Login](images/login.png)
 
+
 Signup Page: This is the signup page to create a new user.
+
 ![Signup](images/signup.png)
 
+
 Costs Page: This page is for tracking payments on bills and for adding new payments.
+
 ![Costs](images/costs.png)
 
+
 Groceries Page: This page is for keeping track of groceries needed and an inventory of what's in the apartment. User's can add new items to the grocery list or see what's currently in the apartment's inventory.
+
 ![Groceries](images/groceries.png)
 
+
 Apartment Creation Page: This page is for creating a new apartment. Users can define the monthly rent as well as add other bills to the apartment.
+
 ![Apartment creation](images/apartment-creation.png)
 
+
 Apartment Overview Page: This page is for tracking the progress of each bill for the apartment.
+
 ![Apartment overview](images/apartment-overview.png)
+
 
 
 ## APIs
@@ -70,6 +84,8 @@ Apartment Overview Page: This page is for tracking the progress of each bill for
 
 ## Database
 
+Our database has eight tables: User Profiles, User Grocery Bills, User Payments, Apartment, Costs, Utility Bills, Groceries and Inventory.
+
 *  User Profiles contains each user's personal information including their name, email, password, phoneNumber, profile color, and their apartment's ID.
 *  User Grocery Bills contains a user's grocery budget and what they've spent using an email as a user's identifier.
 * User Payments tracks the progress a user has made on each of their bills.
@@ -84,17 +100,26 @@ Apartment Overview Page: This page is for tracking the progress of each bill for
 
 ## URL Routes/Mappings
 
-A final up-to-date table of all the URL routes that your application supports and a short description of what those routes are used for. You should also indicate any authentication and permissions on those routes.
+| URL Route          | Description                                           | Authentication?                                                 |
+|--------------------|-------------------------------------------------------|-----------------------------------------------------------------|
+| /                  | Routes to index.html, the site's homepage             | None                                                            |
+| /login.html        | Routes to the user Login page                         | None (users authenticated after successful login).              |
+| /signup.html       | Routes to the user creation page                      | None                                                            |
+| /apt-creation.html | Routes to the Apartment Creation Page                 | Only available to authenticated users                           |
+| /apt-overview.html | Routes to the Apartment Overview Page                 | Only available to authenticated users connected to an apartment |
+| /costs.html        | Routes to User's costs page for bill payment tracking | Only available to authenticated users connected to an apartment |
+| /groceries.html    | Routes to the apartment's Grocery Page                | Only available to authenticated users connected to an apartment |
+
 
 ## Authentication/Authorization
 
-A final up-to-date description of how users are authenticated and any permissions for specific users (if any) that you used in your application. You should mention how they relate to which UI views are accessible.
+Users are authenticated at login when they correctly input their email/password. If unauthenticated, users can only see the homepage, and signup/login pages. When a user is first created they can input their apartment ID if they are joining an existing apartment, if not they are redirected to the apartment creation page. Once a user is logged in and part of an aprtment they have access to all pages.
 
 ## Division of Labor: 
 
 Leon worked on:
 
-Hannah worked on:
+Hannah worked on: The creation the homepage, login, and signup pages (specifically index.html, login.html, login.js, signup.html, and signup.js). Also the API routes for these pages: which inclule checking for a unique email, getting a user's password upon login, and adding new users to the database when created. I also worked on the documentation for the data model and the final.md doc.
 
 Bryce worked on: 
 
