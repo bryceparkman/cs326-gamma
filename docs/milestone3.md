@@ -49,6 +49,6 @@ Our web page has seven major components: User Profiles, User Grocery Bills, Apar
 
 Bryce worked on creating the SQL routes for each of the routes associated with the costs and groceries pages. Also worked on deploying to Heroku and adding Postgres to the deployed version. Added the secrets.json logic and fixed minor bugs affecting the multi-user interactions on the costs and groceries pages.
 
-Leon worked on 
+Leon worked on creating the SQL routes for each of the routes associated with the apartment creation and apartment overview pages
 
 Hannah worked on creating the SQL routes for each of the routes associated with the signup and login pages as well as wrote the data model descriptions.

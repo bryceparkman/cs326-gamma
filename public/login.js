@@ -1,4 +1,6 @@
-
+/*
+* Verifies the password of a given email, if authenticated routes to apartment overview page
+*/
 async function verifyData(){
     const email = document.getElementById('exampleEmail').value;
     const userEnteredPassword = document.getElementById('exampleInputPassword1').value;

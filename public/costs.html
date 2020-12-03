@@ -28,7 +28,10 @@
         <a href='./' class="navbar-brand">ExpenseMate
             <i id ='houseicon' class="fa fa-home"></i>
         </a> 
-        <ul class="navbar-nav ml-auto"> 
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item"> 
+                <a class="nav-link text-dark" href="./apt-overview.html">Apartment</a>
+            </li> 
             <li class="nav-item"> 
                 <a class="nav-link font-weight-bold text-dark" href="./costs.html">Costs</a>
             </li> 
@@ -42,6 +45,9 @@
     </nav> 
     <!-- Costs header -->
     <div id='costsHeader'>
+        <select id='selectMode'></select>
+        <br>
+        <br>
         <input type='month' class='mb-3'/>
         <p id='money'><span id='bigMoney'>$0</span>/ $0</p>
         <div class='progress mx-auto progressCosts' id='mainBar'>
@@ -52,8 +58,6 @@
     <div class='container'>
         <div class='row'>
             <div class='col-lg-6' id='paymentsWrapper'>
-                <!-- <div id='payments' class='pre-scrollable'>
-                </div> -->
                 <div id='blankPayments'>
                     <h2>No payments have been made yet</h2>
                 </div>
@@ -67,7 +71,7 @@
                 <div id='input'>
                     <input type="number" placeholder='Enter amount' step='0.01' id='contrinput'/>
                     <span>
-                        <button type="button" class='btn' id='rentButton'>Contribute Rent</button>
+                        <button type="button" class='btn' id='inputButton'>Contribute</button>
                     </span>
                 </div>      
             </div>
