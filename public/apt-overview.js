@@ -1,5 +1,5 @@
 let users = []
-let utilities = []
+let costs = []
 let currentUser = {
     name: 'bryce',
     email: 'bparkman@umass.edu',
@@ -8,6 +8,10 @@ let currentUser = {
 }
 tempID = '123';
 
+/**
+ * helper function to check if an object is empty
+ * @param {Object} obj the obj to be checked for emptiness
+ */
 function isEmpty(obj) {
     for(var key in obj) {
         if(obj.hasOwnProperty(key)) {
@@ -17,41 +21,64 @@ function isEmpty(obj) {
     return true;
 }
 
+/**
+ * retrieves users from database with give apt id
+ * @param {string} id represents id of apt group
+ */
 async function getUsers(id) {
     const data = await fetch('/allUsersInApt/' + id);
     const json = await data.json();
     if (isEmpty(json) === true) {
         return [];
     }
-    return [];
+    return json;
 }
 
+/**
+ * retrieves apt costs from database with give apt id
+ * @param {string} id represents id of apt group
+ */
 async function getAptCosts(id) {
-    let data = await fetch('/aptCosts/' + id);
-    let json = await data.json();
+    const data = await fetch('/aptCosts/' + id);
+    const json = await data.json();
     if (isEmpty(json) === true) {
         return [];
     }
     return json;
 }
 
-function loadUsers() { // load users in apartment group with given code
-    // front end stuff
+/**
+ * loads all apartment costs into apt mates grid
+ */
+function loadUsers() {
     for (let i = 0; i < users.length; i++) {
         let user = users[i];
         addUser(user);
     }
 }
 
-function loadAptCosts() { // load users in apartment group with given code
-    // front end stuff
-    for (let i = 0; i < utilities.length; i++) {
-        let utility = utilities[i];
-        console.log(utility)
-        addUtility(i, utility.billname, utility.cost, utility.contributors);
+/**
+ * loads all apartment costs into costs grid
+ */
+function loadAptCosts() {
+
+    let aptCostsGrid = document.getElementById('aptUtilitiesBox');
+    aptCostsGrid.innerHTML = '';
+
+    for (let i = 0; i < costs.length; i++) {
+        let cost = costs[i];
+        addCost(i, cost.billname, cost.cost, cost.contributors);
     }
 }
 
+/**
+ * adds user to apt mates box on left
+ * @param {Object<string>} user user object representing a user in this apartment group
+ * @param {Object<string>} user.name name of user
+ * @param {Object<string>} user.color color associated with user
+ * @param {Object<string>} user.aptID apt id of apt group and user
+ * @param {Object<string>} user.email email of user
+ */
 function addUser(user) {
     let container = document.getElementById('aptMatesBox');
     let containerItem = document.createElement('div');
@@ -67,7 +94,14 @@ function addUser(user) {
     container.appendChild(containerItem);
 }
 
-function addUtility(index, name, cost, contributors) {
+/**
+ * adds cost to costs grid
+ * @param {number} index index of modal item
+ * @param {string} name name of cost
+ * @param {number} cost total monthly cost
+ * @param {Array<string>} contributors array of user emails that are contributing to payment
+ */
+function addCost(index, name, cost, contributors) {
     let container = document.getElementById('aptUtilitiesBox');
     let column = document.createElement('div');
     column.className = 'col px-3 mr-2';
@@ -75,17 +109,17 @@ function addUtility(index, name, cost, contributors) {
     card.className = 'card aptPrimaryColorBG mb-2 mt-2';
     let cardBlock = document.createElement('div');
     cardBlock.className = 'card-block px-4 my-4 utilityCardHeader';
-    let utilityInfoLabelsBox = document.createElement('div');
-    let utilityLbl = document.createElement('label');
-    utilityLbl.className = 'utilityLbl';
-    utilityLbl.innerHTML = name;
+    let costInfoLabelsBox = document.createElement('div');
+    let costLbl = document.createElement('label');
+    costLbl.className = 'utilityLbl';
+    costLbl.innerHTML = name;
     let priceLbl = document.createElement('label');
     priceLbl.className = 'priceLbl';
     priceLbl.innerHTML = '$' + cost;
-    utilityInfoLabelsBox.appendChild(utilityLbl);
-    utilityInfoLabelsBox.appendChild(priceLbl);
-    let utilityContributionBar = document.createElement('div');
-    utilityContributionBar.className = 'progress contributionPercentageBar';
+    costInfoLabelsBox.appendChild(costLbl);
+    costInfoLabelsBox.appendChild(priceLbl);
+    let costContributionBar = document.createElement('div');
+    costContributionBar.className = 'progress contributionPercentageBar';
     for (let i = 0; i < contributors.length; i++) {
         let userEmail = contributors[i];
         let subBar = document.createElement('div');
@@ -111,11 +145,11 @@ function addUtility(index, name, cost, contributors) {
         removeBtn.href = '#';
         removeBtn.className = 'card-link aptSecondaryColor float-right';
         removeBtn.innerHTML = 'remove';
-        removeBtn.addEventListener('click', function() { removeUtility(index); });
+        removeBtn.addEventListener('click', function() { removeCost(index); });
         footer.appendChild(removeBtn);
     }
-    cardBlock.appendChild(utilityInfoLabelsBox);
-    cardBlock.appendChild(utilityContributionBar);
+    cardBlock.appendChild(costInfoLabelsBox);
+    cardBlock.appendChild(costContributionBar);
     card.appendChild(cardBlock);
     card.append(footer);
     column.appendChild(card);
@@ -132,23 +166,35 @@ function addUtility(index, name, cost, contributors) {
     }
 }
 
-async function removeUtility(index) {
-    let utility = utilities[index];
-    utilities = utilities.splice(index, 1);
+/**
+ * removes cost from costs grid and database
+ * @param {number} index index of modal item
+ */
+async function removeCost(index) {
+    let cost = costs[index];
+    costs = costs.splice(index, 1);
     await fetch('/removeAptCost', {
         method: 'DELETE',
         body: JSON.stringify({
             id: tempID,
-            name: utility.billname,
+            name: cost.billname,
         })
     })
     loadAptCosts();
 }
 
+/**
+ * copies apt code to users clipboard
+ */
 function copyApartmentCode() {
     return tempID;
 }
 
+/**
+ * opens modal editing or adding cost info
+ * @param {boolean} isAdd true if adding, false if editing
+ * @param {number} index index of modal item
+ */
 function openModal(isAdd, index) {
     const modal = document.getElementById('utilityModal' + (isAdd ? '' : 'Edit'));
     // add contributing percentage fields for the amount of users in apt
@@ -157,10 +203,10 @@ function openModal(isAdd, index) {
         content.removeChild(content.lastChild);
         content.removeChild(content.lastChild);
         let itemLbl = document.getElementById('itemLbl');
-        itemLbl.innerHTML = 'edit ' + utilities[index].billname;
+        itemLbl.innerHTML = 'edit ' + costs[index].billname;
         let inputCost = document.getElementById('inputCostEdit');
-        inputCost.value = utilities[index].cost;
-        let utility = utilities[index];
+        inputCost.value = costs[index].cost;
+        let cost = costs[index];
         for (let i = 0; i < users.length; i++) {
             let span = document.createElement('span');
             let label = document.createElement('label');
@@ -173,10 +219,9 @@ function openModal(isAdd, index) {
             span.appendChild(input);
             content.appendChild(span);
 
-            // if id is in utility.contributors, add check mark next to name
-            let utility = utilities[index];
-            console.log(utility)
-            if (utility.contributors.includes(users[i].email)) {
+            // if id is in cost.contributors, add check mark next to name
+            let cost = costs[index];
+            if (cost.contributors.includes(users[i].email)) {
                 input.checked = true;
             } else {
                 input.checked = false;
@@ -193,11 +238,20 @@ function openModal(isAdd, index) {
     loadAptCosts();
 }
 
+/**
+ * closes modal
+ * @param {boolean} isAdd true if adding, false if editing
+ */
 function closeModal(isAdd) {
     const modal = document.getElementById('utilityModal' + (isAdd ? '' : 'Edit'));
     modal.style.display = 'none';
 }
 
+/**
+ * submits modal, adding to or editing the database appropriately
+ * @param {boolean} isAdd true if adding, false if editing
+ * @param {number} index index of modal item
+ */
 async function submitModal(isAdd, index) {
     const modal = document.getElementById('utilityModal' + (isAdd ? '' : 'Edit'));
     const inputCost = document.getElementById('inputCost' + (isAdd ? '' : 'Edit'));
@@ -206,7 +260,7 @@ async function submitModal(isAdd, index) {
         if (isAdd) {
             if (inputName.value.length > 0) {
                 const inputName = document.getElementById('inputName' + (isAdd ? '' : 'Edit'));
-                let utility = { 
+                let cost = { 
                     name: inputName.value, 
                     cost: parseInt(inputCost.value), 
                     contributors: []
@@ -214,34 +268,34 @@ async function submitModal(isAdd, index) {
                 
                 for (let i = 0; i < users.length; i++) {
                     let user = users[i];
-                    utility.contributors.push(user.email);
+                    cost.contributors.push(user.email);
                 }
-                utilities.push(utility);
-                addUtility(utilities.length-1, utility.billname, utility.cost, utility.contributors);
+                costs.push(cost);
+                addCost(costs.length-1, cost.billname, cost.cost, cost.contributors);
 
                 await fetch('/addAptCost', {
                     method: 'POST',
                     body: JSON.stringify({
                         id: tempID,
-                        name: utility.billname,
-                        cost: utility.cost,
-                        contributors: utility.contributors,
+                        name: cost.billname,
+                        cost: cost.cost,
+                        contributors: cost.contributors,
                     })
                 })
             }
         } else {
 
-            let utility = utilities[index];
-            utility.cost = parseInt(inputCost.value);
-            let oldContributors = utility.contributors;
+            let cost = costs[index];
+            cost.cost = parseInt(inputCost.value);
+            let oldContributors = cost.contributors;
             let contributorsAdded = [];
             let contributorsDropped = [];
-            utility.contributors = [];
+            cost.contributors = [];
             for (let i = 0; i < users.length; i++) {
                 let user = users[i];
                 let input = document.getElementById('contributer' + i);
                 if (input.checked === true) {
-                    utility.contributors.push(user.email);
+                    cost.contributors.push(user.email);
                 }
                 if (input.checked === true && !oldContributors.includes(user.email)) {
                     contributorsAdded.push(user.email);
@@ -254,9 +308,9 @@ async function submitModal(isAdd, index) {
                 method: 'PUT',
                 body: JSON.stringify({
                     id: tempID,
-                    name: utility.billname,
-                    cost: utility.cost,
-                    contributors: utility.contributors,
+                    name: cost.billname,
+                    cost: cost.cost,
+                    contributors: cost.contributors,
                     contributorsAdded: contributorsAdded,
                     contributorsDropped: contributorsDropped
                 })
@@ -272,8 +326,7 @@ async function submitModal(isAdd, index) {
 window.addEventListener('load', async () => {
     //users = await getUsers(tempID);
     users = [currentUser];
-    utilities = await getAptCosts(tempID);
-    //utilities = [];
+    costs = await getAptCosts(tempID);
     loadUsers();
     loadAptCosts();
 });

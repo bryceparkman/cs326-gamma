@@ -35,35 +35,6 @@ userProfiles.profiles.push(prof1);
 userProfiles.profiles.push(prof2);
 userProfiles.profiles.push(prof3);
 
-let aptCosts = [
-
-  { name: 'Rent', cost: 3000, contributions: [
-      { user: { id: 'leon@gmail.com', name: 'leon', color: '0000ff' }, percent: 33 }, 
-      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'ff0000' }, percent: 33 }, 
-      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '00ff00' }, percent: 34 }
-  ]},
-  { name: 'Gas', cost: 50, contributions: [
-      { user: { id: 'leon@gmail.com', name: 'leon', color: '0000ff' }, percent: 33 }, 
-      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'ff0000' }, percent: 33 }, 
-      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '00ff00' }, percent: 34 }
-  ]},
-  {
-    name: 'Rent', cost: 3000, contributions: [
-      { user: { id: 'leon@gmail.com', name: 'leon', color: '20b2aa' }, percent: 33 },
-      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'daa520' }, percent: 33 },
-      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '9400D3' }, percent: 34 }
-    ]
-  },
-  {
-    name: 'Gas', cost: 50, contributions: [
-      { user: { id: 'leon@gmail.com', name: 'leon', color: '20b2aa' }, percent: 33 },
-      { user: { id: 'hannah@gmail.com', name: 'hannah', color: 'daa520' }, percent: 33 },
-      { user: { id: 'bryce@gmail.com', name: 'bryce', color: '9400D3' }, percent: 34 }
-    ]
-  }
-
-]
-
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
@@ -247,6 +218,10 @@ async function addUserProfile(firstName, lastName, email, password, phoneNumber,
   }));
 }
 
+/**
+ * gets app apartment costs for apartment group with given id
+ * @param {string} id id of apartment group
+ */
 async function getAptCosts(id) {
 
   // grab utilities
@@ -273,6 +248,13 @@ async function getAptCosts(id) {
   return utilities;
 }
 
+/**
+ * adds a cost to apartment group with given id
+ * @param {string} id id of apartment group
+ * @param {string} name name of cost
+ * @param {number} cost total monthly cost
+ * @param {Array<string>} contributors array of user emails that are contributing to payment
+ */
 async function addAptCosts(id, name, cost, contributors) {
 
   // add utility
@@ -297,6 +279,15 @@ async function addAptCosts(id, name, cost, contributors) {
   return;
 }
 
+/**
+ * edits a cost for apartment group with given id
+ * @param {string} id id of apartment group
+ * @param {string} name name of cost
+ * @param {number} cost total monthly cost
+ * @param {Array<string>} contributors array of user emails that are contributing to payment
+ * @param {Array<string>} contributorsAdded array of user emails added since last time
+ * @param {Array<string>} contributorsDropped array of user emails dropped since last time
+ */
 async function editAptCosts(id, name, cost, contributors, contributorsAdded, contributorsDropped) {
   
   // update utility
@@ -340,6 +331,11 @@ async function editAptCosts(id, name, cost, contributors, contributorsAdded, con
   return;
 }
 
+/**
+ * removes a cost for apartment group with given id
+ * @param {string} id id of apartment group
+ * @param {string} name name of cost
+ */
 async function removeAptCost(id, name) {
 
   console.log('testccc')
@@ -358,18 +354,28 @@ async function removeAptCost(id, name) {
   return;
 }
 
+/**
+ * gets all apt codes
+ */
 async function getAptCodes() {
-  // get all apt codes
   return await connectAndRun(db => db.any('SELECT id FROM Apartment'));
 }
 
+/**
+ * gets all users in apartment group with given id
+ * @param {string} id id of apartment group
+ */
 async function getUsersInApt(id) {
-  // get all apt codes
   return await connectAndRun(db => db.any('SELECT firstName, email, AptId, color FROM UserProfile WHERE AptId = $/id/', {
     id: id,
   }));
 }
 
+/**
+ * creates a new apartment in database with given newly generated id
+ * @param {string} id id of apartment group
+ * @param {string} rent rent of apartment group
+ */
 async function addAptCode(id, rent) {
   
   // add utility
