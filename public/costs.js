@@ -81,9 +81,9 @@ async function calculateOverallPercent(email) {
 }
 
 /**
- * Converts a string of html into a DOM element
+ * Converts a string of HTML into a DOM element
  * https://stackoverflow.com/a/35385518
- * @param {string} html The html code in string form
+ * @param {string} html The HTML code in string form
 */
 function htmlToNode(html) {
     const template = document.createElement('template');
@@ -129,7 +129,7 @@ async function contributeCost() {
             const data = await fetch('/payments/' + currentMode);
             const json = await data.json();
 
-            //Get html node, color, and create class name
+            //Get HTML node, color, and create class name
             const payments = document.getElementById('payments');
             const userColor = users.find(user => user.email === currentUser).color;
             const className = (currentUser.replace('@', '')).replace('.', '');
@@ -154,7 +154,7 @@ async function contributeCost() {
 }
 
 /**
- * Rewrites payment html section with data from server
+ * Rewrites payment HTML section with data from server
  */
 async function checkPayments() {
     //Get payments
@@ -167,7 +167,7 @@ async function checkPayments() {
         const node = htmlToNode("<div id='payments' class='pre-scrollable'></div>");
         paymentsWrapper.replaceChild(node, paymentsWrapper.children[0]);
 
-        //For each payment, append to the html DOM
+        //For each payment, append to the HTML DOM
         for (let i = 0; i < json.length; i++) {
             const payment = json[i];
             const payments = document.getElementById('payments');
@@ -195,7 +195,7 @@ async function checkPayments() {
  * Redraws page, updating all progress bars and payments section
  */
 async function calculatePage() {
-    //Get html nodes
+    //Get HTML nodes
     const total = document.getElementById('money');
     const owe = document.getElementById('amountToOwe');
     const share = document.getElementById('amountShared');
