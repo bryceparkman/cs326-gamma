@@ -1,7 +1,12 @@
-let user = 'bparkman@umass.edu';
-let utilities = []
+let currentUser = 'bparkman@umass.edu';
+let costs = []
 
-function addUtility(name, cost) { // if cost = 0, then cost varies month to month
+/**
+ * adds cost to costs box
+ * @param {string} name name of cost
+ * @param {number} cost cost per month
+ */
+function addCost(name, cost) { // if cost = 0, then cost varies month to month
     let container = document.getElementById('aptCreationBox');
     let containerItem = document.createElement('div');
     containerItem.className = 'aptCreationBoxItem aptPrimaryColorBG';
@@ -14,13 +19,16 @@ function addUtility(name, cost) { // if cost = 0, then cost varies month to mont
     containerItem.appendChild(leftLabel);
     containerItem.appendChild(rightLabel);
     container.appendChild(containerItem);
-    let utility = {
+    let cost = {
         name: name,
         cost: cost
     };
-    utilities.push(utility);
+    costs.push(cost);
 }
 
+/**
+ * creates apartment with randomly generated id and costs added in costs box
+ */
 async function createApartment() {
 
     let rentCost = document.getElementById('rentInput').value;
@@ -35,23 +43,23 @@ async function createApartment() {
         cost: rentCost
     }
 
-    let aptCosts = [];
-    aptCosts.push(rent);
+    let costsWithRent = [];
+    costsWithRent.push(rent);
 
-    for (let i = 0; i < utilities.length; i++) {
-        let utility = utilities[i];
-        aptCosts.push(utility);
+    for (let i = 0; i < costs.length; i++) {
+        let cost = costs[i];
+        costsWithRent.push(cost);
     }
 
-    for (let i = 0; i < aptCosts.length; i++) {
-        let item = aptCosts[i];
+    for (let i = 0; i < costsWithRent.length; i++) {
+        let item = costsWithRent[i];
         await fetch('/addAptCost', {
             method: 'POST',
             body: JSON.stringify({
                 id: id,
                 name: item.name,
                 cost: item.cost,
-                contributors: [user],
+                contributors: [currentUser],
             })
         })
     }
@@ -68,6 +76,9 @@ async function createApartment() {
 
 }
 
+/**
+ * helper function to generate apartment code
+ */
 async function generateAptCode() {
     let data = await fetch('/allAptCodes');
     let allAptCodes = await data.json();
@@ -78,21 +89,30 @@ async function generateAptCode() {
     return newCode
 }
 
+/**
+ * opens modal editing or adding cost info
+ */
 function openModal() {
     const modal = document.getElementById('utilityModal');
     modal.style.display = 'block';
 }
 
+/**
+ * closes modal
+ */
 function closeModal() {
     const modal = document.getElementById('utilityModal');
     modal.style.display = 'none';
 }
 
+/**
+ * submits modal, adding to or editing the database appropriately
+ */
 function submitModal() {
     const modal = document.getElementById('utilityModal');
     const inputName = document.getElementById('inputName');
     const inputCost = document.getElementById('inputCost');
-    addUtility(inputName.value, inputCost.value)
+    addCost(inputName.value, inputCost.value)
     modal.style.display = 'none';
     inputName.value = '';
     inputCost.value = '';
