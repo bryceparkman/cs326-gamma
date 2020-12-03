@@ -87,7 +87,7 @@ async function addGrocery() {
 /**
  * Opens edit grocery modal and prefills values
  * @param {boolean} isGrocery True if grocery, false if inventory
- * @param {*} element 
+ * @param {object} element JSON object representing element to edit
  */
 function editItem(isGrocery, element) {
     const type = (isGrocery ? 'Grocery' : 'Inventory');
@@ -103,7 +103,7 @@ function editItem(isGrocery, element) {
 /**
  * Removes grocery item from database and updates HTML
  * @param {string} type Type of element, ('groceries' or 'inventory') 
- * @param {*} element 
+ * @param {object} element JSON object representing element to remove
  */
 async function removeItem(type, element) {
     const t = (type === 'groceries' ? 'Grocery' : 'Inventory');
