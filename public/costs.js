@@ -5,7 +5,7 @@ let currentMode = 'Rent';
 /**
  * Gets either total money spent or individual user money spent for certain cost/utility
  *
- * @param {string} email The email of the user, null by default
+ * @param {string} [email=null] The email of the user
 */
 async function moneySpent(email = null) {
     const data = await fetch('/payments/' + currentMode);
