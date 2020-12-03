@@ -58,19 +58,19 @@ Apartment Overview Page: This page is for tracking the progress of each bill for
 | /cost/:type          | GET          | Returns a bills monthly cost                                 |
 | /name/:email         | GET          | Returns a users name given their email                       |
 | /addPayment          | POST         | Adds a payment amount to a bill                              |
-| /share/:email        | GET          | Returns the number of users in an apartment                  |
+| /share/:email        | GET          | Returns the percentage share of a user for a specific bill   |
 | /budget/:email       | GET          | Returns a user's grocery budget                              |
 | /bill/:email         | GET          | Returns how much a user has spent on groceries               |
-| /addBill             | PUT          | Adds an amount spent to the user's grocery bill.             |
+| /addBill             | PUT          | Adds an amount spent to the user's grocery bill              |
 | /groceries           | GET          | Returns a list of groceries for the apartment                |
 | /inventory           | GET          | Returns a list of the apartment's inventory                  |
-| /addGrocery          | POST         | Adds a new grocery item to the apartment's grocery list.     |
-| /addInventory        | POST         | Adds a new inventory item to the apartment's inventory list. |
+| /addGrocery          | POST         | Adds a new grocery item to the apartment's grocery list      |
+| /addInventory        | POST         | Adds a new inventory item to the apartment's inventory list  |
 | /editGrocery         | PUT          | Updates a grocery item (name or amount)                      |
 | /editInventory       | PUT          | Updates an inventory item (name or amount)                   |
 | /removeGrocery/:id   | DELETE       | Removes a grocery item from apartment grocery list           |
 | /removeInventory/:id | DELETE       | Removes an inventory item from apartment inventory list      |
-| /aptCosts/:id        | GET          | Returns a list of user's payments on utility bills           |
+| /aptCosts/:id        | GET          | Returns a list of an apartment's utility bills               |
 | /addAptCost          | POST         | Adds a new utility bill                                      |
 | /editAptCost         | POST         | Edits the name/cost/contributers for a bill                  |
 | /removeAptCost       | DELETE       | Deletes a bill from the apartment                            |
@@ -121,7 +121,7 @@ Leon worked on:
 
 Hannah worked on: The creation the homepage, login, and signup pages (specifically index.html, login.html, login.js, signup.html, and signup.js). Also the API routes for these pages: which inclule checking for a unique email, getting a user's password upon login, and adding new users to the database when created. I also worked on the documentation for the data model and the final.md doc.
 
-Bryce worked on: 
+Bryce worked on: The creation of the navbar, costs, and groceries pages (costs.html, groceries.html). All the CSS for these pages was also done by me. I also created the associated javascript scripts for those pages. I added all the API routes related to groceries, inventory, budgets, and payments. Finally, I created secrets.json, deployed on Heroku, and contributed to all the documentation.
 
 ## Conclusion
 
