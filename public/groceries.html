@@ -30,6 +30,9 @@
             <i id='houseicon' class="fa fa-home"></i>
         </a>
         <ul class="navbar-nav ml-auto">
+            <li class="nav-item"> 
+                <a class="nav-link text-dark" href="./apt-overview.html">Apartment</a>
+            </li> 
             <li class="nav-item">
                 <a class="nav-link text-dark" href="./costs.html">Costs</a>
             </li>
@@ -62,7 +65,7 @@
         <div class='row'>
             <div class='col-lg-6'>
                 <p class='mb-5 text-center groceriesSubtitle'>Grocery List
-                    <a href='#_' onclick="openModal('grocery',true)">
+                    <a href='#_' onclick="openAddModal('grocery')">
                         <span class='darkorange'>
                             <i class='fa fa-plus-circle'></i>
                         </span>
@@ -70,21 +73,21 @@
                 </p>
                 <div id="groceryModal" class="modal">
                     <div class="modal-content">
-                        <span class="close" id='groceryClose' onclick="closeModal('grocery',true)">&times;</span>
+                        <span class="close" onclick="closeModal('grocery',true)">&times;</span>
                         <h2>Add item to grocery list</h2>
-                        <input type='text' placeholder='Grocery item' id='inputgroceryItem' class='inputMb'/>
-                        <input type='text' placeholder='Grocery amount (optional)' id='inputgroceryAmount' class='inputMb'/>
-                        <button class='btn darkorangeBG' onclick="submitModal('grocery',true)">Add</button>
+                        <input type='text' placeholder='Grocery item' id='inputGroceryItem' class='inputMb'/>
+                        <input type='text' placeholder='Grocery amount (optional)' id='inputGroceryAmount' class='inputMb'/>
+                        <button class='btn darkorangeBG' onclick="submitModal('groceries',true)">Add</button>
                     </div>
                 </div>     
                 
                 <div id="groceryModalEdit" class="modal">
                     <div class="modal-content">
-                        <span class="close" id='groceryClose' onclick="closeModal('grocery',false)">&times;</span>
+                        <span class="close" onclick="closeModal('grocery',false)">&times;</span>
                         <h2>Edit grocery item</h2>
-                        <input type='text' placeholder='Grocery item' id='inputgroceryItemEdit' class='inputMb'/>
-                        <input type='text' placeholder='Grocery amount (optional)' id='inputgroceryAmountEdit' class='inputMb'/>
-                        <button class='btn darkorangeBG' onclick="submitModal('grocery',false)">Save</button>
+                        <input type='text' placeholder='Grocery item' id='inputGroceryItemEdit' class='inputMb'/>
+                        <input type='text' placeholder='Grocery amount (optional)' id='inputGroceryAmountEdit' class='inputMb'/>
+                        <button class='btn darkorangeBG' onclick="submitModal('groceries',false)">Save</button>
                     </div>
                 </div> 
 
@@ -93,7 +96,7 @@
             </div>
             <div class='col-lg-6'>
                 <p class='mb-5 text-center groceriesSubtitle'>Inventory
-                    <a href='#_' onclick="openModal('inventory',true)">
+                    <a href='#_' onclick="openAddModal('inventory')">
                         <span class='darkorange'>
                             <i class='fa fa-plus-circle'></i>
                         </span>
@@ -101,19 +104,19 @@
                 </p>
                 <div id="inventoryModal" class="modal">
                     <div class="modal-content">
-                        <span class="close" id='inventoryClose' onclick="closeModal('inventory',true)">&times;</span>
+                        <span class="close" onclick="closeModal('inventory',true)">&times;</span>
                         <h2>Add item to inventory</h2>
-                        <input type='text' placeholder='Grocery item' id='inputinventoryItem' class='inputMb'/>
-                        <input type='text' placeholder='Grocery amount (optional)' id='inputinventoryAmount'class='inputMb' />
+                        <input type='text' placeholder='Grocery item' id='inputInventoryItem' class='inputMb'/>
+                        <input type='text' placeholder='Grocery amount (optional)' id='inputInventoryAmount' class='inputMb' />
                         <button class='btn darkorangeBG' onclick="submitModal('inventory',true)">Add</button>
                     </div>
                 </div>  
                 <div id="inventoryModalEdit" class="modal">
                     <div class="modal-content">
-                        <span class="close" id='inventoryClose' onclick="closeModal('inventory',false)">&times;</span>
+                        <span class="close" onclick="closeModal('inventory',false)">&times;</span>
                         <h2>Edit inventory item</h2>
-                        <input type='text' placeholder='Grocery item' id='inputinventoryItemEdit'class='inputMb' />
-                        <input type='text' placeholder='Grocery amount (optional)' id='inputinventoryAmountEdit'class='inputMb' />
+                        <input type='text' placeholder='Grocery item' id='inputInventoryItemEdit' class='inputMb' />
+                        <input type='text' placeholder='Grocery amount (optional)' id='inputInventoryAmountEdit' class='inputMb' />
                         <button class='btn darkorangeBG' onclick="submitModal('inventory',false)">Save</button>
                     </div>
                 </div>  
