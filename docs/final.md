@@ -77,6 +77,7 @@ Apartment Overview Page: This page is for tracking the progress of each bill for
 | /allAptCodes         | GET          | Returns all apt ids                                  |
 | /allUsersInApt/:id   | GET          | Returns the user data for all users in the apartment         |
 | /createApartment     | POST         | Adds the starting apartment information                      |
+| /createApartment     | GET         | Retrieves user info with given email                      |
 | /profiles            | GET          | Returns a list of all user profiles                          |
 | /loginProfile/:email | GET          | Returns a password for a given user                          |
 | /email/:email        | GET          | Returns if a new user's email is unique                      |
