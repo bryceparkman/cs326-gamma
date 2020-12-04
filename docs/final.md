@@ -70,11 +70,11 @@ Apartment Overview Page: This page is for tracking the progress of each bill for
 | /editInventory       | PUT          | Updates an inventory item (name or amount)                   |
 | /removeGrocery/:id   | DELETE       | Removes a grocery item from apartment grocery list           |
 | /removeInventory/:id | DELETE       | Removes an inventory item from apartment inventory list      |
-| /aptCosts/:id        | GET          | Returns a list of an apartment's costs               |
-| /addAptCost          | POST         | Adds a new apartment cost                                      |
+| /aptCosts/:id        | GET          | Returns a list of an apartment's costs                       |
+| /addAptCost          | POST         | Adds a new apartment cost                                    |
 | /editAptCost         | POST         | Edits the name/cost/contributers for a cost                  |
 | /removeAptCost       | DELETE       | Deletes a cost from the apartment                            |
-| /allAptCodes         | GET          | Returns all apt ids                                  |
+| /allAptCodes         | GET          | Returns all apt ids                                          |
 | /allUsersInApt/:id   | GET          | Returns the user data for all users in the apartment         |
 | /createApartment     | POST         | Adds the starting apartment information                      |
 | /profiles            | GET          | Returns a list of all user profiles                          |
@@ -88,10 +88,10 @@ Our database has eight tables: User Profiles, User Grocery Bills, User Payments,
 
 *  User Profiles contains each user's personal information including their name, email, password, phoneNumber, profile color, and their apartment's ID.
 *  User Grocery Bills contains a user's grocery budget and what they've spent using an email as a user's identifier.
-* User Payments tracks the progress a user has made on each of their bills.
+*  User Payments tracks the progress a user has made on each of their bills.
 *  Apartment contains all the information about a group's apartment as defined in the apartment creation page. 
 *  Costs is for tracking the overall apartment progress on each shared bill.
-* Utility Bills contains the cost of the other (non-rent) bills for the apartment.
+*  Utility Bills contains the cost of the other (non-rent) bills for the apartment.
 *  Groceries contains the list of groceries bought/needed for an apartment. 
 *  Inventory is a table the contains all the grocieries/goods that are in the apartment (have been bought). 
 
@@ -125,4 +125,4 @@ Bryce worked on: The creation of the navbar, costs, and groceries pages (costs.h
 
 ## Conclusion
 
-A conclusion describing your team’s experience in working on this project. This should include what you learned through the design and implementation process, the difficulties you encountered, what your team would have liked to know before starting the project that would have helped you later, and any other technical hurdles that your team encountered.
+Our experience working on this project was difficult but rewarding. Designing the wireframes was an important step in our design process, and it helped us all stay more organized and focused when creating the html and css layout. Implenting the front-end javascript was tricky for certain pages and took up a lot of our time. We spent a while deliberating on what the best database design should be and it changed multiple times throughout the milestone 3 commits. We found a lot fo difficulty in implementing the routes and getting the PostgreSQL to play nicely with the application we were building. Deploying to Heroku was initially confusing, but we eventually got it to work. Sometimes the code didn't work on Heroku, and it resulted in many PRs trying to figure out what was wrong. In the end, we believe that we  put together a nicely designed, intuitive, and novel website that many people could find extremely useful in their day to day apartment life.
