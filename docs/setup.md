@@ -6,7 +6,8 @@ The contents of this file with be a json of the form below. Fill in the values w
 {
   username: x,
   password: y,
-  port: 5432
+  db_port: 5432,
+  session_secret: z
 }
 ```
 
