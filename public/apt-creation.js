@@ -1,5 +1,28 @@
-let currentUser = 'bparkman@umass.edu';
 let costs = []
+let currentEmail = '';
+let currentUser = {};
+
+/*
+let currentUser = {
+    firstName: 'bryce',
+    email: 'bparkman@umass.edu',
+    AptId: '',
+    color: '00ff00'
+}
+*/
+
+/**
+ * retrieves user info from database with given email
+ * @param {string} email email of current user
+ */
+async function getCurrentUser(email) {
+    const data = await fetch('/userInfo/' + email);
+    const json = await data.json();
+    if (isEmpty(json) === true) {
+        return [];
+    }
+    return json;
+}
 
 /**
  * adds cost to costs box
@@ -58,8 +81,8 @@ async function createApartment() {
             body: JSON.stringify({
                 id: id,
                 name: item.name,
-                cost: item.cost,
-                contributors: [currentUser],
+                cost: item.cost * 100,
+                contributors: [currentEmail],
             })
         })
     }
@@ -68,7 +91,7 @@ async function createApartment() {
         method: 'POST',
         body: JSON.stringify({
             id: id,
-            rent: rentCost,
+            rent: rentCost * 100,
         })
     })
 
@@ -112,8 +135,18 @@ function submitModal() {
     const modal = document.getElementById('utilityModal');
     const inputName = document.getElementById('inputName');
     const inputCost = document.getElementById('inputCost');
-    addCost(inputName.value, inputCost.value)
-    modal.style.display = 'none';
-    inputName.value = '';
-    inputCost.value = '';
+    let cost = parseInt(inputCost.value);
+    if (inputCost.value.length > 0 && Number.isNaN(cost) === false && inputName.value.length > 0) {  
+        addCost(inputName.value, cost)
+        modal.style.display = 'none';
+        inputName.value = '';
+        inputCost.value = '';
+    } else {
+        alert('name must not be left empty and cost must be a number');
+    }
 }
+
+window.addEventListener('load', async () => {
+    currentEmail = 'bparkman@umass.edu';
+    currentUser = await getCurrentUser(currentEmail);
+});

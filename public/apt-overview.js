@@ -1,12 +1,16 @@
 let users = []
 let costs = []
+let currentEmail = '';
+let currentUser = {};
+
+/*
 let currentUser = {
-    name: 'bryce',
+    firstName: 'bryce',
     email: 'bparkman@umass.edu',
-    aptID: '123',
+    AptId: '123',
     color: '00ff00'
 }
-tempID = '123';
+*/
 
 /**
  * helper function to check if an object is empty
@@ -19,6 +23,19 @@ function isEmpty(obj) {
         }
     }
     return true;
+}
+
+/**
+ * retrieves user info from database with given email
+ * @param {string} email email of current user
+ */
+async function getCurrentUser(email) {
+    const data = await fetch('/userInfo/' + email);
+    const json = await data.json();
+    if (isEmpty(json) === true) {
+        return [];
+    }
+    return json;
 }
 
 /**
@@ -44,6 +61,7 @@ async function getAptCosts(id) {
     if (isEmpty(json) === true) {
         return [];
     }
+    json.cost = json.cost / 100;
     return json;
 }
 
@@ -176,7 +194,7 @@ async function removeCost(index) {
     await fetch('/removeAptCost', {
         method: 'DELETE',
         body: JSON.stringify({
-            id: tempID,
+            id: currentUser.AptId,
             name: cost.billname,
         })
     })
@@ -187,7 +205,7 @@ async function removeCost(index) {
  * copies apt code to users clipboard
  */
 function copyApartmentCode() {
-    return tempID;
+    return currentUser.AptId;
 }
 
 /**
@@ -213,6 +231,7 @@ function openModal(isAdd, index) {
             let input = document.createElement('input');
             span.className = 'inputMb'
             label.innerHTML = users[i].name;
+            input.style.marginLeft = '3vh';
             input.type = 'checkbox';
             input.id = 'contributer' + i;
             span.appendChild(label);
@@ -220,7 +239,6 @@ function openModal(isAdd, index) {
             content.appendChild(span);
 
             // if id is in cost.contributors, add check mark next to name
-            let cost = costs[index];
             if (cost.contributors.includes(users[i].email)) {
                 input.checked = true;
             } else {
@@ -255,14 +273,15 @@ function closeModal(isAdd) {
 async function submitModal(isAdd, index) {
     const modal = document.getElementById('utilityModal' + (isAdd ? '' : 'Edit'));
     const inputCost = document.getElementById('inputCost' + (isAdd ? '' : 'Edit'));
-
-    if (inputCost.value.length > 0 && typeof(inputCost.value === 'number')) {  
+    let costVal = parseInt(inputCost.value);
+    if (inputCost.value.length > 0 && Number.isNaN(costVal) === false) {  
         if (isAdd) {
+            const inputName = document.getElementById('inputName' + (isAdd ? '' : 'Edit'));
             if (inputName.value.length > 0) {
-                const inputName = document.getElementById('inputName' + (isAdd ? '' : 'Edit'));
+
                 let cost = { 
                     name: inputName.value, 
-                    cost: parseInt(inputCost.value), 
+                    cost: costVal, 
                     contributors: []
                 };
                 
@@ -276,13 +295,20 @@ async function submitModal(isAdd, index) {
                 await fetch('/addAptCost', {
                     method: 'POST',
                     body: JSON.stringify({
-                        id: tempID,
+                        id: currentUser.AptId,
                         name: cost.billname,
-                        cost: cost.cost,
+                        cost: cost.cost * 100,
                         contributors: cost.contributors,
                     })
                 })
+            } else {
+                alert('name must not be left empty');
             }
+
+            modal.style.display = 'none';
+            inputName.value = '';
+            inputCost.value = '';
+
         } else {
 
             let cost = costs[index];
@@ -307,26 +333,31 @@ async function submitModal(isAdd, index) {
             await fetch('/editAptCost', {
                 method: 'PUT',
                 body: JSON.stringify({
-                    id: tempID,
+                    id: currentUser.AptId,
                     name: cost.billname,
-                    cost: cost.cost,
+                    cost: cost.cost * 100,
                     contributors: cost.contributors,
                     contributorsAdded: contributorsAdded,
                     contributorsDropped: contributorsDropped
                 })
             });
 
+            modal.style.display = 'none';
+            inputName.value = '';
+            inputCost.value = '';
+
         }
+    } else {
+        alert('cost must be a number');
     }
-    modal.style.display = 'none';
-    inputName.value = '';
-    inputCost.value = '';
+    
 }
 
 window.addEventListener('load', async () => {
-    //users = await getUsers(tempID);
-    users = [currentUser];
-    costs = await getAptCosts(tempID);
+    currentEmail = 'bparkman@umass.edu';
+    currentUser = await getCurrentUser(currentEmail);
+    users = await getUsers(currentUser.AptId);
+    costs = await getAptCosts(currentUser.AptId);
     loadUsers();
     loadAptCosts();
 });

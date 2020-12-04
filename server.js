@@ -1,40 +1,3 @@
-let prof1 = {
-  firstName: "Hannah",
-  lastName: "Noordeen",
-  email: "hnoordeen@umass.edu",
-  password: "password",
-  phoneNumber: "7777777777",
-  aptCode: "code123",
-  color: 'ff0000'
-};
-
-let prof2 = {
-  firstName: "Bryce",
-  lastName: "Parkman",
-  email: "bparkman@umass.edu",
-  password: "brycepassword",
-  phoneNumber: "7777777777",
-  aptCode: "code123",
-  color: '00ff00'
-};
-
-let prof3 = {
-  firstName: "Leon",
-  lastName: "Djusberg",
-  email: "ldjusberg@umass.edu",
-  password: "leonpassword",
-  phoneNumber: "7777777777",
-  aptCode: "20b2aa",
-  color: '0000ff'
-};
-
-const userProfiles = {
-  profiles: []
-};
-userProfiles.profiles.push(prof1);
-userProfiles.profiles.push(prof2);
-userProfiles.profiles.push(prof3);
-
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
@@ -48,7 +11,7 @@ app.use(cookieParser());
 
 let secret;
 
-const currentEmail = 'bparkman@umass.edu'
+const currentEmail = 'bparkman@umass.edu';
 
 //If not on Heroku deployment, access secrets
 if (!process.env.SESSION_SECRET) {
@@ -338,7 +301,6 @@ async function editAptCosts(id, name, cost, contributors, contributorsAdded, con
  */
 async function removeAptCost(id, name) {
 
-  console.log('testccc')
   // delete utility
   await connectAndRun(db => db.none('DELETE FROM UtilityBills WHERE aptid = $/id/ AND BillName = $/name/', {
     id: id,
@@ -378,7 +340,6 @@ async function getUsersInApt(id) {
  */
 async function addAptCode(id, rent) {
   
-  // add utility
   await connectAndRun(db => db.none('INSERT INTO Apartment VALUES($/id/, $/rent/, $/numMembers/)', {
     id: id,
     rent: rent,
@@ -388,9 +349,18 @@ async function addAptCode(id, rent) {
   return;
 }
 
-//async function getEmails() {
-  //return await connectAndRun(db => db.any('SELECT email from userprofile;'));
-//}
+/**
+ * creates a new apartment in database with given newly generated id
+ * @param {string} email email of user
+ */
+async function getUserInfo(email) {
+  
+  let userInfo = await connectAndRun(db => db.any('SELECT firstName, email, AptId, color FROM UserProfile WHERE email = $/email/', {
+    email: email,
+  }));
+
+  return userInfo;
+}
 
 app.get('/', (req, res) => {
   res.sendFile('index.html');
@@ -582,6 +552,12 @@ app.post('/createApartment', async (req, res) => {
     const element = JSON.parse(body);
     await addAptCode(element.id, element.rent);
   });
+  res.end();
+});
+
+// Retrieves user info with given email
+app.get('/userInfo/:email', async (req, res) => {
+  res.send(await getUserInfo(req.params.email));
   res.end();
 });
 
