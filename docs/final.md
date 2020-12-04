@@ -70,11 +70,11 @@ Apartment Overview Page: This page is for tracking the progress of each bill for
 | /editInventory       | PUT          | Updates an inventory item (name or amount)                   |
 | /removeGrocery/:id   | DELETE       | Removes a grocery item from apartment grocery list           |
 | /removeInventory/:id | DELETE       | Removes an inventory item from apartment inventory list      |
-| /aptCosts/:id        | GET          | Returns a list of an apartment's utility bills               |
-| /addAptCost          | POST         | Adds a new utility bill                                      |
-| /editAptCost         | POST         | Edits the name/cost/contributers for a bill                  |
-| /removeAptCost       | DELETE       | Deletes a bill from the apartment                            |
-| /allAptCodes         | GET          | Returns the apartment's ID                                   |
+| /aptCosts/:id        | GET          | Returns a list of an apartment's costs               |
+| /addAptCost          | POST         | Adds a new apartment cost                                      |
+| /editAptCost         | POST         | Edits the name/cost/contributers for a cost                  |
+| /removeAptCost       | DELETE       | Deletes a cost from the apartment                            |
+| /allAptCodes         | GET          | Returns all apt ids                                  |
 | /allUsersInApt/:id   | GET          | Returns the user data for all users in the apartment         |
 | /createApartment     | POST         | Adds the starting apartment information                      |
 | /profiles            | GET          | Returns a list of all user profiles                          |
@@ -117,7 +117,7 @@ Users are authenticated at login when they correctly input their email/password.
 
 ## Division of Labor: 
 
-Leon worked on:
+Leon worked on: The creation of the apartment creation and apartment overview pages(apt-creation.html, apt-overview.html), and the associated javascript scripts for each. All the styling for these pages was done by me in styles.css. I added all API routes associated with apartment creation and editing/adding/removing/retrieving apartment costs, and contributed to all documentation.
 
 Hannah worked on: The creation the homepage, login, and signup pages (specifically index.html, login.html, login.js, signup.html, and signup.js). Also the API routes for these pages: which inclule checking for a unique email, getting a user's password upon login, and adding new users to the database when created. I also worked on the documentation for the data model and the final.md doc.
 
