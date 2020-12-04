@@ -522,13 +522,14 @@ app.delete('/removeInventory/:id', async (req, res) => {
   res.end();
 });
 
-// Returns a list of the apartment's utility bills
+// Returns a list of the apartment's costs
 app.get('/aptCosts/:id', async (req, res) => {
   const costs = await getAptCosts(req.params.id);
   res.json(costs);
   res.end();
 });
 
+// Adds a new apartment cost
 app.post('/addAptCost', async (req, res) => {
   let body = '';
   req.on('data', data => body += data);
@@ -539,6 +540,7 @@ app.post('/addAptCost', async (req, res) => {
   res.end();
 });
 
+// Edits the name/cost/contributers for a cost
 app.put('/editAptCost', async (req, res) => {
   let body = '';
   req.on('data', data => body += data);
@@ -549,6 +551,7 @@ app.put('/editAptCost', async (req, res) => {
   res.end();
 });
 
+// Deletes a cost from the apartment
 app.delete('/removeAptCost', async (req, res) => {
   let body = '';
   req.on('data', data => body += data);
@@ -559,16 +562,19 @@ app.delete('/removeAptCost', async (req, res) => {
   res.end();
 });
 
+// Returns all apt ids
 app.get('/allAptCodes', async (req, res) => {
   res.send(await getAptCodes());
   res.end();
 });
 
+// Returns the user data for all users in the apartment
 app.get('/allUsersInApt/:id', async (req, res) => {
   res.send(await getUsersInApt(req.params.id));
   res.end();
 });
 
+// Adds the starting apartment information
 app.post('/createApartment', async (req, res) => {
   let body = '';
   req.on('data', data => body += data);
@@ -579,6 +585,7 @@ app.post('/createApartment', async (req, res) => {
   res.end();
 });
 
+// Returns a list of all user profiles
 app.get('/profiles', async (req, res) => {
   res.json(await connectAndRun(db => db.any('SELECT * FROM UserProfile', [])));
   res.end();
