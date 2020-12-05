@@ -68,7 +68,7 @@ async function createApartment() {
                 id: id,
                 name: item.name,
                 cost: item.cost * 100,
-                contributors: [currentEmail],
+                contributors: [currentUser.email],
             })
         })
     }
@@ -84,7 +84,7 @@ async function createApartment() {
     await fetch('/assignAptId', {
         method: 'POST',
         body: JSON.stringify({
-            email: currentEmail,
+            email: currentUser.email,
             id: id,
         })
     })
@@ -141,6 +141,5 @@ function submitModal() {
 }
 
 window.addEventListener('load', async () => {
-    currentEmail = await getCurrentUserEmail();
-    currentUser = await getCurrentUserInfo(currentEmail);
+    currentUser = await getCurrentUser();
 });
