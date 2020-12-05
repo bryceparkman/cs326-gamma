@@ -1,7 +1,9 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const minicrypt = require('./miniCrypt');
 
+const mc = new minicrypt();
 const app = express();
 
 app.use(express.static('public'));
@@ -46,7 +48,7 @@ const db = pgp(url);
  */
 function createTables() {
   //User Profile Table
-  db.none("CREATE TABLE IF NOT EXISTS UserProfile(firstName varchar(45), lastName varchar(45), email varchar(45), password varchar(45), phoneNumber varchar(11), AptId varchar(45), color varchar(45), primary key (email))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS UserProfile(firstName varchar(45), lastName varchar(45), email varchar(45), salt varchar(45), password varchar(200), phoneNumber varchar(11), AptId varchar(45), color varchar(45), primary key (email))", (err, res) => {
     console.log(err, res);
     db.end();
   });
@@ -615,7 +617,9 @@ app.post('/userProfile', async (req, res) => {
   let userSalt = userCrypt[0];
   let hash = userCrypt[1];
   password = hash;
+  console.log("HERE");
   await addUserProfile(fname, lname, email, userSalt, password, phoneNumber, aptCode, color);
+  console.log("HTEWIFKNFEKNFNFNFN");
   req.session.currentUser = await connectAndRun(db => db.one('SELECT firstName, lastName, email, aptid, color FROM UserProfile WHERE email = $/email/', { email }));
   res.json({
     message: "Correct"
