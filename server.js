@@ -146,16 +146,16 @@ async function getFirstNameByEmail(email){
 /**
  * Gets grocery data
  */
-async function getGroceries() {
-  const id = req.session.currentUser.aptid
+async function getGroceries(currentUser) {
+  const id = currentUser.aptid
   return await connectAndRun(db => db.any('SELECT * from Groceries WHERE aptid = $/id/', { id }));
 }
 
 /**
  * Gets inventory data
  */
-async function getInventory() {
-  const id = req.session.currentUser.aptid
+async function getInventory(currentUser) {
+  const id = currentUser.aptid
   return await connectAndRun(db => db.any('SELECT * from Inventory WHERE aptid = $/id/', { id }));
 }
 
@@ -437,19 +437,19 @@ app.put('/addBill', async (req, res) => {
 
 //Returns a list of groceries for the apartment
 app.get('/groceries', async (req, res) => {
-  res.json(await getGroceries());
+  res.json(await getGroceries(req.session.currentUser));
   res.end();
 });
 
 //Returns a list of the apartment's inventory
 app.get('/inventory', async (req, res) => {
-  res.json(await getInventory());
+  res.json(await getInventory(req.session.currentUser));
   res.end();
 });
 
 //Adds a new grocery item to the apartment's grocery list.
 app.post('/addGrocery', async (req, res) => {
-  const groceries = await getGroceries();
+  const groceries = await getGroceries(req.session.currentUser);
   const aptid = req.session.currentUser.aptid
   const id = groceries.length;
   const {name, amount, requestedBy} = req.body;
@@ -459,7 +459,7 @@ app.post('/addGrocery', async (req, res) => {
 
 //Adds a new inventory item to the apartment's inventory list.
 app.post('/addInventory', async (req, res) => {
-  const inventory = await getInventory();
+  const inventory = await getInventory(req.session.currentUser);
   const aptid = req.session.currentUser.aptid
   const id = inventory.length;
   const {name, amount, requestedBy} = req.body;
