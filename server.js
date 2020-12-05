@@ -579,7 +579,7 @@ app.get('/profiles', async (req, res) => {
 })
 
 //Gets the password of a user profile given an email
-app.get('/loginProfile/:email', async (req, res) => {
+app.get('/loginProfile/:email/pass/:password', async (req, res) => {
   const email = req.params.email;
   const password = req.params.password;
   let pwlist = await connectAndRun(db => db.any('SELECT salt, password from UserProfile WHERE email = $/email/',{email:email}));
@@ -610,20 +610,14 @@ app.get('/email/:email', async (req, res) => {
   res.end();
 });
 
-//Posts a new users data 
 app.post('/userProfile', async (req, res) => {
   let {fname, lname, email, password, phoneNumber, aptCode, color} = req.body;
   let userCrypt = mc.hash(password);
   let userSalt = userCrypt[0];
   let hash = userCrypt[1];
   password = hash;
-  console.log("HERE");
-  await addUserProfile(fname, lname, email, userSalt, password, phoneNumber, aptCode, color);
-  console.log("HTEWIFKNFEKNFNFNFN");
-  req.session.currentUser = await connectAndRun(db => db.one('SELECT firstName, lastName, email, aptid, color FROM UserProfile WHERE email = $/email/', { email }));
-  res.json({
-    message: "Correct"
-  })
+  addUserProfile(fname, lname, email, userSalt, password, phoneNumber, aptCode, color);
+  req.session.currentUser = { firstname: fname, lastname: lname, email, aptid: aptCode }
   res.end();
 });
 
