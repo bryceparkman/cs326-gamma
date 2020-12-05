@@ -579,7 +579,7 @@ app.get('/profiles', async (req, res) => {
 })
 
 //Gets the password of a user profile given an email
-app.get('/loginProfile/:email', async (req, res) => {
+app.get('/loginProfile/:email/pass/:password', async (req, res) => {
   const email = req.params.email;
   const password = req.params.password;
   let pwlist = await connectAndRun(db => db.any('SELECT salt, password from UserProfile WHERE email = $/email/',{email:email}));

@@ -6,7 +6,7 @@ async function verifyData(){
     const userEnteredPassword = document.getElementById('exampleInputPassword1').value;
     const login = {email, userEnteredPassword};
 
-    const passwordRequest = await fetch('/loginProfile/' + email + '/pass/' +userEnteredPassword);
+    const passwordRequest = await fetch('/loginProfile/' + email + '/pass/' + userEnteredPassword);
 
     const valid = passwordRequest.ok ? await passwordRequest.json() : [];
     if(valid === "true"){
