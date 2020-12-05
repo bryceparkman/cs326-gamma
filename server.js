@@ -566,13 +566,13 @@ app.post('/assignAptId', async (req, res) => {
   res.end();
 });
 
-// Retrieves user info with given email
+// Retrieves current user info with given email
 app.get('/userInfo/:email', async (req, res) => {
   res.send(await getUserInfo(req.params.email));
   res.end();
 });
 
-// Retrieves user info with given email
+// Retrieves current user email
 app.get('/userEmail', async (req, res) => {
   res.send(currentEmail);
   res.end();
