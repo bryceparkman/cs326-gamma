@@ -1,5 +1,6 @@
 let users = []
 let costs = []
+let currentEmail = '';
 let currentUser = {};
 
 /**
@@ -16,10 +17,20 @@ function isEmpty(obj) {
 }
 
 /**
- * retrieves user info from database with given email
+ * retrieves current user email
  */
-async function getCurrentUser() {
-    const data = await fetch('/userInfo');
+async function getCurrentUserEmail() {
+    const data = await fetch('/userEmail');
+    const json = await data.json();
+    return json;
+}
+
+/**
+ * retrieves current user info with given email
+ * @param {string} email email of current user
+ */
+async function getCurrentUserInfo(email) {
+    const data = await fetch('/userInfo/' + email);
     const json = await data.json();
     return json;
 }
@@ -341,6 +352,7 @@ async function submitModal(isAdd, index) {
 
 window.addEventListener('load', async () => {
     currentUser = await getCurrentUser();
+    currentEmail = currentUser.email;
     users = await getUsers(currentUser.aptid);
     costs = await getAptCosts(currentUser.aptid);
     loadUsers();

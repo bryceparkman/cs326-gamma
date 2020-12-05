@@ -1,8 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const miniCrypt = require('./miniCrypt.js');
-const mc = new miniCrypt();
 
 const app = express();
 
@@ -48,7 +46,7 @@ const db = pgp(url);
  */
 function createTables() {
   //User Profile Table
-  db.none("CREATE TABLE IF NOT EXISTS UserProfile(firstName varchar(45), lastName varchar(45), email varchar(45), salt varchar(45), password varchar(200), phoneNumber varchar(11), AptId varchar(45), color varchar(45), primary key (email))", (err, res) => {
+  db.none("CREATE TABLE IF NOT EXISTS UserProfile(firstName varchar(45), lastName varchar(45), email varchar(45), password varchar(45), phoneNumber varchar(11), AptId varchar(45), color varchar(45), primary key (email))", (err, res) => {
     console.log(err, res);
     db.end();
   });
@@ -169,12 +167,11 @@ async function getInventory() {
  * @param {number} aptCode Associated apartment code of the user
  * @param {string} color Color of the user
  */
-async function addUserProfile(firstName, lastName, email, salt, password, phoneNumber, aptCode, color) {
-  return await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES($/firstName/, $/lastName/, $/email/, $/salt/, $/password/, $/phoneNumber/, $/aptCode/, $/color/)', {
+async function addUserProfile(firstName, lastName, email, password, phoneNumber, aptCode, color) {
+  return await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES($/firstName/, $/lastName/, $/email/, $/password/, $/phoneNumber/, $/aptCode/, $/color/)', {
     firstName: firstName,
     lastName: lastName,
     email: email,
-    salt: salt,
     password: password,
     phoneNumber: phoneNumber,
     aptCode: aptCode,
@@ -340,14 +337,27 @@ async function getUsersInApt(id) {
  * @param {string} rent rent of apartment group
  */
 async function addAptCode(id, rent) {
-  
   await connectAndRun(db => db.none('INSERT INTO Apartment VALUES($/id/, $/rent/, $/numMembers/)', {
     id: id,
     rent: rent,
     numMembers: 1,
   }))
-
   return;
+}
+
+async function assignAptId(email, id) {
+  await connectAndRun(db => db.none('UPDATE UserProfile SET AptId = $/id/ WHERE email = $/email/', {
+    id: id,
+    email: email,
+  }));
+  return
+}
+
+async function getUserInfo(email) {
+  let userInfo = await connectAndRun(db => db.any('SELECT firstName, lastName, email, AptId, color FROM UserProfile WHERE email = $/email/', {
+    email: email,
+  }));
+  return userInfo;
 }
 
 app.get('/', (req, res) => {
@@ -543,8 +553,19 @@ app.post('/createApartment', async (req, res) => {
   res.end();
 });
 
-// Retrieves user info
-app.get('/userInfo', async (req, res) => {
+// Adds aptid to userprofile data
+app.post('/assignAptId', async (req, res) => {
+  let body = '';
+  req.on('data', data => body += data);
+  req.on('end', async () => {
+    const element = JSON.parse(body);
+    await assignAptId(element.email, element.id);
+  });
+  res.end();
+});
+
+// Retrieves user info with given email
+app.get('/userInfo', (req, res) => {
   res.send(req.session.currentUser);
   res.end();
 });
@@ -556,7 +577,7 @@ app.get('/profiles', async (req, res) => {
 })
 
 //Gets the password of a user profile given an email
-app.get('/loginProfile/:email/pass/:password', async (req, res) => {
+app.get('/loginProfile/:email', async (req, res) => {
   const email = req.params.email;
   const password = req.params.password;
   let pwlist = await connectAndRun(db => db.any('SELECT salt, password from UserProfile WHERE email = $/email/',{email:email}));
@@ -569,7 +590,6 @@ app.get('/loginProfile/:email/pass/:password', async (req, res) => {
     res.json(("false"));
   res.end();
 });
-    
 
 //Checks if a users email exists in the database, returns true if it's unique, false otherwise
 app.get('/email/:email', async (req, res) => {

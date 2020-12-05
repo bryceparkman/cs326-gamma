@@ -1,12 +1,22 @@
 let costs = []
+let currentEmail = '';
 let currentUser = {};
 
 /**
- * retrieves current user info 
+ * retrieves current user email
+ */
+async function getCurrentUserEmail() {
+    const data = await fetch('/userEmail');
+    const json = await data.json();
+    return json;
+}
+
+/**
+ * retrieves current user info with given email
  * @param {string} email email of current user
  */
-async function getCurrentUser() {
-    const data = await fetch('/userInfo');
+async function getCurrentUserInfo(email) {
+    const data = await fetch('/userInfo/' + email);
     const json = await data.json();
     return json;
 }
@@ -82,6 +92,14 @@ async function createApartment() {
         })
     })
 
+    await fetch('/assignAptId', {
+        method: 'POST',
+        body: JSON.stringify({
+            email: currentEmail,
+            id: id,
+        })
+    })
+
     window.location.href = "apt-overview.html";
 
 }
@@ -134,5 +152,6 @@ function submitModal() {
 }
 
 window.addEventListener('load', async () => {
-    currentUser = await getCurrentUser();
+    currentEmail = await getCurrentUserEmail();
+    currentUser = await getCurrentUserInfo(currentEmail);
 });
