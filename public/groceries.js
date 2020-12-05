@@ -18,7 +18,7 @@ function htmlToNode(html) {
  * Calculates money spent for the current user
  */
 async function moneySpent() {
-    const moneySpent = await fetch('/bill/');
+    const moneySpent = await fetch('/bill/' + currentUser.email);
     const json = await moneySpent.json();
     return json;
 }
@@ -32,7 +32,7 @@ async function addBill(user, amount) {
     await fetch('/addBill', {
         method: 'PUT',
         body: JSON.stringify({
-            email: user,
+            email: user.email,
             amount: amount * 100
         }),
         headers: {
@@ -45,7 +45,7 @@ async function addBill(user, amount) {
  * Gets the current user's grocery budget
  */
 async function getBudget() {
-    const userBudget = await fetch('/budget/');
+    const userBudget = await fetch('/budget/' + currentUser.email);
     const json = await userBudget.json();
     return json;
 }
@@ -75,7 +75,7 @@ async function addGrocery() {
     //Validate input
     if (!isNaN(billValue) && billValue >= 0) {
         if (moneyCount + billValue > budget) {
-            progress.classList.remove((currentUser.replace('@', '')).replace('.', '') + 'BgColor');
+            progress.classList.remove((currentUser.email.replace('@', '')).replace('.', '') + 'BgColor');
             progress.style.backgroundColor = '#ff0000';
             progress.innerHTML = "Over budget";
         }
@@ -203,7 +203,7 @@ async function submitModal(type, isAdd) {
                 body: JSON.stringify({
                     name: inputItem.value,
                     amount: inputAmount.value,
-                    requestedBy: currentUser
+                    requestedBy: currentUser.email
                 }),
                 headers: {
                     'Content-Type': 'application/json'
@@ -244,9 +244,11 @@ async function calculatePage() {
 
     //Update large progress bar width and color
     const progress = document.getElementById('progressBarMain');
-    progress.style.backgroundColor = '#' + users.find(user => user.email === currentUser).color;
+    progress.style.backgroundColor = '#' + users.find(user => user.email === currentUser.email).color;
+    console.log(moneyCount,budget)
     if (moneyCount > budget) {
         progress.innerHTML = "Over budget";
+        progress.style.backgroundColor = '#FF0000'
     }
     const width = await getWidthString();
     progress.style.width = width;
@@ -264,7 +266,7 @@ window.addEventListener('load', async () => {
     //Get current user
     const currResponse = await fetch('/userInfo');
     const currentUserObject = await currResponse.json();
-    currentUser = currentUserObject.email;
+    currentUser = currentUserObject;
 
     //Get user information
     const response = await fetch('/profiles');
