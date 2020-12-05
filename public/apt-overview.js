@@ -1,6 +1,5 @@
 let users = []
 let costs = []
-let currentEmail = '';
 let currentUser = {};
 
 /**
@@ -17,20 +16,10 @@ function isEmpty(obj) {
 }
 
 /**
- * retrieves current user email
+ * retrieves current user info
  */
-async function getCurrentUserEmail() {
-    const data = await fetch('/userEmail');
-    const json = await data.json();
-    return json;
-}
-
-/**
- * retrieves current user info with given email
- * @param {string} email email of current user
- */
-async function getCurrentUserInfo(email) {
-    const data = await fetch('/userInfo/' + email);
+async function getCurrentUser() {
+    const data = await fetch('/userInfo');
     const json = await data.json();
     return json;
 }
@@ -202,7 +191,12 @@ async function removeCost(index) {
  * copies apt code to users clipboard
  */
 function copyApartmentCode() {
-    return currentUser.aptid;
+    const el = document.createElement('textarea');
+    el.value = currentUser.AptId;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
 }
 
 /**
@@ -352,7 +346,6 @@ async function submitModal(isAdd, index) {
 
 window.addEventListener('load', async () => {
     currentUser = await getCurrentUser();
-    currentEmail = currentUser.email;
     users = await getUsers(currentUser.aptid);
     costs = await getAptCosts(currentUser.aptid);
     loadUsers();
