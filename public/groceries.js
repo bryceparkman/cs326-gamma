@@ -1,4 +1,4 @@
-const currentUser = 'bparkman@umass.edu';
+let currentUser;
 let currentElement = null;
 let users;
 
@@ -260,6 +260,11 @@ window.addEventListener('load', async () => {
     //Get button and create event listener
     const addBill = document.getElementById('inputButton');
     addBill.addEventListener('click', () => addGrocery());
+
+    //Get current user
+    const currResponse = await fetch('/userInfo');
+    const currentUserObject = await currResponse.json();
+    currentUser = currentUserObject.email;
 
     //Get user information
     const response = await fetch('/profiles');

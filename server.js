@@ -13,7 +13,7 @@ app.use(cookieParser());
 
 let secret;
 
-const currentEmail = 'bparkman@umass.edu';
+let currentEmail = 'bparkman@umass.edu';
 
 let currentUser = {
   firstName: 'bryce',
@@ -553,7 +553,7 @@ app.post('/createApartment', async (req, res) => {
   res.end();
 });
 
-// Retrieves user info with given email
+// Retrieves user info
 app.get('/userInfo', async (req, res) => {
   res.send(currentUser);
   res.end();

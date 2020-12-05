@@ -1,4 +1,4 @@
-const currentUser = 'bparkman@umass.edu';
+let currentUser;
 let users;
 let currentMode = 'Rent';
 
@@ -238,7 +238,6 @@ async function calculatePage() {
         const moneyDataUser = await moneySpent(user.email);
         const shareUser = await shareAmount(user.email);
         subProgressBar.style.width = (await calculateOverallPercent(user.email) * 100) + '%';
-        console.log(totalCost * shareUser / 100)
         if (moneyDataUser >= parseFloat((totalCost * shareUser / 100).toFixed(2))) {
             subProgressBar.classList.add('progress-bar-striped');
         }
@@ -248,8 +247,13 @@ async function calculatePage() {
 window.addEventListener('load', async () => {
     const contributeButton = document.getElementById('inputButton');
     contributeButton.addEventListener('click', () => contributeCost());
+    
+    //Get current user
+    const currResponse = await fetch('/userInfo');
+    const currentUserObject = await currResponse.json();
+    currentUser = currentUserObject.email;
 
-    //Get user data
+    //Get user list data
     const response = await fetch('/profiles');
     users = await response.json();
 
