@@ -169,15 +169,16 @@ async function getInventory() {
  * @param {number} aptCode Associated apartment code of the user
  * @param {string} color Color of the user
  */
-async function addUserProfile(firstName, lastName, email, password, phoneNumber, aptCode, color) {
-  return await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES($/firstName/, $/lastName/, $/email/, $/password/, $/phoneNumber/, $/aptCode/, $/color/)', {
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-    password: password,
-    phoneNumber: phoneNumber,
-    aptCode: aptCode,
-    color: color
+async function addUserProfile(firstName, lastName, email, salt, password, phoneNumber, aptCode, color) {
+  return await connectAndRun(db => db.none('INSERT INTO UserProfile VALUES($/firstName/, $/lastName/, $/email/, $/salt/, $/password/, $/phoneNumber/, $/aptCode/, $/color/)', {
+    firstName,
+    lastName,
+    email,
+    salt,
+    password,
+    phoneNumber,
+    aptCode,
+    color
   }));
 }
 
@@ -397,7 +398,7 @@ app.get('/name/:email', async (req, res) => {
 //Adds a payment to a specific bill
 app.post('/addPayment', async (req, res) => {
   const {email, amount, billname, billtype} = req.body;
-  const id = req.session.currentUser.aptid
+  const aptid = req.session.currentUser.aptid;
   const name = await getFirstNameByEmail(email);
   await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/aptid/, $/billname/, $/amount/, $/billtype/)', { email, name, aptid, billname, amount, billtype }));
   res.end();
@@ -612,12 +613,13 @@ app.get('/email/:email', async (req, res) => {
 
 app.post('/userProfile', async (req, res) => {
   let {fname, lname, email, password, phoneNumber, aptCode, color} = req.body;
+  console.log(color)
   let userCrypt = mc.hash(password);
   let userSalt = userCrypt[0];
   let hash = userCrypt[1];
   password = hash;
   addUserProfile(fname, lname, email, userSalt, password, phoneNumber, aptCode, color);
-  req.session.currentUser = { firstname: fname, lastname: lname, email, aptid: aptCode }
+  req.session.currentUser = { firstname: fname, lastname: lname, email, aptid: aptCode, color }
   res.end();
 });
 

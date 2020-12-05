@@ -171,6 +171,7 @@ async function checkPayments() {
         for (let i = 0; i < json.length; i++) {
             const payment = json[i];
             const payments = document.getElementById('payments');
+            console.log(users)
             const userColor = users.find(user => user.email === payment.email).color;
             const className = (payment.email.replace('@', '')).replace('.', '');
 

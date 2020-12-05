@@ -88,11 +88,11 @@ function addUser(user) {
     let containerItem = document.createElement('div');
     let icon = document.createElement('i');
     icon.className = 'fa fa-user-circle fa-lg';
-    icon.style.color = user.color;
+    icon.style.color = '#' + user.color;
     let nameLabel = document.createElement('label');
     nameLabel.className = 'aptMatesBoxItemLbl';
-    nameLabel.innerHTML = user.name;
-    nameLabel.style.color = user.color;
+    nameLabel.innerHTML = user.firstname;
+    nameLabel.style.color = '#' + user.color;
     containerItem.appendChild(icon);
     containerItem.appendChild(nameLabel);
     container.appendChild(containerItem);
@@ -128,9 +128,10 @@ function addCost(index, name, cost, contributors) {
         let userEmail = contributors[i];
         let subBar = document.createElement('div');
         subBar.className = 'progress-bar';
-        subBar.style.width = 100/contributors.length;
+        subBar.style.width = 100/contributors.length + '%';
         let user = users.find(user => user.email === userEmail);
-        subBar.style.color = user.color;
+        subBar.style.backgroundColor = '#' + user.color;
+        costContributionBar.appendChild(subBar);
     }
     let footer = document.createElement('div');
     footer.className = 'card-footer text-muted'
@@ -192,7 +193,7 @@ async function removeCost(index) {
  */
 function copyApartmentCode() {
     const el = document.createElement('textarea');
-    el.value = currentUser.AptId;
+    el.value = currentUser.aptid;
     document.body.appendChild(el);
     el.select();
     document.execCommand('copy');
@@ -212,7 +213,7 @@ function openModal(isAdd, index) {
         content.removeChild(content.lastChild);
         content.removeChild(content.lastChild);
         let itemLbl = document.getElementById('itemLbl');
-        itemLbl.innerHTML = 'edit ' + costs[index].billname;
+        itemLbl.innerHTML = 'Edit ' + costs[index].billname;
         let inputCost = document.getElementById('inputCostEdit');
         inputCost.value = costs[index].cost;
         let cost = costs[index];
@@ -221,7 +222,7 @@ function openModal(isAdd, index) {
             let label = document.createElement('label');
             let input = document.createElement('input');
             span.className = 'inputMb'
-            label.innerHTML = users[i].name;
+            label.innerHTML = users[i].firstname;
             input.style.marginLeft = '3vh';
             input.type = 'checkbox';
             input.id = 'contributer' + i;
