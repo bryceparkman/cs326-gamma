@@ -202,7 +202,12 @@ async function removeCost(index) {
  * copies apt code to users clipboard
  */
 function copyApartmentCode() {
-    return currentUser.AptId;
+    const el = document.createElement('textarea');
+    el.value = currentUser.AptId;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
 }
 
 /**
