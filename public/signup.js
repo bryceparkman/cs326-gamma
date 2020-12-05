@@ -1,8 +1,3 @@
-//import {MiniCrypt} from './miniCrypt.js';
-//const { MiniCrypt} = require('./miniCrypt.js');
-//import * as MiniCrypt from '/miniCrypt.js';
-//from cs326-gamma import 'miniCrypt.js';
-//const c = require('crypto');
 
 let globColor = "FF0000";
 

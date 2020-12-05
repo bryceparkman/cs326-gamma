@@ -18,7 +18,7 @@ function htmlToNode(html) {
  * Calculates money spent for the current user
  */
 async function moneySpent() {
-    const moneySpent = await fetch('/bill/' + currentUser);
+    const moneySpent = await fetch('/bill/');
     const json = await moneySpent.json();
     return json;
 }
@@ -45,7 +45,7 @@ async function addBill(user, amount) {
  * Gets the current user's grocery budget
  */
 async function getBudget() {
-    const userBudget = await fetch('/budget/' + currentUser);
+    const userBudget = await fetch('/budget/');
     const json = await userBudget.json();
     return json;
 }

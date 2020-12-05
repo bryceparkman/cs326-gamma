@@ -39,11 +39,11 @@ function addCost(name, cost) { // if cost = 0, then cost varies month to month
     containerItem.appendChild(leftLabel);
     containerItem.appendChild(rightLabel);
     container.appendChild(containerItem);
-    let cost = {
+    let costObj = {
         name: name,
         cost: cost
     };
-    costs.push(cost);
+    costs.push(costObj);
 }
 
 /**

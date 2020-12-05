@@ -191,7 +191,7 @@ async function removeCost(index) {
     await fetch('/removeAptCost', {
         method: 'DELETE',
         body: JSON.stringify({
-            id: currentUser.AptId,
+            id: currentUser.aptid,
             name: cost.billname,
         })
     })
@@ -202,7 +202,7 @@ async function removeCost(index) {
  * copies apt code to users clipboard
  */
 function copyApartmentCode() {
-    return currentUser.AptId;
+    return currentUser.aptid;
 }
 
 /**
@@ -292,7 +292,7 @@ async function submitModal(isAdd, index) {
                 await fetch('/addAptCost', {
                     method: 'POST',
                     body: JSON.stringify({
-                        id: currentUser.AptId,
+                        id: currentUser.aptid,
                         name: cost.billname,
                         cost: cost.cost * 100,
                         contributors: cost.contributors,
@@ -330,7 +330,7 @@ async function submitModal(isAdd, index) {
             await fetch('/editAptCost', {
                 method: 'PUT',
                 body: JSON.stringify({
-                    id: currentUser.AptId,
+                    id: currentUser.aptid,
                     name: cost.billname,
                     cost: cost.cost * 100,
                     contributors: cost.contributors,
@@ -351,10 +351,10 @@ async function submitModal(isAdd, index) {
 }
 
 window.addEventListener('load', async () => {
-    currentEmail = await getCurrentUserEmail();
-    currentUser = await getCurrentUserInfo(currentEmail);
-    users = await getUsers(currentUser.AptId);
-    costs = await getAptCosts(currentUser.AptId);
+    currentUser = await getCurrentUser();
+    currentEmail = currentUser.email;
+    users = await getUsers(currentUser.aptid);
+    costs = await getAptCosts(currentUser.aptid);
     loadUsers();
     loadAptCosts();
 });
