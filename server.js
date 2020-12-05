@@ -613,7 +613,6 @@ app.get('/email/:email', async (req, res) => {
 
 app.post('/userProfile', async (req, res) => {
   let {fname, lname, email, password, phoneNumber, aptCode, color} = req.body;
-  console.log(color)
   let userCrypt = mc.hash(password);
   let userSalt = userCrypt[0];
   let hash = userCrypt[1];
