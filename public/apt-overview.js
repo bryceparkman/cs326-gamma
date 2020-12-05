@@ -1,6 +1,5 @@
 let users = []
 let costs = []
-let currentEmail = '';
 let currentUser = {};
 
 /**
@@ -17,20 +16,10 @@ function isEmpty(obj) {
 }
 
 /**
- * retrieves current user email
+ * retrieves current user info
  */
-async function getCurrentUserEmail() {
-    const data = await fetch('/userEmail');
-    const json = await data.json();
-    return json;
-}
-
-/**
- * retrieves current user info with given email
- * @param {string} email email of current user
- */
-async function getCurrentUserInfo(email) {
-    const data = await fetch('/userInfo/' + email);
+async function getCurrentUser() {
+    const data = await fetch('/userInfo');
     const json = await data.json();
     return json;
 }
@@ -191,7 +180,7 @@ async function removeCost(index) {
     await fetch('/removeAptCost', {
         method: 'DELETE',
         body: JSON.stringify({
-            id: currentUser.AptId,
+            id: currentUser.aptid,
             name: cost.billname,
         })
     })
@@ -297,7 +286,7 @@ async function submitModal(isAdd, index) {
                 await fetch('/addAptCost', {
                     method: 'POST',
                     body: JSON.stringify({
-                        id: currentUser.AptId,
+                        id: currentUser.aptid,
                         name: cost.billname,
                         cost: cost.cost * 100,
                         contributors: cost.contributors,
@@ -335,7 +324,7 @@ async function submitModal(isAdd, index) {
             await fetch('/editAptCost', {
                 method: 'PUT',
                 body: JSON.stringify({
-                    id: currentUser.AptId,
+                    id: currentUser.aptid,
                     name: cost.billname,
                     cost: cost.cost * 100,
                     contributors: cost.contributors,
@@ -356,10 +345,9 @@ async function submitModal(isAdd, index) {
 }
 
 window.addEventListener('load', async () => {
-    currentEmail = await getCurrentUserEmail();
-    currentUser = await getCurrentUserInfo(currentEmail);
-    users = await getUsers(currentUser.AptId);
-    costs = await getAptCosts(currentUser.AptId);
+    currentUser = await getCurrentUser();
+    users = await getUsers(currentUser.aptid);
+    costs = await getAptCosts(currentUser.aptid);
     loadUsers();
     loadAptCosts();
 });
