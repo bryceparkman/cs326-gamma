@@ -11,8 +11,6 @@ app.use(cookieParser());
 
 let secret;
 
-const currentEmail = 'bparkman@umass.edu';
-
 let currentUser = {
   firstName: 'bryce',
   lastName: 'parkman',
