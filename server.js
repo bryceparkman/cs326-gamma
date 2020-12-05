@@ -13,6 +13,14 @@ let secret;
 
 const currentEmail = 'bparkman@umass.edu';
 
+let currentUser = {
+  firstName: 'bryce',
+  lastName: 'parkman',
+  email: 'bparkman@umass.edu',
+  AptId: '123',
+  color: '00ff00'
+}
+
 //If not on Heroku deployment, access secrets
 if (!process.env.SESSION_SECRET) {
   const secrets = require('./secrets.json');
@@ -349,19 +357,6 @@ async function addAptCode(id, rent) {
   return;
 }
 
-/**
- * creates a new apartment in database with given newly generated id
- * @param {string} email email of user
- */
-async function getUserInfo(email) {
-  
-  let userInfo = await connectAndRun(db => db.any('SELECT firstName, email, AptId, color FROM UserProfile WHERE email = $/email/', {
-    email: email,
-  }));
-
-  return userInfo;
-}
-
 app.get('/', (req, res) => {
   res.sendFile('index.html');
   res.end();
@@ -556,8 +551,8 @@ app.post('/createApartment', async (req, res) => {
 });
 
 // Retrieves user info with given email
-app.get('/userInfo/:email', async (req, res) => {
-  res.send(await getUserInfo(req.params.email));
+app.get('/userInfo', async (req, res) => {
+  res.send(currentUser);
   res.end();
 });
 
