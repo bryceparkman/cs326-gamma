@@ -1,26 +1,13 @@
 let costs = []
-let currentEmail = '';
 let currentUser = {};
 
-/*
-let currentUser = {
-    firstName: 'bryce',
-    email: 'bparkman@umass.edu',
-    AptId: '',
-    color: '00ff00'
-}
-*/
-
 /**
- * retrieves user info from database with given email
+ * retrieves current user info 
  * @param {string} email email of current user
  */
-async function getCurrentUser(email) {
-    const data = await fetch('/userInfo/' + email);
+async function getCurrentUser() {
+    const data = await fetch('/userInfo');
     const json = await data.json();
-    if (isEmpty(json) === true) {
-        return [];
-    }
     return json;
 }
 
@@ -147,6 +134,5 @@ function submitModal() {
 }
 
 window.addEventListener('load', async () => {
-    currentEmail = 'bparkman@umass.edu';
-    currentUser = await getCurrentUser(currentEmail);
+    currentUser = await getCurrentUser();
 });

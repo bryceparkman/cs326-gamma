@@ -1,16 +1,6 @@
 let users = []
 let costs = []
-let currentEmail = '';
 let currentUser = {};
-
-/*
-let currentUser = {
-    firstName: 'bryce',
-    email: 'bparkman@umass.edu',
-    AptId: '123',
-    color: '00ff00'
-}
-*/
 
 /**
  * helper function to check if an object is empty
@@ -27,14 +17,10 @@ function isEmpty(obj) {
 
 /**
  * retrieves user info from database with given email
- * @param {string} email email of current user
  */
-async function getCurrentUser(email) {
-    const data = await fetch('/userInfo/' + email);
+async function getCurrentUser() {
+    const data = await fetch('/userInfo');
     const json = await data.json();
-    if (isEmpty(json) === true) {
-        return [];
-    }
     return json;
 }
 
@@ -354,8 +340,7 @@ async function submitModal(isAdd, index) {
 }
 
 window.addEventListener('load', async () => {
-    currentEmail = 'bparkman@umass.edu';
-    currentUser = await getCurrentUser(currentEmail);
+    currentUser = await getCurrentUser();
     users = await getUsers(currentUser.AptId);
     costs = await getAptCosts(currentUser.AptId);
     loadUsers();
