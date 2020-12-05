@@ -200,7 +200,7 @@ async function calculatePage() {
     const owe = document.getElementById('amountToOwe');
     const share = document.getElementById('amountShared');
     const mainbar = document.getElementById('mainBar');
-
+ 
     //Update payments
     await checkPayments();
 

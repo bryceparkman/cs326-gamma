@@ -13,16 +13,6 @@ app.use(cookieParser());
 
 let secret;
 
-let currentEmail = 'bparkman@umass.edu';
-
-let currentUser = {
-  firstName: 'bryce',
-  lastName: 'parkman',
-  email: 'bparkman@umass.edu',
-  AptId: '123',
-  color: '00ff00'
-}
-
 //If not on Heroku deployment, access secrets
 if (!process.env.SESSION_SECRET) {
   const secrets = require('./secrets.json');
@@ -157,7 +147,7 @@ async function getFirstNameByEmail(email){
  * Gets grocery data
  */
 async function getGroceries() {
-  const id = await getUserAptId(currentEmail);
+  const id = req.session.currentUser.aptid
   return await connectAndRun(db => db.any('SELECT * from Groceries WHERE aptid = $/id/', { id }));
 }
 
@@ -165,7 +155,7 @@ async function getGroceries() {
  * Gets inventory data
  */
 async function getInventory() {
-  const id = await getUserAptId(currentEmail);
+  const id = req.session.currentUser.aptid
   return await connectAndRun(db => db.any('SELECT * from Inventory WHERE aptid = $/id/', { id }));
 }
 
@@ -367,14 +357,14 @@ app.get('/', (req, res) => {
 
 //Returns a user's payment data for a specific bill
 app.get('/payments/:type', async (req, res) => {
-  const id = await getUserAptId(currentEmail);
+  const id = req.session.currentUser.aptid
   res.json(await connectAndRun(db => db.any('SELECT * FROM UserPayments WHERE aptid = $/id/ AND billname = $/type/', { id, type : req.params.type })));
   res.end();
 });
 
 //Returns a bill's monthly cost
 app.get('/cost/:type', async (req, res) => {
-  const id = await getUserAptId(currentEmail);
+  const id = req.session.currentUser.aptid
   if(req.params.type === 'Rent'){
     const { rent } = await connectAndRun(db => db.one('SELECT Rent FROM Apartment WHERE id = $/id/', { id }));
     res.json(rent / 100);
@@ -395,7 +385,7 @@ app.get('/name/:email', async (req, res) => {
 //Adds a payment to a specific bill
 app.post('/addPayment', async (req, res) => {
   const {email, amount, billname, billtype} = req.body;
-  const aptid = await getUserAptId(currentEmail);
+  const id = req.session.currentUser.aptid
   const name = await getFirstNameByEmail(email);
   await connectAndRun(db => db.none('INSERT INTO UserPayments VALUES($/email/, $/name/, $/aptid/, $/billname/, $/amount/, $/billtype/)', { email, name, aptid, billname, amount, billtype }));
   res.end();
@@ -447,7 +437,7 @@ app.get('/inventory', async (req, res) => {
 //Adds a new grocery item to the apartment's grocery list.
 app.post('/addGrocery', async (req, res) => {
   const groceries = await getGroceries();
-  const aptid = await getUserAptId(currentEmail);
+  const aptid = req.session.currentUser.aptid
   const id = groceries.length;
   const {name, amount, requestedBy} = req.body;
   await connectAndRun(db => db.none('INSERT INTO Groceries VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
@@ -457,7 +447,7 @@ app.post('/addGrocery', async (req, res) => {
 //Adds a new inventory item to the apartment's inventory list.
 app.post('/addInventory', async (req, res) => {
   const inventory = await getInventory();
-  const aptid = await getUserAptId(currentEmail);
+  const aptid = req.session.currentUser.aptid
   const id = inventory.length;
   const {name, amount, requestedBy} = req.body;
   await connectAndRun(db => db.none('INSERT INTO Inventory VALUES($/aptid/, $/id/, $/name/, $/amount/, $/requestedBy/)', {aptid, id, name, amount, requestedBy}));
@@ -555,7 +545,7 @@ app.post('/createApartment', async (req, res) => {
 
 // Retrieves user info
 app.get('/userInfo', async (req, res) => {
-  res.send(currentUser);
+  res.send(req.session.currentUser);
   res.end();
 });
 
@@ -571,8 +561,10 @@ app.get('/loginProfile/:email/pass/:password', async (req, res) => {
   const password = req.params.password;
   let pwlist = await connectAndRun(db => db.any('SELECT salt, password from UserProfile WHERE email = $/email/',{email:email}));
   let isValid = mc.check(password, pwlist[0].salt, pwlist[0].password);
-  if(isValid)
+  if(isValid) {
+    req.session.currentUser = await connectAndRun(db => db.one('SELECT firstName, lastName, email, aptid, color FROM UserProfile WHERE email = $/email/', { email }));
     res.json(("true"));
+  }
   else 
     res.json(("false"));
   res.end();
@@ -597,15 +589,17 @@ app.get('/email/:email', async (req, res) => {
 });
 
 //Posts a new users data 
-app.post('/userProfile', (req, res) => {
+app.post('/userProfile', async (req, res) => {
   let {fname, lname, email, password, phoneNumber, aptCode, color} = req.body;
-  console.log(fname);
   let userCrypt = mc.hash(password);
   let userSalt = userCrypt[0];
   let hash = userCrypt[1];
-  console.log(userSalt);
   password = hash;
-  addUserProfile(fname, lname, email, userSalt, password, phoneNumber, aptCode, color);
+  await addUserProfile(fname, lname, email, userSalt, password, phoneNumber, aptCode, color);
+  req.session.currentUser = await connectAndRun(db => db.one('SELECT firstName, lastName, email, aptid, color FROM UserProfile WHERE email = $/email/', { email }));
+  res.json({
+    message: "Correct"
+  })
   res.end();
 });
 
