@@ -102,15 +102,13 @@ Our database has eight tables: User Profiles, User Grocery Bills, User Payments,
 
 ## URL Routes/Mappings
 
-| URL Route          | Description                                           | Authentication?                                                 |
-|--------------------|-------------------------------------------------------|-----------------------------------------------------------------|
-| /                  | Routes to index.html, the site's homepage             | None                                                            |
-| /login.html        | Routes to the user Login page                         | None (users authenticated after successful login).              |
-| /signup.html       | Routes to the user creation page                      | None                                                            |
-| /apt-creation.html | Routes to the Apartment Creation Page                 | Only available to authenticated users                           |
-| /apt-overview.html | Routes to the Apartment Overview Page                 | Only available to authenticated users connected to an apartment |
-| /costs.html        | Routes to User's costs page for bill payment tracking | Only available to authenticated users connected to an apartment |
-| /groceries.html    | Routes to the apartment's Grocery Page                | Only available to authenticated users connected to an apartment |
+| URL Route               | Description                                           | Authentication?                                                 |
+|-------------------------|-------------------------------------------------------|-----------------------------------------------------------------|
+| /                       | This is the main page                                 | None                                                            |
+| /signin/index.html      | The page for user to log in                           | None                                                            |
+| /signup/signup.html     | This is the create account page                       | None                                                            |
+| /userinfo/imUser.html   | Routes to the Apartment Creation Page                 | This is only when the user successfully log in                  |
+
 
 
 ## Authentication/Authorization
